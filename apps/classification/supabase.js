@@ -1,7 +1,7 @@
 /**
  * Supabase data access layer for IRC Emergency Classification System.
  *
- * Uses config from @irc/shared (loaded via irc-shared.iife.js → IRCShared).
+ * Replaces localStorage with Supabase PostgreSQL.
  * localStorage is kept as a write-through cache for offline/fast access.
  *
  * Usage:  await IRC.db.load()          — fetch all from Supabase (call on page load)
@@ -13,13 +13,132 @@
 (function () {
   'use strict';
 
-  // ── Pull Supabase config from shared package ──
-  var S = window.IRCShared;
-  var headers = S.HEADERS;
-  var baseUrl = S.BASE_URL;
-  var mapToSnake = S.mapToSnake;
-  var mapToCamel = S.mapToCamel;
-  var fetchAll = S.fetchAll;
+  // ── Supabase config ──
+  var SUPABASE_URL = 'https://qykjjfbdvwqxqmsgiebs.supabase.co';
+  var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5a2pqZmJkdndxeHFtc2dpZWJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMjg1NzcsImV4cCI6MjA4ODYwNDU3N30.N3XWpfTggpjHu8Kyw0DWnYnZvBqA1aVuWEJixo_ibAw';
+  var TABLE = 'classifications';
+
+  // REST helpers — no SDK needed, just fetch against PostgREST
+  var headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+  };
+  var baseUrl = SUPABASE_URL + '/rest/v1/' + TABLE;
+
+  // ── camelCase ↔ snake_case mapping ──
+  var toSnake = {
+    classificationId: 'classification_id',
+    emergencyName: 'emergency_name',
+    expirationDate: 'expiration_date',
+    processingSpeed: 'processing_speed',
+    reclassificationNumber: 'reclassification_number',
+    previousSeverity: 'previous_severity',
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    totalAffected: 'total_affected',
+    linkToSpreadsheet: 'link_to_spreadsheet',
+    ipc4Used: 'ipc4_used',
+    hazardType: 'hazard_type',
+    sapTracking: 'sap_tracking',
+    uniqueId: 'unique_id',
+    dateRequestReceived: 'date_request_received',
+    dateSentForEntry: 'date_sent_for_entry',
+    dateReviewed: 'date_reviewed',
+    dateApproved: 'date_approved',
+    dateExpirationNoticeSent: 'date_expiration_notice_sent',
+    whoEngagesCp: 'who_engages_cp',
+    entryBy: 'entry_by',
+    reviewedBy: 'reviewed_by',
+    approvedBy: 'approved_by',
+    notifSentBy: 'notif_sent_by',
+    raisedWithCpRegion: 'raised_with_cp_region',
+    codeNumber: 'code_number'
+  };
+  var toCamel = {};
+  for (var k in toSnake) toCamel[toSnake[k]] = k;
+
+  function mapToSnake(record) {
+    var out = {};
+    for (var key in record) {
+      if (!record.hasOwnProperty(key)) continue;
+      var dbKey = toSnake[key] || key;
+      out[dbKey] = record[key];
+    }
+    // Convert empty strings to null for constrained/typed columns
+    // (spreadsheet imports often produce '' for missing values)
+    ['type', 'stance', 'country', 'emergency_name', 'region',
+     'processing_speed', 'classification_id', 'date', 'expiration_date',
+     'link_to_spreadsheet', 'hazard_type', 'sap_tracking', 'unique_id',
+     'who_engages_cp', 'entry_by', 'reviewed_by', 'approved_by', 'notif_sent_by',
+     'raised_with_cp_region', 'code_number',
+     'date_request_received', 'date_sent_for_entry', 'date_reviewed',
+     'date_approved', 'date_expiration_notice_sent'].forEach(function (f) {
+      if (out[f] === '') out[f] = null;
+    });
+    // Boolean fields
+    if (out.ipc4_used !== null && out.ipc4_used !== undefined) {
+      if (typeof out.ipc4_used === 'string') {
+        out.ipc4_used = out.ipc4_used.toLowerCase() === 'yes' || out.ipc4_used === 'true' || out.ipc4_used === '1';
+      }
+    }
+    // Numeric: total_affected
+    if (out.total_affected !== null && out.total_affected !== undefined) {
+      out.total_affected = parseFloat(out.total_affected);
+      if (isNaN(out.total_affected)) out.total_affected = null;
+    }
+    // Validate all date fields — reject anything that isn't YYYY-MM-DD or empty
+    ['date', 'expiration_date', 'date_request_received', 'date_sent_for_entry',
+     'date_reviewed', 'date_approved', 'date_expiration_notice_sent'].forEach(function (f) {
+      if (out[f] !== null && out[f] !== undefined && out[f] !== '') {
+        var dStr = out[f].toString().trim();
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dStr)) {
+          // Try to parse it
+          var d = new Date(dStr);
+          if (!isNaN(d.getTime()) && d.getFullYear() > 1900 && d.getFullYear() < 2100) {
+            var yyyy = d.getFullYear();
+            var mm = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            out[f] = yyyy + '-' + mm + '-' + dd;
+          } else {
+            out[f] = null; // unparseable — null it out instead of crashing
+          }
+        }
+      }
+    });
+    // Ensure JSONB fields are objects not strings
+    ['metrics', 'confidence', 'subnational'].forEach(function (f) {
+      if (typeof out[f] === 'string') {
+        try { out[f] = JSON.parse(out[f]); } catch (e) { out[f] = {}; }
+      }
+      if (out[f] === '' || out[f] === null || out[f] === undefined) out[f] = null;
+    });
+    // Ensure numeric fields are numbers or null
+    if (out.severity !== null && out.severity !== undefined) {
+      out.severity = parseInt(out.severity, 10);
+      if (isNaN(out.severity)) out.severity = null;
+    }
+    if (out.reclassification_number !== null && out.reclassification_number !== undefined) {
+      out.reclassification_number = parseInt(out.reclassification_number, 10);
+      if (isNaN(out.reclassification_number)) out.reclassification_number = null;
+    }
+    if (out.previous_severity !== null && out.previous_severity !== undefined) {
+      out.previous_severity = parseInt(out.previous_severity, 10);
+      if (isNaN(out.previous_severity)) out.previous_severity = null;
+    }
+    return out;
+  }
+
+  function mapToCamel(row) {
+    var out = {};
+    for (var key in row) {
+      if (!row.hasOwnProperty(key)) continue;
+      var jsKey = toCamel[key] || key;
+      out[jsKey] = row[key];
+    }
+    return out;
+  }
 
   // ── In-memory cache ──
   var cache = null; // array of camelCase records, or null if not yet loaded
@@ -34,6 +153,40 @@
       var raw = localStorage.getItem(LS_KEY);
       return raw ? JSON.parse(raw) : [];
     } catch (e) { return []; }
+  }
+
+  // ── Fetch helper that paginates past PostgREST 1000-row server limit ──
+  //
+  // Supabase caps each response at max-rows (default 1000).
+  // We paginate with limit/offset, fetching 1000 at a time until we
+  // get back fewer rows than requested (meaning we've hit the end).
+  var PAGE_SIZE = 1000;
+  function fetchAll(url) {
+    var accumulated = [];
+    var joiner = url.indexOf('?') === -1 ? '?' : '&';
+
+    function fetchPage(offset) {
+      var pageUrl = url + joiner + 'limit=' + PAGE_SIZE + '&offset=' + offset;
+      console.log('[Supabase] fetchAll page offset=' + offset);
+      return fetch(pageUrl, { headers: headers })
+        .then(function (res) {
+          if (!res.ok) {
+            throw new Error('Supabase fetch failed: ' + res.status);
+          }
+          return res.json();
+        })
+        .then(function (rows) {
+          console.log('[Supabase] fetchAll got ' + rows.length + ' rows (offset ' + offset + ')');
+          accumulated = accumulated.concat(rows);
+          if (rows.length >= PAGE_SIZE) {
+            return fetchPage(offset + PAGE_SIZE);
+          }
+          console.log('[Supabase] fetchAll total: ' + accumulated.length + ' rows');
+          return accumulated;
+        });
+    }
+
+    return fetchPage(0);
   }
 
   // ── Public API ──
