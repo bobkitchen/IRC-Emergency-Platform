@@ -228,34 +228,112 @@
       color: var(--dark-gray);
     }
 
-    /* ── Classification section ── */
-    .classification-select {
+    /* ── Classification section (searchable combobox) ── */
+    .classification-combobox {
+      position: relative;
+      width: 100%;
+    }
+
+    .classification-search {
       width: 100%;
       font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 1.125rem;
+      font-size: 1rem;
       font-weight: 600;
       color: var(--black);
       background: var(--light-gray);
       border: 2px solid var(--mid-gray);
       border-radius: 8px;
       padding: 14px 20px;
+      padding-right: 44px;
       transition: border-color 0.15s ease;
-      cursor: pointer;
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 16px center;
-      padding-right: 44px;
     }
 
-    .classification-select:focus {
+    .classification-search:focus {
       outline: none;
       border-color: var(--irc-yellow);
       background-color: var(--white);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
+    }
+
+    .classification-search::placeholder {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .classification-listbox {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 280px;
+      overflow-y: auto;
+      background: var(--white);
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
+      z-index: 50;
+      list-style: none;
+    }
+
+    .classification-listbox.open {
+      display: block;
+    }
+
+    .classification-option {
+      padding: 12px 20px;
+      font-size: 0.9375rem;
+      color: var(--black);
+      cursor: pointer;
+      transition: background 0.08s ease;
+      line-height: 1.4;
+    }
+
+    .classification-option:hover,
+    .classification-option.highlighted {
+      background: var(--irc-yellow-lightest);
+    }
+
+    .classification-option.selected {
+      background: var(--irc-yellow);
+      font-weight: 700;
+    }
+
+    .classification-option-date {
+      font-weight: 700;
+      color: var(--dark-gray);
+    }
+
+    .classification-option-name {
+      font-weight: 600;
+    }
+
+    .classification-option-detail {
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    .classification-option-manual {
+      padding: 12px 20px;
+      font-size: 0.9375rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.08s ease;
+      font-style: italic;
+    }
+
+    .classification-option-manual:hover,
+    .classification-option-manual.highlighted {
+      background: var(--irc-yellow-lightest);
+    }
+
+    .classification-option-empty {
+      padding: 16px 20px;
+      font-size: 0.875rem;
+      color: var(--muted);
+      font-style: italic;
     }
 
     .classification-info {
@@ -960,9 +1038,20 @@
     <!-- Active Classification (hidden by default) -->
     <div class="calc-section" id="classification-section" style="display: none;">
       <div class="section-label">Active Classification <span class="classification-loading" id="classification-loading" style="display:none;">Loading…</span></div>
-      <select class="classification-select" id="classification-select">
-        <option value="">None — enter manually</option>
-      </select>
+      <div class="classification-combobox" id="classification-combobox">
+        <input
+          type="text"
+          class="classification-search"
+          id="classification-search"
+          placeholder="Search classifications…"
+          autocomplete="off"
+          role="combobox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+          aria-controls="classification-listbox"
+        />
+        <ul class="classification-listbox" id="classification-listbox" role="listbox"></ul>
+      </div>
       <div class="classification-info" id="classification-info" style="display: none;"></div>
       <div class="classification-error" id="classification-error" style="display: none;"></div>
     </div>
@@ -1180,7 +1269,9 @@
       var stanceHint = document.getElementById('stance-hint');
       var stanceNotEligible = document.getElementById('stance-not-eligible');
       var classificationSection = document.getElementById('classification-section');
-      var classificationSelect = document.getElementById('classification-select');
+      var classificationSearchInput = document.getElementById('classification-search');
+      var classificationListbox = document.getElementById('classification-listbox');
+      var classificationCombobox = document.getElementById('classification-combobox');
       var classificationInfo = document.getElementById('classification-info');
       var classificationError = document.getElementById('classification-error');
       var classificationLoading = document.getElementById('classification-loading');
@@ -1550,64 +1641,95 @@
         });
       }
 
-      function updateClassificationDropdown() {
-        selectedClassification = null;
-        classificationSelect.innerHTML = '<option value="">None — enter manually</option>';
-        classificationInfo.style.display = 'none';
-        classificationError.style.display = 'none';
+      var classificationHighlightIndex = -1;
+      var currentClassificationOptions = []; // {classification, label, dateStr}
 
-        if (!selectedCountry) {
-          classificationSection.style.display = 'none';
+      function classificationLabel(c) {
+        var dateStr = c.date ? IRCShared.formatDate(c.date) : 'No date';
+        var stanceLabel = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : '?';
+        var sevLabel = c.severity != null ? 'Sev ' + c.severity : '';
+        return dateStr + ' — ' + (c.emergencyName || 'Unnamed') + ' (' + stanceLabel + (sevLabel ? ', ' + sevLabel : '') + ')';
+      }
+
+      function renderClassificationList(filter) {
+        classificationListbox.innerHTML = '';
+        classificationHighlightIndex = -1;
+        currentClassificationOptions = [];
+        var query = (filter || '').toLowerCase();
+
+        // "None" manual option
+        var manualLi = document.createElement('li');
+        manualLi.className = 'classification-option-manual';
+        manualLi.textContent = 'None — enter manually';
+        manualLi.setAttribute('data-index', '-1');
+        manualLi.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          selectClassification(null);
+          closeClassificationList();
+        });
+        classificationListbox.appendChild(manualLi);
+
+        var open = getOpenClassifications(selectedCountry ? selectedCountry.name : '');
+        var matches = open.filter(function (c) {
+          if (!query) return true;
+          var text = classificationLabel(c).toLowerCase();
+          return text.indexOf(query) !== -1;
+        });
+
+        if (matches.length === 0 && query) {
+          var empty = document.createElement('li');
+          empty.className = 'classification-option-empty';
+          empty.textContent = 'No classifications match "' + filter + '"';
+          classificationListbox.appendChild(empty);
           return;
         }
 
-        if (classificationsCache === null) {
-          // Still loading
-          classificationSection.style.display = 'block';
-          classificationLoading.style.display = 'inline';
-          classificationSelect.style.display = 'none';
-          return;
-        }
-
-        classificationLoading.style.display = 'none';
-        classificationSelect.style.display = 'block';
-
-        if (classificationsFetchFailed) {
-          classificationSection.style.display = 'block';
-          classificationSelect.style.display = 'none';
-          classificationError.style.display = 'block';
-          classificationError.textContent = 'Could not load classifications. Enter values manually.';
-          return;
-        }
-
-        var open = getOpenClassifications(selectedCountry.name);
-        if (open.length === 0) {
-          classificationSection.style.display = 'none';
-          return;
-        }
-
-        classificationSection.style.display = 'block';
-        open.forEach(function (c) {
-          var opt = document.createElement('option');
-          opt.value = c.id || c.classificationId || '';
+        matches.forEach(function (c, idx) {
+          var dateStr = c.date ? IRCShared.formatDate(c.date) : 'No date';
           var stanceLabel = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : '?';
           var sevLabel = c.severity != null ? 'Sev ' + c.severity : '';
-          var label = (c.classificationId || c.codeNumber || '???') + ' — ' + (c.emergencyName || 'Unnamed') + ' (' + stanceLabel + (sevLabel ? ', ' + sevLabel : '') + ')';
-          opt.textContent = label;
-          classificationSelect.appendChild(opt);
+          var li = document.createElement('li');
+          li.className = 'classification-option';
+          if (selectedClassification && (selectedClassification.id || selectedClassification.classificationId) === (c.id || c.classificationId)) {
+            li.className += ' selected';
+          }
+          li.setAttribute('role', 'option');
+          li.setAttribute('data-index', String(idx));
+          li.innerHTML = '<span class="classification-option-date">' + dateStr + '</span> — <span class="classification-option-name">' + (c.emergencyName || 'Unnamed') + '</span> <span class="classification-option-detail">(' + stanceLabel + (sevLabel ? ', ' + sevLabel : '') + ')</span>';
+          li.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            selectClassification(c);
+            closeClassificationList();
+          });
+          classificationListbox.appendChild(li);
+          currentClassificationOptions.push({ classification: c, label: classificationLabel(c) });
         });
       }
 
-      function applyClassification(classification) {
+      function openClassificationList() {
+        renderClassificationList(classificationSearchInput.value);
+        classificationListbox.classList.add('open');
+        classificationSearchInput.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeClassificationList() {
+        classificationListbox.classList.remove('open');
+        classificationSearchInput.setAttribute('aria-expanded', 'false');
+        classificationHighlightIndex = -1;
+      }
+
+      function selectClassification(classification) {
         selectedClassification = classification;
         classificationInfo.style.display = 'none';
         affectedAutoBadge.style.display = 'none';
         stanceAutoBadge.style.display = 'none';
 
         if (!classification) {
-          // "None — enter manually" selected; keep current values, hide info card
+          classificationSearchInput.value = '';
           return;
         }
+
+        classificationSearchInput.value = classificationLabel(classification);
 
         // Show info card
         var stanceColor = classification.stance === 'red' ? 'stance-red' : classification.stance === 'orange' ? 'stance-orange' : '';
@@ -1640,7 +1762,7 @@
         var stance = classification.stance ? classification.stance.toLowerCase() : '';
         if (stance === 'orange' || stance === 'red') {
           selectedStance = stance;
-          stanceManuallyOverridden = true; // prevent auto-override from matrix
+          stanceManuallyOverridden = true;
           stanceButtons.forEach(function (b) {
             b.classList.toggle('selected', b.getAttribute('data-stance') === stance);
           });
@@ -1654,19 +1776,103 @@
         calculate();
       }
 
-      // ── Classification select handler ──
-      classificationSelect.addEventListener('change', function () {
-        var val = this.value;
-        if (!val) {
-          applyClassification(null);
+      function updateClassificationDropdown() {
+        selectedClassification = null;
+        classificationSearchInput.value = '';
+        classificationInfo.style.display = 'none';
+        classificationError.style.display = 'none';
+
+        if (!selectedCountry) {
+          classificationSection.style.display = 'none';
           return;
         }
-        var open = getOpenClassifications(selectedCountry ? selectedCountry.name : '');
-        var match = open.find(function (c) {
-          return (c.id || c.classificationId || '') === val;
-        });
-        applyClassification(match || null);
+
+        if (classificationsCache === null) {
+          classificationSection.style.display = 'block';
+          classificationLoading.style.display = 'inline';
+          classificationCombobox.style.display = 'none';
+          return;
+        }
+
+        classificationLoading.style.display = 'none';
+        classificationCombobox.style.display = 'block';
+
+        if (classificationsFetchFailed) {
+          classificationSection.style.display = 'block';
+          classificationCombobox.style.display = 'none';
+          classificationError.style.display = 'block';
+          classificationError.textContent = 'Could not load classifications. Enter values manually.';
+          return;
+        }
+
+        var open = getOpenClassifications(selectedCountry.name);
+        if (open.length === 0) {
+          classificationSection.style.display = 'none';
+          return;
+        }
+
+        classificationSection.style.display = 'block';
+      }
+
+      // ── Classification combobox handlers ──
+      classificationSearchInput.addEventListener('focus', function () {
+        this.select();
+        openClassificationList();
       });
+
+      classificationSearchInput.addEventListener('input', function () {
+        openClassificationList();
+      });
+
+      classificationSearchInput.addEventListener('blur', function () {
+        if (selectedClassification) {
+          this.value = classificationLabel(selectedClassification);
+        } else {
+          this.value = '';
+        }
+        closeClassificationList();
+      });
+
+      classificationSearchInput.addEventListener('keydown', function (e) {
+        var options = classificationListbox.querySelectorAll('.classification-option, .classification-option-manual');
+        if (!options.length) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          classificationHighlightIndex = Math.min(classificationHighlightIndex + 1, options.length - 1);
+          updateClassificationHighlight(options);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          classificationHighlightIndex = Math.max(classificationHighlightIndex - 1, 0);
+          updateClassificationHighlight(options);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (classificationHighlightIndex >= 0 && options[classificationHighlightIndex]) {
+            var el = options[classificationHighlightIndex];
+            if (el.classList.contains('classification-option-manual')) {
+              selectClassification(null);
+            } else {
+              var idx = parseInt(el.getAttribute('data-index'), 10);
+              if (currentClassificationOptions[idx]) {
+                selectClassification(currentClassificationOptions[idx].classification);
+              }
+            }
+            closeClassificationList();
+          }
+        } else if (e.key === 'Escape') {
+          closeClassificationList();
+          this.blur();
+        }
+      });
+
+      function updateClassificationHighlight(options) {
+        options.forEach(function (opt, i) {
+          opt.classList.toggle('highlighted', i === classificationHighlightIndex);
+        });
+        if (classificationHighlightIndex >= 0 && options[classificationHighlightIndex]) {
+          options[classificationHighlightIndex].scrollIntoView({ block: 'nearest' });
+        }
+      }
 
       // ── Hide affected badge on manual edit ──
       affectedInput.addEventListener('input', function () {
