@@ -1771,7 +1771,7 @@
           updateTargetHint();
         }
 
-        // Auto-populate stance (only orange/red)
+        // Auto-populate stance from classification
         var stance = classification.stance ? classification.stance.toLowerCase() : '';
         if (stance === 'orange' || stance === 'red') {
           selectedStance = stance;
@@ -1784,6 +1784,14 @@
           stanceHint.innerHTML = '<strong>' + stance.charAt(0).toUpperCase() + stance.slice(1) + '</strong> — indicative ceiling <strong>' + ceilingStr + '</strong> <span class="stance-auto-badge">Auto</span>';
           stanceNotEligible.style.display = 'none';
           stanceAutoBadge.style.display = 'inline-block';
+        } else {
+          // Yellow/White — not CRF eligible
+          selectedStance = null;
+          stanceManuallyOverridden = false;
+          stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
+          stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
+          stanceNotEligible.style.display = 'block';
+          stanceNotEligible.innerHTML = 'This classification is <strong>' + (stance.charAt(0).toUpperCase() + stance.slice(1) || 'unknown') + '</strong>, which does not typically qualify for CRF allocation. You can override by selecting a stance above.';
         }
 
         calculate();
