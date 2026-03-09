@@ -1694,8 +1694,10 @@
 
         matches.forEach(function (c, idx) {
           var dateStr = c.date ? IRCShared.formatDate(c.date) : 'No date';
+          var code = c.classificationId || c.codeNumber || '';
+          var type = c.type ? c.type.charAt(0).toUpperCase() + c.type.slice(1) : 'Unknown';
           var stanceLabel = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : '?';
-          var sevLabel = c.severity != null ? 'Sev ' + c.severity : '';
+          var sevLabel = c.severity != null ? c.severity : '';
           var li = document.createElement('li');
           li.className = 'classification-option';
           if (selectedClassification && (selectedClassification.id || selectedClassification.classificationId) === (c.id || c.classificationId)) {
@@ -1703,7 +1705,7 @@
           }
           li.setAttribute('role', 'option');
           li.setAttribute('data-index', String(idx));
-          li.innerHTML = '<span class="classification-option-date">' + dateStr + '</span> — <span class="classification-option-name">' + (c.emergencyName || 'Unnamed') + '</span> <span class="classification-option-detail">(' + stanceLabel + (sevLabel ? ', ' + sevLabel : '') + ')</span>';
+          li.innerHTML = '<span class="classification-option-date">' + dateStr + '</span>' + (code ? ' · <strong>' + code + '</strong>' : '') + ' · ' + type + '<br><span class="classification-option-detail">' + stanceLabel + (sevLabel ? ' ' + sevLabel : '') + '</span>';
           li.addEventListener('mousedown', function (e) {
             e.preventDefault();
             selectClassification(c);
