@@ -1600,7 +1600,7 @@
         var ceiling = selectedStance ? STANCE_CEILINGS[selectedStance] : 2000000;
         var ceilingStr = '$' + (ceiling / 1000000) + 'M';
         if (crfAmount > ceiling) {
-          ceilingWarning.textContent = 'This allocation (' + formatCurrency(crfAmount) + ') exceeds the indicative ' + ceilingStr + ' ceiling for ' + (selectedStance ? selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) : '') + ' emergencies.';
+          ceilingWarning.innerHTML = 'This exceeds the indicative ' + ceilingStr + ' ceiling for ' + (selectedStance ? selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) : '') + ' emergencies. Typically the maximum allocation would be <strong>' + formatCurrency(ceiling) + '</strong>.';
           ceilingWarning.style.display = 'block';
         } else {
           ceilingWarning.style.display = 'none';
