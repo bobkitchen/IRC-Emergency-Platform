@@ -136,8 +136,13 @@
       margin-bottom: 32px;
     }
 
-    /* ── Country selector ── */
-    .country-select {
+    /* ── Country selector (searchable combobox) ── */
+    .country-combobox {
+      position: relative;
+      width: 100%;
+    }
+
+    .country-search {
       width: 100%;
       font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.125rem;
@@ -147,23 +152,68 @@
       border: 2px solid var(--mid-gray);
       border-radius: 8px;
       padding: 14px 20px;
+      padding-right: 44px;
       transition: border-color 0.15s ease;
-      cursor: pointer;
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 16px center;
-      padding-right: 44px;
     }
 
-    .country-select:focus {
+    .country-search:focus {
       outline: none;
       border-color: var(--irc-yellow);
       background-color: var(--white);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
+    }
+
+    .country-search::placeholder {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .country-listbox {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 280px;
+      overflow-y: auto;
+      background: var(--white);
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
+      z-index: 50;
+      list-style: none;
+    }
+
+    .country-listbox.open {
+      display: block;
+    }
+
+    .country-option {
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--black);
+      cursor: pointer;
+      transition: background 0.08s ease;
+    }
+
+    .country-option:hover,
+    .country-option.highlighted {
+      background: var(--irc-yellow-lightest);
+    }
+
+    .country-option.selected {
+      background: var(--irc-yellow);
+      font-weight: 700;
+    }
+
+    .country-option-empty {
+      padding: 16px 20px;
+      font-size: 0.875rem;
+      color: var(--muted);
+      font-style: italic;
     }
 
     .country-meta {
@@ -890,9 +940,20 @@
     <!-- Country selector -->
     <div class="calc-section">
       <div class="section-label">Emergency Country</div>
-      <select class="country-select" id="country-select">
-        <option value="">Select a country…</option>
-      </select>
+      <div class="country-combobox" id="country-combobox">
+        <input
+          type="text"
+          class="country-search"
+          id="country-search"
+          placeholder="Search for a country…"
+          autocomplete="off"
+          role="combobox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+          aria-controls="country-listbox"
+        />
+        <ul class="country-listbox" id="country-listbox" role="listbox"></ul>
+      </div>
       <div class="country-meta" id="country-meta"></div>
     </div>
 
@@ -1095,7 +1156,8 @@
       var COUNTRIES = IRCShared.COUNTRIES;
 
       // ── DOM refs ──
-      var countrySelect = document.getElementById('country-select');
+      var countrySearchInput = document.getElementById('country-search');
+      var countryListbox = document.getElementById('country-listbox');
       var countryMeta = document.getElementById('country-meta');
       var affectedInput = document.getElementById('affected-pop');
       var targetInput = document.getElementById('target-pop');
@@ -1138,14 +1200,127 @@
       var classificationsFetchFailed = false;
       var selectedClassification = null;
 
-      // ── Populate country dropdown ──
+      // ── Populate country list ──
       COUNTRIES.sort(function (a, b) { return a[0].localeCompare(b[0]); });
-      COUNTRIES.forEach(function (c) {
-        var opt = document.createElement('option');
-        opt.value = c[0];
-        opt.textContent = c[0];
-        countrySelect.appendChild(opt);
+      var highlightedIndex = -1;
+
+      function renderCountryList(filter) {
+        countryListbox.innerHTML = '';
+        highlightedIndex = -1;
+        var query = (filter || '').toLowerCase();
+        var matches = COUNTRIES.filter(function (c) {
+          return !query || c[0].toLowerCase().indexOf(query) !== -1;
+        });
+        if (matches.length === 0) {
+          var empty = document.createElement('li');
+          empty.className = 'country-option-empty';
+          empty.textContent = 'No countries match "' + filter + '"';
+          countryListbox.appendChild(empty);
+          return;
+        }
+        matches.forEach(function (c) {
+          var li = document.createElement('li');
+          li.className = 'country-option';
+          if (selectedCountry && selectedCountry.name === c[0]) li.className += ' selected';
+          li.setAttribute('role', 'option');
+          li.setAttribute('data-country', c[0]);
+          li.textContent = c[0];
+          li.addEventListener('mousedown', function (e) {
+            e.preventDefault(); // prevent blur before click registers
+            selectCountry(c[0]);
+            closeCountryList();
+          });
+          countryListbox.appendChild(li);
+        });
+      }
+
+      function openCountryList() {
+        renderCountryList(countrySearchInput.value);
+        countryListbox.classList.add('open');
+        countrySearchInput.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeCountryList() {
+        countryListbox.classList.remove('open');
+        countrySearchInput.setAttribute('aria-expanded', 'false');
+        highlightedIndex = -1;
+      }
+
+      function selectCountry(name) {
+        selectedCountry = null;
+        if (name) {
+          for (var i = 0; i < COUNTRIES.length; i++) {
+            if (COUNTRIES[i][0] === name) {
+              selectedCountry = { name: COUNTRIES[i][0], pop: COUNTRIES[i][1], pv: COUNTRIES[i][2], rob: COUNTRIES[i][3] };
+              break;
+            }
+          }
+        }
+        countrySearchInput.value = selectedCountry ? selectedCountry.name : '';
+        if (selectedCountry) {
+          countryMeta.innerHTML = 'Population: <span>' + formatNum(selectedCountry.pop) + '</span> · Pre-crisis vulnerability: <span>' + selectedCountry.pv + '</span> · Robustness: <span>' + selectedCountry.rob + '</span>';
+        } else {
+          countryMeta.innerHTML = '';
+        }
+        stanceManuallyOverridden = false;
+        affectedAutoBadge.style.display = 'none';
+        stanceAutoBadge.style.display = 'none';
+        updateAutoStance();
+        updateClassificationDropdown();
+        calculate();
+      }
+
+      countrySearchInput.addEventListener('focus', function () {
+        this.select();
+        openCountryList();
       });
+
+      countrySearchInput.addEventListener('input', function () {
+        openCountryList();
+      });
+
+      countrySearchInput.addEventListener('blur', function () {
+        // Restore selected country name if user didn't pick a new one
+        if (selectedCountry) {
+          this.value = selectedCountry.name;
+        } else {
+          this.value = '';
+        }
+        closeCountryList();
+      });
+
+      countrySearchInput.addEventListener('keydown', function (e) {
+        var options = countryListbox.querySelectorAll('.country-option');
+        if (!options.length) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          highlightedIndex = Math.min(highlightedIndex + 1, options.length - 1);
+          updateHighlight(options);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          highlightedIndex = Math.max(highlightedIndex - 1, 0);
+          updateHighlight(options);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (highlightedIndex >= 0 && options[highlightedIndex]) {
+            selectCountry(options[highlightedIndex].getAttribute('data-country'));
+            closeCountryList();
+          }
+        } else if (e.key === 'Escape') {
+          closeCountryList();
+          this.blur();
+        }
+      });
+
+      function updateHighlight(options) {
+        options.forEach(function (opt, i) {
+          opt.classList.toggle('highlighted', i === highlightedIndex);
+        });
+        if (highlightedIndex >= 0 && options[highlightedIndex]) {
+          options[highlightedIndex].scrollIntoView({ block: 'nearest' });
+        }
+      }
 
       // ── Helpers ──
       function formatNum(n) { return n.toLocaleString('en-US'); }
@@ -1204,30 +1379,7 @@
         return num;
       }
 
-      // ── Country selection ──
-      countrySelect.addEventListener('change', function () {
-        var name = this.value;
-        selectedCountry = null;
-        if (name) {
-          for (var i = 0; i < COUNTRIES.length; i++) {
-            if (COUNTRIES[i][0] === name) {
-              selectedCountry = { name: COUNTRIES[i][0], pop: COUNTRIES[i][1], pv: COUNTRIES[i][2], rob: COUNTRIES[i][3] };
-              break;
-            }
-          }
-        }
-        if (selectedCountry) {
-          countryMeta.innerHTML = 'Population: <span>' + formatNum(selectedCountry.pop) + '</span> · Pre-crisis vulnerability: <span>' + selectedCountry.pv + '</span> · Robustness: <span>' + selectedCountry.rob + '</span>';
-        } else {
-          countryMeta.innerHTML = '';
-        }
-        stanceManuallyOverridden = false;
-        affectedAutoBadge.style.display = 'none';
-        stanceAutoBadge.style.display = 'none';
-        updateAutoStance();
-        updateClassificationDropdown();
-        calculate();
-      });
+      // (Country selection is handled by selectCountry() above)
 
       // ── Affected population ──
       affectedInput.addEventListener('input', function () {
