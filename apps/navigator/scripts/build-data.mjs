@@ -969,3 +969,18 @@ function build() {
 }
 
 build();
+
+// Copy search-chunks.json and resource-index.json to public/ so they're
+// served as static assets at known URLs (used by Ask Albert across all sites)
+const PUBLIC_DIR = path.join(APP_DIR, 'public');
+fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+
+const filesToCopy = ['search-chunks.json', 'resource-index.json'];
+for (const file of filesToCopy) {
+  const src = path.join(OUT_DIR, file);
+  const dest = path.join(PUBLIC_DIR, file);
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, dest);
+    console.log(`📋 Copied ${file} → public/`);
+  }
+}

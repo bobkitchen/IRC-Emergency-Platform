@@ -37,7 +37,8 @@ export function getSiteConfig() {
       description: 'Crisis Response Fund allocation calculator',
       url: env === 'github' ? '/crf-calculator/' : 'allocation-calculator.html',
       pages: [
-        {id: 'calculator', url: 'allocation-calculator.html', label: 'Calculator'}
+        {id: 'calculator', url: 'allocation-calculator.html', label: 'Calculator'},
+        {id: 'ask-albert', url: 'ask-albert.html', label: 'Ask Albert'}
       ]
     },
     navigator: {

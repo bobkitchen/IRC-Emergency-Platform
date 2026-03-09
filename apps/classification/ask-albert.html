@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ask Albert - IRC Emergency Classification System</title>
+  <title>Ask Albert — CRF Calculator</title>
+  <link rel="stylesheet" href="design-tokens.css">
   <link rel="stylesheet" href="styles.css">
   <style>
     .albert-page {
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 64px); /* subtract header height */
+      height: calc(100vh - 64px);
       overflow: hidden;
       background: var(--white);
     }
@@ -23,7 +24,7 @@
       margin: 0 auto;
       padding: 0 24px;
       overflow-y: auto;
-      min-height: 0; /* allow flex child to shrink */
+      min-height: 0;
     }
 
     .albert-welcome {
@@ -36,9 +37,7 @@
       padding: 32px 20px 16px;
     }
 
-    .albert-welcome.hidden {
-      display: none;
-    }
+    .albert-welcome.hidden { display: none; }
 
     .albert-avatar-large {
       width: 64px;
@@ -53,11 +52,7 @@
       overflow: hidden;
     }
 
-    .albert-avatar-large img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .albert-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
 
     .albert-welcome h1 {
       font-size: 1.5rem;
@@ -101,14 +96,8 @@
       transition: all 0.15s ease;
     }
 
-    .example-chip:hover {
-      background: var(--light-gray);
-      border-color: var(--gray-d9);
-    }
-
-    .example-chip:active {
-      transform: scale(0.98);
-    }
+    .example-chip:hover { background: var(--light-gray); border-color: #d9d9d9; }
+    .example-chip:active { transform: scale(0.98); }
 
     .albert-chat {
       flex: 1;
@@ -119,9 +108,7 @@
       gap: 16px;
     }
 
-    .albert-chat.empty {
-      display: none;
-    }
+    .albert-chat.empty { display: none; }
 
     .message {
       display: flex;
@@ -130,23 +117,12 @@
     }
 
     @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .message.user {
-      justify-content: flex-end;
-    }
-
-    .message.albert {
-      justify-content: flex-start;
-    }
+    .message.user { justify-content: flex-end; }
+    .message.albert { justify-content: flex-start; }
 
     .message-avatar {
       width: 32px;
@@ -161,11 +137,7 @@
       overflow: hidden;
     }
 
-    .message-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .message-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .message-bubble {
       max-width: 80%;
@@ -180,7 +152,6 @@
     .message.user .message-bubble {
       background: var(--black);
       color: var(--white);
-      max-width: 80%;
       border-radius: 12px;
     }
 
@@ -191,140 +162,29 @@
       border-radius: 12px;
     }
 
-    .message-content {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .markdown-content { color: var(--black); font-family: 'DM Sans', sans-serif; }
+    .markdown-content h2, .markdown-content h3, .markdown-content h4 { margin: 16px 0 8px 0; font-weight: 600; }
+    .markdown-content p { margin: 8px 0; }
+    .markdown-content ul, .markdown-content ol { margin: 8px 0; padding-left: 24px; }
+    .markdown-content li { margin: 4px 0; }
+    .markdown-content strong { font-weight: 600; }
+    .markdown-content code { background: var(--light-gray); padding: 2px 6px; border-radius: 4px; font-family: 'Monaco', monospace; font-size: 13px; }
+    .markdown-content a { color: #2196F3; text-decoration: none; }
+    .markdown-content a:hover { text-decoration: underline; }
 
-    .chart-container {
-      background: var(--white);
-      border: 1px solid var(--gray-e9);
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 8px;
-    }
-
-    .chart-wrapper {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      margin-bottom: 8px;
-    }
-
-    .chart-toolbar {
-      display: flex;
-      justify-content: flex-end;
-      padding: 0 0 8px;
-    }
-
-    .btn-download-chart {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 5px 10px;
-      border: 1px solid var(--gray-e9);
-      border-radius: 6px;
-      background: var(--white);
-      color: var(--dark-gray);
-      font-size: 0.75rem;
-      font-weight: 700;
-      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-download-chart:hover {
-      background: var(--light-gray);
-      border-color: var(--gray-d9);
-    }
-
-    .ai-summary {
-      border-left: 4px solid var(--irc-yellow);
-      background: var(--light-gray);
-      padding: 12px 16px;
-      border-radius: 0 8px 8px 0;
-      font-size: 0.8125rem;
-      line-height: 1.5;
-      color: var(--dark-gray);
-      font-weight: 400;
-    }
-
-    .markdown-content {
-      color: var(--black);
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .markdown-content h2,
-    .markdown-content h3,
-    .markdown-content h4 {
-      margin: 16px 0 8px 0;
-      font-weight: 600;
-    }
-
-    .markdown-content p {
-      margin: 8px 0;
-    }
-
-    .markdown-content ul,
-    .markdown-content ol {
-      margin: 8px 0;
-      padding-left: 24px;
-    }
-
-    .markdown-content li {
-      margin: 4px 0;
-    }
-
-    .markdown-content strong {
-      font-weight: 600;
-    }
-
-    .markdown-content code {
-      background: var(--light-gray);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: 'Monaco', monospace;
-      font-size: 13px;
-    }
-
-    .loading-indicator {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
+    .loading-indicator { display: flex; gap: 6px; align-items: center; }
 
     .loading-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--dark-gray);
-      animation: bounce 1.4s infinite;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--dark-gray); animation: bounce 1.4s infinite;
     }
-
-    .loading-dot:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .loading-dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .loading-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
+    .loading-dot:nth-child(1) { animation-delay: 0s; }
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes bounce {
-      0%, 80%, 100% {
-        opacity: 0.3;
-        transform: translateY(0);
-      }
-      40% {
-        opacity: 1;
-        transform: translateY(-8px);
-      }
+      0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-8px); }
     }
 
     .albert-input-area {
@@ -338,272 +198,87 @@
       box-sizing: border-box;
     }
 
-    .api-key-setup {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    .api-key-setup { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
 
-    .api-key-input-wrapper {
-      display: flex;
-      gap: 8px;
-    }
+    .api-key-input-wrapper { display: flex; gap: 8px; }
 
     .api-key-input {
-      flex: 1;
-      border: 1px solid var(--gray-e9);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      background: var(--white);
+      flex: 1; border: 1px solid var(--gray-e9); border-radius: 8px;
+      padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--white);
     }
+    .api-key-input::placeholder { color: var(--muted); }
+    .api-key-input:focus { outline: none; border-color: var(--irc-yellow); box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1); }
 
-    .api-key-input::placeholder {
-      color: var(--muted);
-    }
+    .btn { padding: 10px 16px; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; }
+    .btn-primary { background: var(--irc-yellow); color: var(--black); }
+    .btn-primary:hover { background: #f4c700; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-secondary { background: var(--light-gray); color: var(--black); border: 1px solid var(--gray-e9); }
+    .btn-secondary:hover { background: var(--gray-e9); }
 
-    .api-key-input:focus {
-      outline: none;
-      border-color: var(--irc-yellow);
-      box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
-    }
+    .api-key-help { font-size: 13px; color: var(--muted); line-height: 1.4; }
+    .api-key-help a { color: var(--irc-yellow); text-decoration: none; }
+    .api-key-help a:hover { text-decoration: underline; }
 
-    .btn {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-primary {
-      background: var(--irc-yellow);
-      color: var(--black);
-    }
-
-    .btn-primary:hover {
-      background: #f4c700;
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-    }
-
-    .btn-secondary {
-      background: var(--light-gray);
-      color: var(--black);
-      border: 1px solid var(--gray-e9);
-    }
-
-    .btn-secondary:hover {
-      background: var(--gray-e9);
-    }
-
-    .api-key-help {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .api-key-help a {
-      color: var(--irc-yellow);
-      text-decoration: none;
-    }
-
-    .api-key-help a:hover {
-      text-decoration: underline;
-    }
-
-    .input-form {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    .input-form-group {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+    .input-form { display: flex; gap: 8px; align-items: flex-end; max-width: 960px; margin: 0 auto; }
+    .input-form-group { flex: 1; display: flex; flex-direction: column; }
 
     .input-textarea {
-      border: 1.5px solid var(--gray-e9);
-      border-radius: 8px;
-      padding: 12px 14px;
+      border: 1.5px solid var(--gray-e9); border-radius: 8px; padding: 12px 14px;
       font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 0.9375rem;
-      font-weight: 400;
-      resize: none;
-      min-height: 48px;
-      max-height: 160px;
-      background: var(--white);
-      color: var(--black);
-      line-height: 1.4;
-      overflow-y: auto;
-      box-sizing: border-box;
-      width: 100%;
+      font-size: 0.9375rem; font-weight: 400; resize: none;
+      min-height: 48px; max-height: 160px; background: var(--white); color: var(--black);
+      line-height: 1.4; overflow-y: auto; box-sizing: border-box; width: 100%;
     }
-
-    .input-textarea::placeholder {
-      color: var(--muted);
-    }
-
-    .input-textarea:focus {
-      outline: none;
-      border-color: var(--irc-yellow);
-      box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
-    }
+    .input-textarea::placeholder { color: var(--muted); }
+    .input-textarea:focus { outline: none; border-color: var(--irc-yellow); box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1); }
 
     .btn-send {
-      padding: 12px 18px;
-      min-width: 48px;
-      height: 48px;
-      background: var(--irc-yellow);
-      color: var(--black);
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 1.125rem;
-      cursor: pointer;
-      transition: background 0.15s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      align-self: flex-end;
+      padding: 12px 18px; min-width: 48px; height: 48px;
+      background: var(--irc-yellow); color: var(--black); border: none; border-radius: 8px;
+      font-weight: 700; font-size: 1.125rem; cursor: pointer;
+      transition: background 0.15s ease; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; align-self: flex-end;
     }
-
-    .btn-send:hover {
-      background: #f4c700;
-    }
-
-    .btn-send:active {
-      transform: scale(0.95);
-    }
+    .btn-send:hover { background: #f4c700; }
+    .btn-send:active { transform: scale(0.95); }
+    .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-settings {
-      padding: 12px;
-      background: var(--light-gray);
-      border: 1.5px solid var(--gray-e9);
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.15s ease;
-      flex-shrink: 0;
-      height: 48px;
-      width: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      align-self: flex-end;
+      padding: 12px; background: var(--light-gray); border: 1.5px solid var(--gray-e9);
+      border-radius: 8px; cursor: pointer; font-size: 16px; transition: background 0.15s ease;
+      flex-shrink: 0; height: 48px; width: 48px; display: flex; align-items: center;
+      justify-content: center; align-self: flex-end;
     }
-
-    .btn-settings:hover {
-      background: var(--gray-e9);
-    }
+    .btn-settings:hover { background: var(--gray-e9); }
 
     .settings-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;
     }
+    .settings-modal.visible { display: flex; }
+    .settings-modal-content { background: var(--white); border-radius: 12px; padding: 24px; max-width: 400px; width: 90%; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
+    .settings-modal h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 600; }
+    .settings-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 13px; font-weight: 500; color: var(--dark-gray); }
+    .form-group input, .form-group select { border: 1px solid var(--gray-e9); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--white); color: var(--black); }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--irc-yellow); box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1); }
+    .modal-buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
 
-    .settings-modal.visible {
-      display: flex;
-    }
+    .hidden { display: none; }
 
-    .settings-modal-content {
-      background: var(--white);
-      border-radius: 12px;
-      padding: 24px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    .rag-status {
+      font-size: 12px; color: var(--muted); text-align: center; padding: 4px 0;
     }
+    .rag-status.loading { color: #2196F3; }
+    .rag-status.error { color: var(--warning); }
+    .rag-status.ready { color: #4CAF50; }
 
-    .settings-modal h2 {
-      margin: 0 0 16px 0;
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .settings-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group label {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--dark-gray);
-    }
-
-    .form-group input,
-    .form-group select {
-      border: 1px solid var(--gray-e9);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      background: var(--white);
-      color: var(--black);
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--irc-yellow);
-      box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 16px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .albert-chat::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .albert-chat::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .albert-chat::-webkit-scrollbar-thumb {
-      background: var(--gray-e9);
-      border-radius: 3px;
-    }
-
-    .albert-chat::-webkit-scrollbar-thumb:hover {
-      background: var(--gray-d9);
-    }
+    .albert-chat::-webkit-scrollbar { width: 6px; }
+    .albert-chat::-webkit-scrollbar-track { background: transparent; }
+    .albert-chat::-webkit-scrollbar-thumb { background: var(--gray-e9); border-radius: 3px; }
+    .albert-chat::-webkit-scrollbar-thumb:hover { background: #d9d9d9; }
   </style>
 </head>
 <body>
@@ -613,11 +288,12 @@
     <div class="albert-container">
       <div id="albert-welcome" class="albert-welcome">
         <div class="albert-avatar-large">
-          <img src="albert.png" alt="Albert avatar" />
+          <img src="albert.png" alt="Albert avatar" onerror="this.parentElement.textContent='🤖'" />
         </div>
         <h1>Ask Albert</h1>
-        <p>Your intelligent assistant for the IRC Emergency Classification System. Ask about classification data trends or emergency response processes.</p>
+        <p id="welcome-text"></p>
         <div class="example-chips" id="example-chips"></div>
+        <div id="rag-status" class="rag-status loading">Loading knowledge base...</div>
       </div>
 
       <div id="albert-chat" class="albert-chat empty"></div>
@@ -628,13 +304,7 @@
         <div>
           <label for="api-key-input" style="font-size: 13px; font-weight: 500; color: var(--dark-gray); display: block; margin-bottom: 6px;">OpenRouter API Key</label>
           <div class="api-key-input-wrapper">
-            <input
-              type="password"
-              id="api-key-input"
-              class="api-key-input"
-              placeholder="sk-or-v1-..."
-              autocomplete="off"
-            >
+            <input type="password" id="api-key-input" class="api-key-input" placeholder="sk-or-v1-..." autocomplete="off">
             <button id="api-key-save-btn" class="btn btn-primary">Save</button>
           </div>
           <div class="api-key-help">
@@ -645,15 +315,10 @@
 
       <div id="chat-form" class="input-form hidden">
         <div class="input-form-group">
-          <textarea
-            id="message-input"
-            class="input-textarea"
-            placeholder="Ask about classification data, trends, or emergency response processes..."
-            rows="1"
-          ></textarea>
+          <textarea id="message-input" class="input-textarea" placeholder="Ask about emergency response, CRF funding, classifications..." rows="1"></textarea>
         </div>
-        <button id="settings-btn" class="btn-settings">⚙️</button>
-        <button id="send-btn" class="btn-send">→</button>
+        <button id="settings-btn" class="btn-settings" aria-label="Settings">&#9881;</button>
+        <button id="send-btn" class="btn-send" aria-label="Send">&rarr;</button>
       </div>
     </div>
   </main>
@@ -685,1613 +350,575 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
   <script src="irc-shared.iife.js"></script>
-  <script src="supabase.js"></script>
-  <script src="shared.js"></script>
 
   <script>
     // ============================================================================
-    // STATE MANAGEMENT
+    // SITE CONFIGURATION — Change this per-site copy
     // ============================================================================
-    const albertState = {
+    var SITE_CONFIG = {
+      site: 'classification',
+      headerPage: 'ask-albert',
+      headerSite: 'classification',
+      title: 'Ask Albert \u2014 Emergency Classification',
+      welcome: 'I can help with classification data, emergency response processes, guidelines, and response tasks across all sectors.',
+      examples: [
+        'What triggers a reclassification?',
+        'What are the 7 response phases?',
+        'What tasks happen in the R4 planning phase?',
+        'How does the complex emergency rule work?'
+      ]
+    };
+
+    // ============================================================================
+    // NAVIGATOR RAG DATA URL
+    // ============================================================================
+    var NAVIGATOR_BASE = (function() {
+      var h = window.location.hostname;
+      if (h === 'bobkitchen.github.io') return '/emergency-response-navigator/';
+      if (h === 'localhost' || h === '127.0.0.1') return '/emergency-response-navigator/';
+      return 'https://bobkitchen.github.io/emergency-response-navigator/';
+    })();
+
+    // ============================================================================
+    // STATE
+    // ============================================================================
+    var albertState = {
       apiKey: null,
       model: 'google/gemini-2.5-flash',
       messages: [],
       isStreaming: false,
-      charts: {},
-      classifications: []
+      classifications: [],
+      ragChunks: null,
+      ragResources: null,
+      ragReady: false
     };
+
+    // ============================================================================
+    // RAG ENGINE — Lightweight keyword search (no Orama dependency)
+    // ============================================================================
+    function loadRAGData() {
+      var statusEl = document.getElementById('rag-status');
+
+      var chunksPromise = fetch(NAVIGATOR_BASE + 'search-chunks.json')
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(data) { albertState.ragChunks = data; })
+        .catch(function(e) { console.warn('Failed to load search-chunks.json:', e); });
+
+      var resourcesPromise = fetch(NAVIGATOR_BASE + 'resource-index.json')
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(data) { albertState.ragResources = data; })
+        .catch(function(e) { console.warn('Failed to load resource-index.json:', e); });
+
+      Promise.all([chunksPromise, resourcesPromise]).then(function() {
+        albertState.ragReady = !!(albertState.ragChunks || albertState.ragResources);
+        if (statusEl) {
+          if (albertState.ragChunks && albertState.ragResources) {
+            statusEl.textContent = 'Knowledge base loaded (' + albertState.ragChunks.length + ' chunks, ' + albertState.ragResources.length + ' resources)';
+            statusEl.className = 'rag-status ready';
+          } else if (albertState.ragChunks || albertState.ragResources) {
+            statusEl.textContent = 'Knowledge base partially loaded';
+            statusEl.className = 'rag-status ready';
+          } else {
+            statusEl.textContent = 'Knowledge base unavailable \u2014 Albert will answer from built-in knowledge';
+            statusEl.className = 'rag-status error';
+          }
+          setTimeout(function() { statusEl.style.display = 'none'; }, 5000);
+        }
+      });
+    }
+
+    function searchRAG(query, limit) {
+      limit = limit || 8;
+      if (!albertState.ragChunks) return [];
+
+      var terms = query.toLowerCase().split(/\s+/).filter(function(t) { return t.length > 2; });
+      if (terms.length === 0) return [];
+
+      var scored = [];
+      for (var i = 0; i < albertState.ragChunks.length; i++) {
+        var chunk = albertState.ragChunks[i];
+        var text = (chunk.title + ' ' + chunk.content).toLowerCase();
+        var score = 0;
+        for (var t = 0; t < terms.length; t++) {
+          var idx = 0;
+          while ((idx = text.indexOf(terms[t], idx)) !== -1) {
+            score++;
+            idx += terms[t].length;
+          }
+          // Title boost
+          if (chunk.title && chunk.title.toLowerCase().indexOf(terms[t]) !== -1) {
+            score += 3;
+          }
+        }
+        if (score > 0) {
+          scored.push({ chunk: chunk, score: score });
+        }
+      }
+
+      scored.sort(function(a, b) { return b.score - a.score; });
+      return scored.slice(0, limit).map(function(s) { return s.chunk; });
+    }
+
+    function searchResources(query, limit) {
+      limit = limit || 8;
+      if (!albertState.ragResources) return [];
+
+      var terms = query.toLowerCase().split(/\s+/).filter(function(t) { return t.length > 2; });
+      if (terms.length === 0) return [];
+
+      var scored = [];
+      for (var i = 0; i < albertState.ragResources.length; i++) {
+        var res = albertState.ragResources[i];
+        var text = ((res.name || '') + ' ' + (res.sector || '') + ' ' + (res.task || '')).toLowerCase();
+        var score = 0;
+        for (var t = 0; t < terms.length; t++) {
+          if (text.indexOf(terms[t]) !== -1) score++;
+        }
+        if (score > 0) scored.push({ resource: res, score: score });
+      }
+
+      scored.sort(function(a, b) { return b.score - a.score; });
+      return scored.slice(0, limit).map(function(s) { return s.resource; });
+    }
+
+    // ============================================================================
+    // CLASSIFICATION DATA
+    // ============================================================================
+    function loadClassificationsData() {
+      if (window.IRCShared && window.IRCShared.fetchClassifications) {
+        IRCShared.fetchClassifications().then(function(data) {
+          if (data && data.length > 0) albertState.classifications = data;
+        }).catch(function() {});
+      }
+    }
+
+    function buildClassificationSummary() {
+      var cls = albertState.classifications;
+      if (!cls || cls.length === 0) return '';
+
+      var stances = {};
+      var total = cls.length;
+      for (var i = 0; i < total; i++) {
+        var s = (cls[i].stance || 'unknown').toLowerCase();
+        stances[s] = (stances[s] || 0) + 1;
+      }
+
+      var parts = ['LIVE CLASSIFICATION DATA (' + total + ' records):'];
+      var keys = Object.keys(stances).sort(function(a, b) { return stances[b] - stances[a]; });
+      for (var k = 0; k < keys.length; k++) {
+        parts.push('- ' + keys[k] + ': ' + stances[keys[k]]);
+      }
+      return parts.join('\n');
+    }
+
+    // ============================================================================
+    // SYSTEM PROMPT
+    // ============================================================================
+    function buildSystemPrompt(userQuery) {
+      var ragContext = '';
+      if (albertState.ragReady && userQuery) {
+        var chunks = searchRAG(userQuery, 8);
+        if (chunks.length > 0) {
+          ragContext += '\n\n## Relevant Tasks & Guidelines (from IRC Emergency Management Guidelines)\n';
+          for (var i = 0; i < chunks.length; i++) {
+            var c = chunks[i];
+            ragContext += '\n### ' + (c.title || c.id) + ' [' + (c.type || '') + ']\n' + c.content + '\n';
+          }
+        }
+
+        var resources = searchResources(userQuery, 8);
+        if (resources.length > 0) {
+          ragContext += '\n\n## Relevant Resources & Templates\n';
+          for (var r = 0; r < resources.length; r++) {
+            var res = resources[r];
+            ragContext += '- **' + res.name + '** (' + (res.sector || '') + ') \u2014 ' + (res.task || '') + (res.url ? ' [Link](' + res.url + ')' : '') + '\n';
+          }
+        }
+      }
+
+      var classificationContext = buildClassificationSummary();
+
+      var focusPriority = '';
+      if (SITE_CONFIG.site === 'crf') {
+        focusPriority = [
+          '## Your Focus Priority',
+          'You are embedded in the CRF Allocation Calculator. Prioritize questions about:',
+          '- CRF allocation ceilings ($1M Orange, $2M Red), the $47.34 per-client cost',
+          '- CRF request process, response plan requirements (Sections A-G)',
+          '- 14-day deadline for logframe + budget submission',
+          '- 10% scale target, affected population, and allocation methodology',
+          '- Early Action funding ($100K per region earmarked in CRF)',
+          'For detailed classification data charts or trends, suggest the Classification app\'s Ask Albert.'
+        ].join('\n');
+      } else if (SITE_CONFIG.site === 'classification') {
+        focusPriority = [
+          '## Your Focus Priority',
+          'You are embedded in the Emergency Classification System. Prioritize questions about:',
+          '- Classification data, severity ratings, stance lookups',
+          '- Trends across countries, regions, crisis types',
+          '- Reclassification rules and expiration',
+          '- Complex emergency escalation rules (3 Yellows \u2192 Orange, 2 Oranges \u2192 Red)',
+          'For CRF allocation details, suggest the CRF Calculator\'s Ask Albert.'
+        ].join('\n');
+      }
+
+      return 'You are Albert, the IRC Emergency Response AI Assistant. You have deep knowledge of IRC\'s Emergency Management Guidelines, the Classification System, CRF funding processes, and the complete emergency response lifecycle.\n\n' +
+
+      'CORE KNOWLEDGE:\n' +
+      '- Classification stances: White (Outside Mission Scope), Yellow (Monitor & Prepare), Orange (Mobilize), Red (Maximum Response)\n' +
+      '- Severity scale: 0-10. Each classification open 6 weeks (42 days)\n' +
+      '- Complex emergency rules: 3 Yellows \u2192 Orange, 2 Oranges \u2192 Red\n' +
+      '- Response Imperative: respond to all Orange and Red classifications, 10% scale target\n' +
+      '- 7 Response Phases: R1 Emergency Onset, R2 Context Analysis, R3 Strategy Development, R4 Response Planning, R5 Implementation, R6 Learnings, R7 Transition & Handover\n' +
+      '- 13 Functional Sectors: Response Management, Finance, People & Culture, Supply Chain, Safety & Security, Safeguarding, Technical Programs, MEAL, Grants, Partnerships, Integra Launch\n' +
+      '- Emergency Unit Services: classification, escalation, deployment, surge support\n' +
+      '- CRF (Crisis Response Fund): $1M ceiling for Orange, $2M for Red emergencies, $47.34 per-client cost, 14-day deadline for logframe + budget, 10% scale target, Early Action $100K/region\n' +
+      '- CRF Response Plan sections: A (Crisis Context), B (IRC Context), C (Response Strategy), D (10% Scale Target), E (Staffing), F (Partnerships), G (Budget)\n\n' +
+
+      focusPriority + '\n\n' +
+
+      '## Guidelines\n' +
+      '- Be direct and actionable. Use markdown formatting.\n' +
+      '- When referencing specific tasks, cite the task ID (e.g., RMIE-001) and sector.\n' +
+      '- When referencing resources, include links if available.\n' +
+      '- If the user asks about topics outside your focus, still answer helpfully but suggest the more relevant app.\n' +
+      '- Keep responses concise but thorough. Use bullet points and headers for clarity.\n' +
+
+      (ragContext ? '\n\n## CONTEXT FROM IRC KNOWLEDGE BASE\nUse the following retrieved context to inform your answers. Cite specific tasks and resources when relevant.' + ragContext : '') +
+
+      (classificationContext ? '\n\n' + classificationContext : '');
+    }
 
     // ============================================================================
     // CHAT PERSISTENCE
     // ============================================================================
     function saveChatHistory() {
-      // Save messages (excluding chart configs which can't serialize)
       var saveable = albertState.messages.map(function(m) {
-        return {
-          id: m.id,
-          role: m.role,
-          content: m.content,
-          summary: m.summary || null,
-          // Save the raw query spec so we can re-execute on restore
-          querySpec: m.querySpec || null
-        };
+        return { id: m.id, role: m.role, content: m.content };
       });
       try {
-        localStorage.setItem('irc_albert_chat', JSON.stringify(saveable));
-      } catch (e) { /* quota exceeded — silently fail */ }
+        localStorage.setItem('irc_albert_chat_' + SITE_CONFIG.site, JSON.stringify(saveable));
+      } catch (e) {}
     }
 
     function restoreChatHistory() {
       try {
-        var saved = localStorage.getItem('irc_albert_chat');
+        var saved = localStorage.getItem('irc_albert_chat_' + SITE_CONFIG.site);
         if (!saved) return false;
         var messages = JSON.parse(saved);
         if (!messages || messages.length === 0) return false;
 
-        // Hide welcome, show chat
         document.getElementById('albert-welcome').classList.add('hidden');
         var chat = document.getElementById('albert-chat');
         chat.classList.remove('empty');
 
-        var compactData = buildCompactData(albertState.classifications);
-
         for (var i = 0; i < messages.length; i++) {
           var msg = messages[i];
           albertState.messages.push(msg);
-
-          if (msg.role === 'user') {
-            renderMessage(msg.id, 'user', msg.content);
-          } else if (msg.querySpec) {
-            // Re-execute the query spec to rebuild the chart (or text answer)
-            try {
-              if (msg.querySpec.chart && msg.querySpec.chart.type === 'none') {
-                // Text-answer mode — render as markdown text
-                renderMessage(msg.id, 'albert', msg.summary || msg.content);
-              } else {
-                var queryResult = executeQuerySpec(msg.querySpec.query, compactData);
-                var chartConfig = buildChartFromSpec(msg.querySpec.chart, queryResult);
-                chartConfig = postProcessChartConfig(chartConfig);
-                renderMessage(msg.id, 'albert', '', chartConfig, msg.summary);
-              }
-            } catch (e) {
-              // If re-execution fails, show summary as text
-              renderMessage(msg.id, 'albert', msg.summary || msg.content);
-            }
-          } else {
-            renderMessage(msg.id, 'albert', msg.content);
-          }
+          renderMessage(msg.id, msg.role === 'albert' ? 'albert' : 'user', msg.content);
         }
 
         scrollChatToBottom();
         return true;
-      } catch (e) {
-        return false;
-      }
+      } catch (e) { return false; }
     }
 
     // ============================================================================
     // INITIALIZATION
     // ============================================================================
     function init() {
-      if (window.IRC && window.IRC.renderHeader) {
-        const headerMount = document.getElementById('header-mount');
-        headerMount.innerHTML = IRC.renderHeader('ask-albert');
+      // Render header
+      if (window.IRCShared && window.IRCShared.renderHeader) {
+        document.getElementById('header-mount').innerHTML = IRCShared.renderHeader(SITE_CONFIG.headerPage, SITE_CONFIG.headerSite);
+        if (IRCShared.initSiteSwitcher) IRCShared.initSiteSwitcher();
       }
 
-      // Load from Supabase in background
-      IRC.db.migrateFromLocalStorage().then(function() { return IRC.db.load(); });
+      // Set title and welcome text
+      document.title = SITE_CONFIG.title;
+      document.getElementById('welcome-text').textContent = SITE_CONFIG.welcome;
 
-      // Load API key from localStorage
-      const savedKey = localStorage.getItem('irc_openrouter_key');
+      // Load API key
+      var savedKey = localStorage.getItem('irc_openrouter_api_key') || localStorage.getItem('irc_openrouter_key');
       if (savedKey) {
         albertState.apiKey = savedKey;
+        // Normalize to unified key
+        localStorage.setItem('irc_openrouter_api_key', savedKey);
         showChatInterface();
       } else {
         showApiKeySetup();
       }
 
       // Load model preference
-      const savedModel = localStorage.getItem('irc_albert_model');
-      if (savedModel) {
-        albertState.model = savedModel;
-      }
+      var savedModel = localStorage.getItem('irc_albert_model');
+      if (savedModel) albertState.model = savedModel;
 
-      // Attach event listeners
       setupEventListeners();
-
-      // Load classifications data
+      populateExampleChips();
+      loadRAGData();
       loadClassificationsData();
 
-      // Populate example chips
-      populateExampleChips();
-
-      // Restore previous chat if it exists
-      if (savedKey) {
-        restoreChatHistory();
-      }
+      // Restore previous chat
+      if (savedKey) restoreChatHistory();
     }
 
     function showApiKeySetup() {
-      const setupEl = document.getElementById('api-key-setup');
-      const chatFormEl = document.getElementById('chat-form');
-      const welcomeEl = document.getElementById('albert-welcome');
+      document.getElementById('api-key-setup').classList.remove('hidden');
+      document.getElementById('chat-form').classList.add('hidden');
 
-      setupEl.classList.remove('hidden');
-      chatFormEl.classList.add('hidden');
-      welcomeEl.classList.remove('hidden');
+      var saveBtn = document.getElementById('api-key-save-btn');
+      var keyInput = document.getElementById('api-key-input');
 
-      const saveBtn = document.getElementById('api-key-save-btn');
-      const keyInput = document.getElementById('api-key-input');
-
-      saveBtn.addEventListener('click', () => {
-        const key = keyInput.value.trim();
-        if (!key) {
-          alert('Please enter your OpenRouter API key');
-          return;
-        }
+      saveBtn.addEventListener('click', function() {
+        var key = keyInput.value.trim();
+        if (!key) { alert('Please enter your OpenRouter API key'); return; }
         albertState.apiKey = key;
-        localStorage.setItem('irc_openrouter_key', key);
+        localStorage.setItem('irc_openrouter_api_key', key);
         showChatInterface();
       });
 
-      keyInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          saveBtn.click();
-        }
+      keyInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') saveBtn.click();
       });
     }
 
     function showChatInterface() {
-      const setupEl = document.getElementById('api-key-setup');
-      const chatFormEl = document.getElementById('chat-form');
+      document.getElementById('api-key-setup').classList.add('hidden');
+      document.getElementById('chat-form').classList.remove('hidden');
 
-      setupEl.classList.add('hidden');
-      chatFormEl.classList.remove('hidden');
-
-      const messageInput = document.getElementById('message-input');
-      const sendBtn = document.getElementById('send-btn');
-      const settingsBtn = document.getElementById('settings-btn');
-
+      var messageInput = document.getElementById('message-input');
       messageInput.focus();
 
-      sendBtn.addEventListener('click', sendMessage);
-      messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
-        }
+      document.getElementById('send-btn').addEventListener('click', sendMessage);
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
       });
-
       messageInput.addEventListener('input', autoResizeTextarea);
-
-      settingsBtn.addEventListener('click', openSettings);
+      document.getElementById('settings-btn').addEventListener('click', openSettings);
     }
 
     function setupEventListeners() {
-      const modal = document.getElementById('settings-modal');
-      const cancelBtn = document.getElementById('settings-cancel-btn');
-      const saveBtn = document.getElementById('settings-save-btn');
-      const apiKeyField = document.getElementById('api-key-field');
-      const modelField = document.getElementById('model-field');
+      var modal = document.getElementById('settings-modal');
+      document.getElementById('settings-cancel-btn').addEventListener('click', function() { modal.classList.remove('visible'); });
 
-      cancelBtn.addEventListener('click', () => {
-        modal.classList.remove('visible');
-      });
-
-      saveBtn.addEventListener('click', () => {
-        const newKey = apiKeyField.value.trim();
-        const newModel = modelField.value;
-
+      document.getElementById('settings-save-btn').addEventListener('click', function() {
+        var newKey = document.getElementById('api-key-field').value.trim();
+        var newModel = document.getElementById('model-field').value;
         if (newKey) {
           albertState.apiKey = newKey;
-          localStorage.setItem('irc_openrouter_key', newKey);
+          localStorage.setItem('irc_openrouter_api_key', newKey);
         }
-
         if (newModel) {
           albertState.model = newModel;
           localStorage.setItem('irc_albert_model', newModel);
         }
-
         modal.classList.remove('visible');
       });
 
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.remove('visible');
-        }
+      modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('visible'); });
+
+      document.getElementById('clear-chat-btn').addEventListener('click', function() {
+        albertState.messages = [];
+        localStorage.removeItem('irc_albert_chat_' + SITE_CONFIG.site);
+        document.getElementById('albert-chat').innerHTML = '';
+        document.getElementById('albert-chat').classList.add('empty');
+        document.getElementById('albert-welcome').classList.remove('hidden');
+        modal.classList.remove('visible');
       });
-
-      const clearChatBtn = document.getElementById('clear-chat-btn');
-      if (clearChatBtn) {
-        clearChatBtn.addEventListener('click', () => {
-          // Destroy all chart instances
-          for (var key in albertState.charts) {
-            if (albertState.charts[key]) albertState.charts[key].destroy();
-          }
-          albertState.messages = [];
-          albertState.charts = {};
-          localStorage.removeItem('irc_albert_chat');
-
-          // Reset UI
-          document.getElementById('albert-chat').innerHTML = '';
-          document.getElementById('albert-chat').classList.add('empty');
-          document.getElementById('albert-welcome').classList.remove('hidden');
-          modal.classList.remove('visible');
-        });
-      }
     }
 
     function openSettings() {
-      const modal = document.getElementById('settings-modal');
-      const apiKeyField = document.getElementById('api-key-field');
-      const modelField = document.getElementById('model-field');
-
-      apiKeyField.value = albertState.apiKey || '';
-      modelField.value = albertState.model;
-
-      modal.classList.add('visible');
+      document.getElementById('api-key-field').value = albertState.apiKey || '';
+      document.getElementById('model-field').value = albertState.model;
+      document.getElementById('settings-modal').classList.add('visible');
     }
 
     function autoResizeTextarea() {
-      const textarea = document.getElementById('message-input');
+      var textarea = document.getElementById('message-input');
       textarea.style.height = 'auto';
       textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
     }
 
     function populateExampleChips() {
-      const container = document.getElementById('example-chips');
-      const examples = [
-        'How many red classifications this year?',
-        'Show monthly classification trends',
-        'Top 10 countries by classification count',
-        'Compare stances across regions',
-        'What is the average severity of reds?',
-        'What triggers a reclassification?',
-        'What are the 7 response phases?',
-        'Complex emergency rule'
-      ];
+      var container = document.getElementById('example-chips');
+      container.innerHTML = SITE_CONFIG.examples.map(function(text) {
+        return '<button class="example-chip" data-text="' + escapeHtml(text) + '">' + text + '</button>';
+      }).join('');
 
-      container.innerHTML = examples.map(text => `
-        <button class="example-chip" data-text="${escapeHtml(text)}">${text}</button>
-      `).join('');
-
-      container.querySelectorAll('.example-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          const text = chip.getAttribute('data-text');
-          const input = document.getElementById('message-input');
-          input.value = text;
+      container.querySelectorAll('.example-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          var input = document.getElementById('message-input');
+          input.value = chip.getAttribute('data-text');
           input.focus();
           autoResizeTextarea();
         });
       });
     }
 
-    function loadClassificationsData() {
-      if (window.IRC && window.IRC.getClassifications) {
-        albertState.classifications = IRC.getClassifications();
-      }
-    }
-
     function escapeHtml(text) {
-      const div = document.createElement('div');
+      var div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
-    }
-
-    // ============================================================================
-    // QUERY ENGINE FUNCTIONS
-    // ============================================================================
-
-    function buildCompactData(classifications) {
-      var data = [];
-      for (var i = 0; i < classifications.length; i++) {
-        var c = classifications[i];
-        data.push({
-          classificationId: c.classificationId || '',
-          stance: c.stance,
-          type: c.type,
-          severity: c.severity,
-          country: c.country,
-          region: IRC.getGroupedRegion(c.region) || '',
-          date: c.date,
-          expirationDate: c.expirationDate || '',
-          emergencyName: c.emergencyName || '',
-          processingSpeed: c.processingSpeed || '',
-          reclassificationNumber: c.reclassificationNumber || 1
-        });
-      }
-      return data;
-    }
-
-    function buildDataSummary(classifications) {
-      var total = classifications.length;
-      var initials = 0;
-      var reclassifications = 0;
-      var stances = {};
-      var types = {};
-      var countries = {};
-      var regions = {};
-      var classificationIds = {};
-      var severitySum = 0;
-      var severityCount = 0;
-      var minDate = null;
-      var maxDate = null;
-
-      for (var i = 0; i < total; i++) {
-        var c = classifications[i];
-        var reclass = c.reclassificationNumber || 1;
-        if (reclass <= 1) { initials++; } else { reclassifications++; }
-
-        var st = (c.stance || 'unknown').toLowerCase();
-        stances[st] = (stances[st] || 0) + 1;
-
-        var tp = (c.type || 'unknown').toLowerCase();
-        types[tp] = (types[tp] || 0) + 1;
-
-        if (c.country) countries[c.country] = true;
-
-        var rg = IRC.getGroupedRegion(c.region) || 'unknown';
-        regions[rg] = (regions[rg] || 0) + 1;
-
-        if (c.classificationId) classificationIds[c.classificationId] = true;
-
-        if (c.severity) {
-          severitySum += parseFloat(c.severity);
-          severityCount++;
-        }
-
-        if (c.date) {
-          if (!minDate || c.date < minDate) minDate = c.date;
-          if (!maxDate || c.date > maxDate) maxDate = c.date;
-        }
-      }
-
-      var sortedStances = Object.keys(stances).sort(function(a, b) { return stances[b] - stances[a]; });
-      var stanceSummary = sortedStances.map(function(s) { return s + ': ' + stances[s]; }).join(', ');
-
-      var sortedTypes = Object.keys(types).sort(function(a, b) { return types[b] - types[a]; });
-      var typeSummary = sortedTypes.map(function(t) { return t + ': ' + types[t]; }).join(', ');
-
-      var sortedRegions = Object.keys(regions).sort(function(a, b) { return regions[b] - regions[a]; });
-      var regionSummary = sortedRegions.map(function(r) { return r + ': ' + regions[r]; }).join(', ');
-
-      return [
-        'DATA SUMMARY (pre-computed from ' + total + ' records):',
-        '- Total records: ' + total + ' (' + initials + ' initial classifications where reclassificationNumber=1, ' + reclassifications + ' reclassifications where reclassificationNumber≥2)',
-        '- Unique emergencies (distinct classificationId values): ' + Object.keys(classificationIds).length,
-        '- Unique countries: ' + Object.keys(countries).length,
-        '- Date range: ' + (minDate || 'N/A') + ' to ' + (maxDate || 'N/A'),
-        '- Average severity: ' + (severityCount > 0 ? (severitySum / severityCount).toFixed(1) : 'N/A'),
-        '- By stance (all records): ' + stanceSummary,
-        '- By type (all records): ' + typeSummary,
-        '- By region (all records): ' + regionSummary,
-        '',
-        'IMPORTANT: When the user\'s question is ambiguous about whether to count all records or only initials, use this summary to inform your interpretation. If both readings are plausible, count ALL records (the full dataset) and note the distinction in your summary.'
-      ].join('\n');
-    }
-
-    function executeQuerySpec(spec, data) {
-      var rows = data.slice();
-
-      if (spec.filters && spec.filters.length > 0) {
-        for (var f = 0; f < spec.filters.length; f++) {
-          var filter = spec.filters[f];
-          rows = applyFilter(rows, filter);
-        }
-      }
-
-      if (spec.timeUnit && spec.groupBy) {
-        rows = rows.map(function(r) {
-          var copy = {};
-          for (var k in r) copy[k] = r[k];
-          copy['_timeBucket'] = timeBucket(r[spec.groupBy], spec.timeUnit);
-          return copy;
-        });
-      }
-
-      var groupField = spec.timeUnit ? '_timeBucket' : spec.groupBy;
-      var groupField2 = spec.groupBy2 || null;
-
-      if (!groupField) {
-        return { type: 'scalar', value: computeAggregate(rows, spec.aggregate, spec.aggregateField) };
-      }
-
-      var groups = {};
-      for (var i = 0; i < rows.length; i++) {
-        var key = String(rows[i][groupField] || 'Unknown');
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(rows[i]);
-      }
-
-      if (groupField2) {
-        var subKeys = {};
-        for (var gi in groups) {
-          for (var j = 0; j < groups[gi].length; j++) {
-            var sk = String(groups[gi][j][groupField2] || 'Unknown');
-            subKeys[sk] = true;
-          }
-        }
-        var subKeyList = Object.keys(subKeys).sort();
-
-        var result = { type: 'matrix', labels: [], series: {} };
-        for (var s = 0; s < subKeyList.length; s++) {
-          result.series[subKeyList[s]] = [];
-        }
-
-        var groupKeys = Object.keys(groups);
-        groupKeys = sortGroupKeys(groupKeys, groups, spec, groupField2);
-
-        for (var g = 0; g < groupKeys.length; g++) {
-          var gk = groupKeys[g];
-          result.labels.push(gk);
-          var subGroups = {};
-          for (var sg = 0; sg < subKeyList.length; sg++) subGroups[subKeyList[sg]] = [];
-          for (var r = 0; r < groups[gk].length; r++) {
-            var subVal = String(groups[gk][r][groupField2] || 'Unknown');
-            subGroups[subVal].push(groups[gk][r]);
-          }
-          for (var sk2 = 0; sk2 < subKeyList.length; sk2++) {
-            result.series[subKeyList[sk2]].push(computeAggregate(subGroups[subKeyList[sk2]], spec.aggregate, spec.aggregateField));
-          }
-        }
-
-        if (spec.limit && result.labels.length > spec.limit) {
-          result.labels = result.labels.slice(0, spec.limit);
-          for (var sKey in result.series) {
-            result.series[sKey] = result.series[sKey].slice(0, spec.limit);
-          }
-        }
-
-        return result;
-      }
-
-      var entries = [];
-      for (var key2 in groups) {
-        entries.push({
-          label: key2,
-          value: computeAggregate(groups[key2], spec.aggregate, spec.aggregateField),
-          count: groups[key2].length
-        });
-      }
-
-      var sortDir = (spec.sort || 'desc').toLowerCase();
-      if (spec.timeUnit) {
-        entries.sort(function(a, b) { return a.label < b.label ? -1 : a.label > b.label ? 1 : 0; });
-      } else if (sortDir === 'asc') {
-        entries.sort(function(a, b) { return a.value - b.value; });
-      } else if (sortDir === 'alpha') {
-        entries.sort(function(a, b) { return a.label < b.label ? -1 : a.label > b.label ? 1 : 0; });
-      } else {
-        entries.sort(function(a, b) { return b.value - a.value; });
-      }
-
-      if (spec.limit && entries.length > spec.limit) {
-        entries = entries.slice(0, spec.limit);
-      }
-
-      return { type: 'grouped', entries: entries };
-    }
-
-    function applyFilter(rows, filter) {
-      return rows.filter(function(r) {
-        var val = r[filter.field];
-        var target = filter.value;
-
-        if (typeof val === 'string') val = val.toLowerCase();
-        if (typeof target === 'string') target = target.toLowerCase();
-        if (Array.isArray(target)) target = target.map(function(t) { return typeof t === 'string' ? t.toLowerCase() : t; });
-
-        switch (filter.op) {
-          case 'eq': return val == target;
-          case 'neq': return val != target;
-          case 'gt': return parseFloat(val) > parseFloat(target);
-          case 'gte': return parseFloat(val) >= parseFloat(target);
-          case 'lt': return parseFloat(val) < parseFloat(target);
-          case 'lte': return parseFloat(val) <= parseFloat(target);
-          case 'in': return Array.isArray(target) && target.indexOf(val) !== -1;
-          case 'nin': return Array.isArray(target) && target.indexOf(val) === -1;
-          case 'contains': return typeof val === 'string' && val.indexOf(target) !== -1;
-          default: return true;
-        }
-      });
-    }
-
-    function computeAggregate(rows, aggregate, field) {
-      if (!rows || rows.length === 0) return 0;
-      var agg = (aggregate || 'count').toLowerCase();
-
-      if (agg === 'count') return rows.length;
-
-      if (agg === 'countdistinct' || agg === 'count_distinct') {
-        var seen = {};
-        for (var i = 0; i < rows.length; i++) {
-          var v = rows[i][field];
-          if (v !== undefined && v !== null && v !== '') seen[v] = true;
-        }
-        return Object.keys(seen).length;
-      }
-
-      var nums = [];
-      for (var j = 0; j < rows.length; j++) {
-        var n = parseFloat(rows[j][field]);
-        if (!isNaN(n)) nums.push(n);
-      }
-      if (nums.length === 0) return 0;
-
-      if (agg === 'sum') {
-        var s = 0; for (var k = 0; k < nums.length; k++) s += nums[k];
-        return Math.round(s * 100) / 100;
-      }
-      if (agg === 'avg' || agg === 'average') {
-        var sum = 0; for (var m = 0; m < nums.length; m++) sum += nums[m];
-        return Math.round((sum / nums.length) * 100) / 100;
-      }
-      if (agg === 'min') return Math.min.apply(null, nums);
-      if (agg === 'max') return Math.max.apply(null, nums);
-
-      return rows.length;
-    }
-
-    function timeBucket(dateStr, unit) {
-      if (!dateStr) return 'Unknown';
-      var d = new Date(dateStr);
-      if (isNaN(d.getTime())) return 'Unknown';
-
-      var y = d.getFullYear();
-      var m = d.getMonth();
-
-      if (unit === 'year') return String(y);
-      if (unit === 'quarter') return y + '-Q' + (Math.floor(m / 3) + 1);
-      if (unit === 'month') return y + '-' + String(m + 1).padStart(2, '0');
-      if (unit === 'week') {
-        var jan1 = new Date(y, 0, 1);
-        var week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
-        return y + '-W' + String(week).padStart(2, '0');
-      }
-      return dateStr;
-    }
-
-    function sortGroupKeys(groupKeys, groups, spec, groupField2) {
-      var totals = {};
-      for (var i = 0; i < groupKeys.length; i++) {
-        totals[groupKeys[i]] = computeAggregate(groups[groupKeys[i]], spec.aggregate, spec.aggregateField);
-      }
-      var dir = (spec.sort || 'desc').toLowerCase();
-      if (spec.timeUnit) {
-        groupKeys.sort(function(a, b) { return a < b ? -1 : a > b ? 1 : 0; });
-      } else if (dir === 'asc') {
-        groupKeys.sort(function(a, b) { return totals[a] - totals[b]; });
-      } else if (dir === 'alpha') {
-        groupKeys.sort(function(a, b) { return a < b ? -1 : a > b ? 1 : 0; });
-      } else {
-        groupKeys.sort(function(a, b) { return totals[b] - totals[a]; });
-      }
-      return groupKeys;
-    }
-
-    function buildChartFromSpec(chartSpec, queryResult) {
-      var type = chartSpec.type || 'bar';
-      var config = {
-        type: type === 'horizontal_bar' ? 'bar' : type,
-        data: { labels: [], datasets: [] },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            title: { display: true, text: chartSpec.title || 'Chart', font: { size: 16, weight: 'bold' } }
-          }
-        }
-      };
-
-      if (type === 'horizontal_bar' || chartSpec.indexAxis === 'y') {
-        config.options.indexAxis = 'y';
-      }
-
-      var ircBrandColors = ['#2196F3', '#E52911', '#F58220', '#FFC72C', '#4CAF50', '#9C27B0', '#00BCD4', '#795548', '#607D8B', '#E91E63', '#3F51B5', '#009688', '#FF5722', '#CDDC39', '#FF9800', '#673AB7', '#03A9F4', '#8BC34A', '#FFC107', '#F44336'];
-
-      if (queryResult.type === 'scalar') {
-        config.data.labels = ['Total'];
-        config.data.datasets = [{ data: [queryResult.value], backgroundColor: '#2196F3' }];
-      }
-
-      else if (queryResult.type === 'grouped') {
-        var labels = [];
-        var values = [];
-        for (var i = 0; i < queryResult.entries.length; i++) {
-          labels.push(queryResult.entries[i].label);
-          values.push(queryResult.entries[i].value);
-        }
-        config.data.labels = labels;
-
-        var colors = ircBrandColors.slice(0, labels.length);
-        if (chartSpec.colorByStance || isStanceLabels(labels)) {
-          colors = labels.map(function(l) {
-            var lower = l.toLowerCase();
-            if (lower === 'red') return '#E52911';
-            if (lower === 'orange') return '#F58220';
-            if (lower === 'yellow') return '#FFC72C';
-            if (lower === 'white') return '#E9E9E9';
-            return '#2196F3';
-          });
-        }
-
-        config.data.datasets = [{
-          label: chartSpec.datasetLabel || chartSpec.yLabel || 'Count',
-          data: values,
-          backgroundColor: (type === 'pie' || type === 'doughnut') ? colors : colors,
-          borderColor: (type === 'pie' || type === 'doughnut') ? '#ffffff' : colors,
-          borderWidth: (type === 'pie' || type === 'doughnut') ? 2 : 1
-        }];
-
-        if (type === 'pie' || type === 'doughnut') {
-          delete config.options.scales;
-        }
-      }
-
-      else if (queryResult.type === 'matrix') {
-        config.data.labels = queryResult.labels;
-
-        var seriesKeys = Object.keys(queryResult.series);
-        for (var s = 0; s < seriesKeys.length; s++) {
-          var seriesName = seriesKeys[s];
-          var seriesColor = ircBrandColors[s % ircBrandColors.length];
-          var lower = seriesName.toLowerCase();
-          if (lower === 'red') seriesColor = '#E52911';
-          else if (lower === 'orange') seriesColor = '#F58220';
-          else if (lower === 'yellow') seriesColor = '#FFC72C';
-          else if (lower === 'white') seriesColor = '#E9E9E9';
-
-          config.data.datasets.push({
-            label: seriesName,
-            data: queryResult.series[seriesName],
-            backgroundColor: seriesColor,
-            borderColor: seriesColor === '#E9E9E9' ? '#BDBDBD' : seriesColor,
-            borderWidth: 1
-          });
-        }
-
-        if (chartSpec.stacked) {
-          if (!config.options.scales) config.options.scales = {};
-          config.options.scales.x = config.options.scales.x || {};
-          config.options.scales.y = config.options.scales.y || {};
-          config.options.scales.x.stacked = true;
-          config.options.scales.y.stacked = true;
-        }
-      }
-
-      if (chartSpec.xLabel || chartSpec.yLabel) {
-        if (!config.options.scales) config.options.scales = {};
-        if (chartSpec.xLabel) {
-          config.options.scales.x = config.options.scales.x || {};
-          config.options.scales.x.title = { display: true, text: chartSpec.xLabel };
-        }
-        if (chartSpec.yLabel) {
-          config.options.scales.y = config.options.scales.y || {};
-          config.options.scales.y.title = { display: true, text: chartSpec.yLabel };
-        }
-      }
-
-      if (chartSpec.timeAxis) {
-        if (!config.options.scales) config.options.scales = {};
-        config.options.scales.x = config.options.scales.x || {};
-        config.options.scales.x.type = 'category';
-      }
-
-      return config;
-    }
-
-    function isStanceLabels(labels) {
-      var stanceSet = { red: 1, orange: 1, yellow: 1, white: 1 };
-      for (var i = 0; i < labels.length; i++) {
-        if (!stanceSet[labels[i].toLowerCase()]) return false;
-      }
-      return labels.length > 0;
-    }
-
-    var stanceColorMap = {
-      red: '#E52911', orange: '#F58220', yellow: '#FFC72C', white: '#E9E9E9',
-      Red: '#E52911', Orange: '#F58220', Yellow: '#FFC72C', White: '#E9E9E9'
-    };
-
-    function mapStanceColor(colorStr) {
-      if (typeof colorStr !== 'string') return null;
-      var lower = colorStr.toLowerCase().trim();
-      return stanceColorMap[lower] || null;
-    }
-
-    function postProcessChartConfig(config) {
-      if (!config) return config;
-      if (!config.options) config.options = {};
-
-      var isScatterLike = (config.type === 'scatter' || config.type === 'bubble' || config.type === 'line');
-
-      if (config.data && config.data.datasets) {
-        for (var d = 0; d < config.data.datasets.length; d++) {
-          var ds = config.data.datasets[d];
-
-          var colorArrayProps = ['backgroundColor', 'borderColor', 'pointBackgroundColor', 'pointBorderColor'];
-          for (var cp = 0; cp < colorArrayProps.length; cp++) {
-            var prop = colorArrayProps[cp];
-            if (Array.isArray(ds[prop])) {
-              for (var p = 0; p < ds[prop].length; p++) {
-                var mapped = mapStanceColor(ds[prop][p]);
-                if (mapped) ds[prop][p] = mapped;
-              }
-            }
-          }
-
-          var labelColor = mapStanceColor(ds.label);
-          if (labelColor) {
-            if (!Array.isArray(ds.backgroundColor)) ds.backgroundColor = labelColor;
-            if (!Array.isArray(ds.borderColor)) ds.borderColor = labelColor;
-            if (!Array.isArray(ds.pointBackgroundColor)) ds.pointBackgroundColor = labelColor;
-          }
-
-          if (isScatterLike && ds.data && ds.data.length > 0 && ds.data[0] && typeof ds.data[0] === 'object') {
-            var hasStanceField = false;
-            for (var si = 0; si < ds.data.length; si++) {
-              if (ds.data[si].stance) { hasStanceField = true; break; }
-            }
-            if (hasStanceField) {
-              var ptColors = [];
-              var ptBorders = [];
-              for (var pi = 0; pi < ds.data.length; pi++) {
-                var stVal = (ds.data[pi].stance || '').toLowerCase();
-                var stColor = stanceColorMap[stVal] || '#999999';
-                ptColors.push(stColor);
-                ptBorders.push(stColor === '#E9E9E9' ? '#BDBDBD' : stColor);
-              }
-              ds.pointBackgroundColor = ptColors;
-              ds.pointBorderColor = ptBorders;
-              ds.backgroundColor = ptColors;
-              ds.borderColor = ptBorders;
-            }
-          }
-
-          if (isScatterLike) {
-            if (!ds.pointRadius || ds.pointRadius < 6) ds.pointRadius = 7;
-            if (!ds.pointHoverRadius || ds.pointHoverRadius < 8) ds.pointHoverRadius = 10;
-            ds.pointBorderWidth = 1;
-          }
-        }
-
-        if (isScatterLike && config.data.datasets.length === 1) {
-          var onlyDs = config.data.datasets[0];
-          if (Array.isArray(onlyDs.pointBackgroundColor) && onlyDs.pointBackgroundColor.length > 1) {
-            if (!config.options.plugins) config.options.plugins = {};
-            config.options.plugins.legend = { display: false };
-          }
-        }
-      }
-
-      if (!config.options.scales) config.options.scales = {};
-      if (isScatterLike) {
-        var yTitle = '';
-        if (config.options.scales.y && config.options.scales.y.title && config.options.scales.y.title.text) {
-          yTitle = config.options.scales.y.title.text.toLowerCase();
-        }
-        var isSeverityAxis = yTitle.indexOf('severity') !== -1;
-
-        if (!config.options.scales.y) config.options.scales.y = {};
-        var yAxis = config.options.scales.y;
-
-        if (isSeverityAxis) {
-          delete yAxis.grace;
-          delete yAxis.suggestedMax;
-          yAxis.min = 0;
-          yAxis.max = 11;
-          if (!yAxis.ticks) yAxis.ticks = {};
-          yAxis.ticks.stepSize = 1;
-          yAxis.ticks.callback = function(value) { return value <= 10 ? value : ''; };
-        } else {
-          yAxis.beginAtZero = true;
-          if (!yAxis.ticks) yAxis.ticks = {};
-          yAxis.ticks.precision = 0;
-        }
-      }
-
-      if (isScatterLike) {
-        if (!config.options.scales.x) config.options.scales.x = {};
-        var xAxis = config.options.scales.x;
-        if (!xAxis.afterFit) {
-          xAxis.offset = true;
-        }
-        if (!xAxis.type || xAxis.type === 'category') {
-          xAxis.offset = true;
-        }
-        if (xAxis.type === 'time') {
-          xAxis.bounds = 'data';
-          if (!xAxis.time) xAxis.time = {};
-        }
-      }
-
-      // Force integer ticks on value axes for ALL chart types when showing counts
-      // This prevents the decimal y-axis issue (0.2, 0.4, 0.6, 0.8, 1.0)
-      if (!isScatterLike && config.type !== 'pie' && config.type !== 'doughnut') {
-        if (!config.options.scales) config.options.scales = {};
-
-        // Determine which axis shows the values (y for bar/line, x for horizontal_bar)
-        var valueAxisKey = (config.options.indexAxis === 'y') ? 'x' : 'y';
-        if (!config.options.scales[valueAxisKey]) config.options.scales[valueAxisKey] = {};
-        var valAxis = config.options.scales[valueAxisKey];
-        valAxis.beginAtZero = true;
-        if (!valAxis.ticks) valAxis.ticks = {};
-        valAxis.ticks.precision = 0; // integer ticks only
-      }
-
-      if (!config.options.layout) config.options.layout = {};
-      if (!config.options.layout.padding) config.options.layout.padding = {};
-      var lp = config.options.layout.padding;
-      if (!lp.top || lp.top < 10) lp.top = 15;
-      if (!lp.right || lp.right < 20) lp.right = 30;
-      if (!lp.bottom || lp.bottom < 5) lp.bottom = 5;
-
-      config.options.responsive = true;
-      config.options.maintainAspectRatio = true;
-
-      return config;
-    }
-
-    // ============================================================================
-    // TEXT ANSWER BUILDER — constructs readable answers from query results
-    // ============================================================================
-    function buildTextAnswer(querySpec, queryResult) {
-      var q = querySpec.query || {};
-      var lines = [];
-
-      // Describe what was filtered
-      var filterDesc = buildFilterDescription(q.filters || []);
-      var aggLabel = q.aggregate || 'count';
-      var aggFieldLabel = q.aggregateField ? (' of ' + formatFieldName(q.aggregateField)) : '';
-
-      if (queryResult && queryResult.type === 'scalar') {
-        // Single number answer
-        var val = queryResult.value;
-        if (typeof val === 'number' && val !== Math.floor(val)) {
-          val = val.toFixed(2);
-        }
-        var what = describeAggregate(aggLabel, q.aggregateField);
-        // Build: "**7** Red classifications since 2024 (initial classifications only)"
-        // Split filters into "qualifying" (stance, type, region, country) and "constraining" (date, reclass, etc.)
-        var qualParts = [];
-        var constraintParts = [];
-        splitFilterParts(q.filters || [], qualParts, constraintParts);
-
-        var qualStr = qualParts.length > 0 ? qualParts.join(' ') + ' ' : '';
-        var constraintStr = constraintParts.length > 0 ? ' (' + constraintParts.join(', ') + ')' : '';
-
-        lines.push('**' + val + '** ' + qualStr + what + constraintStr + '.');
-
-      } else if (queryResult && queryResult.type === 'grouped' && queryResult.entries) {
-        // Grouped results — show a table/list
-        var total = 0;
-        var entries = queryResult.entries;
-
-        for (var i = 0; i < entries.length; i++) {
-          total += (typeof entries[i].value === 'number' ? entries[i].value : 0);
-        }
-
-        var what2 = describeAggregate(aggLabel, q.aggregateField);
-        var qualParts2 = [];
-        var constraintParts2 = [];
-        splitFilterParts(q.filters || [], qualParts2, constraintParts2);
-
-        var qualStr2 = qualParts2.length > 0 ? qualParts2.join(' ') + ' ' : '';
-        var constraintStr2 = constraintParts2.length > 0 ? ' (' + constraintParts2.join(', ') + ')' : '';
-
-        lines.push('**' + total + '** ' + qualStr2 + what2 + constraintStr2 + ':\n');
-
-        for (var j = 0; j < Math.min(entries.length, 20); j++) {
-          var v = entries[j].value;
-          if (typeof v === 'number' && v !== Math.floor(v)) v = v.toFixed(2);
-          lines.push('- **' + entries[j].label + '**: ' + v);
-        }
-        if (entries.length > 20) {
-          lines.push('- *...and ' + (entries.length - 20) + ' more*');
-        }
-
-      } else if (queryResult && queryResult.type === 'matrix') {
-        lines.push('Here are the results' + (filterDesc ? ' — ' + filterDesc : '') + ':\n');
-        for (var k in queryResult.series) {
-          var seriesVals = queryResult.series[k];
-          var seriesTotal = seriesVals.reduce(function(s, v) { return s + v; }, 0);
-          lines.push('- **' + k + '**: ' + seriesTotal + ' total');
-        }
-
-      } else {
-        lines.push('No matching records found' + (filterDesc ? ' for ' + filterDesc : '') + '.');
-      }
-
-      return lines.join('\n');
-    }
-
-    function describeAggregate(agg, field) {
-      if (agg === 'count') return 'classifications';
-      if (agg === 'count_distinct' && field === 'classificationId') return 'unique emergencies';
-      if (agg === 'count_distinct' && field) return 'unique ' + formatFieldName(field) + ' values';
-      if (agg === 'avg' && field) return 'average ' + formatFieldName(field);
-      if (agg === 'sum' && field) return 'total ' + formatFieldName(field);
-      if (agg === 'min' && field) return 'minimum ' + formatFieldName(field);
-      if (agg === 'max' && field) return 'maximum ' + formatFieldName(field);
-      return 'records';
-    }
-
-    function formatFieldName(field) {
-      // Convert camelCase to readable: classificationId → classification ID
-      return field
-        .replace(/([A-Z])/g, ' $1')
-        .replace(/^./, function(s) { return s.toLowerCase(); })
-        .replace('classification id', 'emergency')
-        .trim();
-    }
-
-    function buildFilterDescription(filters) {
-      if (!filters || filters.length === 0) return '';
-      var parts = [];
-
-      // Collect date bounds for combined description
-      var dateGte = null;
-      var dateLte = null;
-
-      for (var i = 0; i < filters.length; i++) {
-        var f = filters[i];
-        var val = f.value;
-
-        // ── Stance: use human-readable labels ──
-        if (f.field === 'stance') {
-          var stanceNames = { red: 'Red (Maximum Response)', orange: 'Orange (Mobilize)', yellow: 'Yellow (Monitor & Prepare)', white: 'White (Outside Mission Scope)' };
-          if (f.op === 'eq') { parts.push(stanceNames[val] || val); }
-          else if (f.op === 'neq') { parts.push('excluding ' + (stanceNames[val] || val)); }
-          else if (f.op === 'in' && Array.isArray(val)) {
-            parts.push(val.map(function(v) { return stanceNames[v] || v; }).join(', '));
-          }
-          continue;
-        }
-
-        // ── Reclassification number: human-readable ──
-        if (f.field === 'reclassificationNumber') {
-          if (f.op === 'eq' && (val === 1 || val === '1')) { parts.push('initial classifications only'); }
-          else if (f.op === 'gte' && (val === 2 || val === '2')) { parts.push('reclassifications only'); }
-          else if (f.op === 'lte' && (val === 1 || val === '1')) { parts.push('initial classifications only'); }
-          continue;
-        }
-
-        // ── Dates: collect for combined description ──
-        if (f.field === 'date' && typeof val === 'string' && val.match(/^\d{4}/)) {
-          if (f.op === 'gte') { dateGte = val; continue; }
-          if (f.op === 'gt') { dateGte = val; continue; }
-          if (f.op === 'lte') { dateLte = val; continue; }
-          if (f.op === 'lt') { dateLte = val; continue; }
-        }
-
-        // ── Type: use type labels ──
-        if (f.field === 'type') {
-          var typeLabels = { conflict: 'Conflict', outbreak: 'Outbreak', food: 'Food Insecurity', hazard: 'Natural Hazards', migration: 'Migration', complex: 'Complex', disease: 'Disease', accident: 'Accident', other: 'Other' };
-          if (f.op === 'eq') { parts.push(typeLabels[val] || val); }
-          else if (f.op === 'in' && Array.isArray(val)) {
-            parts.push(val.map(function(v) { return typeLabels[v] || v; }).join(', '));
-          }
-          continue;
-        }
-
-        // ── Region: pass through ──
-        if (f.field === 'region') {
-          if (f.op === 'eq') { parts.push(val); }
-          else if (f.op === 'in' && Array.isArray(val)) { parts.push(val.join(', ')); }
-          continue;
-        }
-
-        // ── Country: pass through ──
-        if (f.field === 'country') {
-          if (f.op === 'eq') { parts.push(val); }
-          else if (f.op === 'contains') { parts.push('countries matching "' + val + '"'); }
-          continue;
-        }
-
-        // ── Processing speed ──
-        if (f.field === 'processingSpeed') {
-          if (f.op === 'eq') { parts.push(val + ' processing'); }
-          continue;
-        }
-
-        // ── Severity ──
-        if (f.field === 'severity') {
-          if (f.op === 'gte') { parts.push('severity ≥ ' + val); }
-          else if (f.op === 'lte') { parts.push('severity ≤ ' + val); }
-          else if (f.op === 'eq') { parts.push('severity ' + val); }
-          continue;
-        }
-
-        // ── Fallback for any other filter ──
-        var fieldName = formatFieldName(f.field);
-        if (f.op === 'eq') parts.push(fieldName + ': ' + val);
-        else if (f.op === 'neq') parts.push('excluding ' + fieldName + ' ' + val);
-        else if (f.op === 'gte') parts.push(fieldName + ' ≥ ' + val);
-        else if (f.op === 'lte') parts.push(fieldName + ' ≤ ' + val);
-        else parts.push(fieldName + ' ' + f.op + ' ' + val);
-      }
-
-      // ── Build combined date description ──
-      if (dateGte || dateLte) {
-        var datePart = formatDateRange(dateGte, dateLte);
-        if (datePart) parts.push(datePart);
-      }
-
-      return parts.join(', ');
-    }
-
-    function splitFilterParts(filters, qualParts, constraintParts) {
-      // "Qualifying" = describes what we're counting (stance, type, region, country)
-      // "Constraining" = narrows the scope (date, reclassification, severity, speed)
-      var stanceNames = { red: 'Red', orange: 'Orange', yellow: 'Yellow', white: 'White' };
-      var typeLabels = { conflict: 'Conflict', outbreak: 'Outbreak', food: 'Food Insecurity', hazard: 'Natural Hazards', migration: 'Migration', complex: 'Complex', disease: 'Disease', accident: 'Accident', other: 'Other' };
-      var dateGte = null, dateLte = null;
-
-      for (var i = 0; i < filters.length; i++) {
-        var f = filters[i];
-        var val = f.value;
-
-        if (f.field === 'stance' && f.op === 'eq') {
-          qualParts.push(stanceNames[val] || val);
-        } else if (f.field === 'type' && f.op === 'eq') {
-          qualParts.push(typeLabels[val] || val);
-        } else if (f.field === 'region' && f.op === 'eq') {
-          qualParts.push(val);
-        } else if (f.field === 'country' && f.op === 'eq') {
-          qualParts.push(val);
-        } else if (f.field === 'reclassificationNumber') {
-          if (f.op === 'eq' && (val === 1 || val === '1')) constraintParts.push('initial classifications only');
-          else if (f.op === 'gte' && (val === 2 || val === '2')) constraintParts.push('reclassifications only');
-        } else if (f.field === 'date') {
-          if (f.op === 'gte' || f.op === 'gt') dateGte = val;
-          else if (f.op === 'lte' || f.op === 'lt') dateLte = val;
-        } else if (f.field === 'severity') {
-          if (f.op === 'gte') constraintParts.push('severity ≥ ' + val);
-          else if (f.op === 'eq') constraintParts.push('severity ' + val);
-        } else if (f.field === 'processingSpeed' && f.op === 'eq') {
-          constraintParts.push(val + ' processing');
-        }
-      }
-
-      // Add date range as constraint
-      if (dateGte || dateLte) {
-        var dateStr = formatDateRange(dateGte, dateLte);
-        if (dateStr) constraintParts.push(dateStr);
-      }
-    }
-
-    function formatDateRange(gte, lte) {
-      if (!gte && !lte) return '';
-      var gteDate = gte ? parseSimpleDate(gte) : null;
-      var lteDate = lte ? parseSimpleDate(lte) : null;
-
-      if (gteDate && lteDate) {
-        // Both bounds — "from X to Y" or "in YEAR" if same year
-        if (gteDate.y === lteDate.y && gteDate.m === 1 && gteDate.d === 1 && lteDate.m === 12 && lteDate.d === 31) {
-          return 'in ' + gteDate.y;
-        }
-        return 'from ' + formatDateShort(gteDate) + ' to ' + formatDateShort(lteDate);
-      }
-      if (gteDate) {
-        // Only lower bound
-        if (gteDate.m === 1 && gteDate.d === 1) return 'since ' + gteDate.y;
-        return 'since ' + formatDateShort(gteDate);
-      }
-      if (lteDate) {
-        // Only upper bound
-        if (lteDate.m === 12 && lteDate.d === 31) return 'up to ' + lteDate.y;
-        return 'up to ' + formatDateShort(lteDate);
-      }
-      return '';
-    }
-
-    function parseSimpleDate(s) {
-      var p = s.split('-');
-      return { y: parseInt(p[0]), m: parseInt(p[1] || '1'), d: parseInt(p[2] || '1') };
-    }
-
-    function formatDateShort(d) {
-      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      if (d.m === 1 && d.d === 1) return '' + d.y;
-      return months[d.m - 1] + ' ' + d.y;
     }
 
     // ============================================================================
     // MESSAGE HANDLING
     // ============================================================================
     function sendMessage() {
-      const input = document.getElementById('message-input');
-      const message = input.value.trim();
+      var input = document.getElementById('message-input');
+      var message = input.value.trim();
+      if (!message || albertState.isStreaming) return;
 
-      if (!message || albertState.isStreaming) {
-        return;
-      }
+      document.getElementById('albert-welcome').classList.add('hidden');
+      document.getElementById('albert-chat').classList.remove('empty');
 
-      const welcome = document.getElementById('albert-welcome');
-      welcome.classList.add('hidden');
-
-      const chat = document.getElementById('albert-chat');
-      chat.classList.remove('empty');
-
-      const userMsgId = 'msg-' + Date.now() + '-user';
-      albertState.messages.push({
-        id: userMsgId,
-        role: 'user',
-        content: message
-      });
-
+      var userMsgId = 'msg-' + Date.now() + '-user';
+      albertState.messages.push({ id: userMsgId, role: 'user', content: message });
       renderMessage(userMsgId, 'user', message);
+
       input.value = '';
       input.style.height = 'auto';
-
       scrollChatToBottom();
 
       albertState.isStreaming = true;
       getAlbertResponse(message);
     }
 
-    function renderMessage(msgId, role, content, chartConfig = null, summary = null) {
-      const chat = document.getElementById('albert-chat');
-      const messageEl = document.createElement('div');
+    function renderMessage(msgId, role, content) {
+      var chat = document.getElementById('albert-chat');
+      var messageEl = document.createElement('div');
       messageEl.className = 'message ' + role;
       messageEl.id = 'message-' + msgId;
 
       if (role === 'user') {
-        messageEl.innerHTML = `
-          <div class="message-bubble">${escapeHtml(content)}</div>
-        `;
+        messageEl.innerHTML = '<div class="message-bubble">' + escapeHtml(content) + '</div>';
       } else {
-        let contentHtml = '';
-
-        if (chartConfig) {
-          const chartId = 'chart-' + msgId;
-          contentHtml = `
-            <div class="message-content">
-              <div class="chart-container">
-                <div class="chart-toolbar">
-                  <button class="btn-download-chart" onclick="downloadChartAsPng('${chartId}', '${msgId}')">↓ PNG</button>
-                </div>
-                <div class="chart-wrapper">
-                  <canvas id="${chartId}"></canvas>
-                </div>
-                <div class="ai-summary">${escapeHtml(summary || '')}</div>
-              </div>
-            </div>
-          `;
-        } else {
-          const htmlContent = marked.parse(content);
-          contentHtml = `<div class="message-bubble"><div class="markdown-content">${htmlContent}</div></div>`;
-        }
-
-        messageEl.innerHTML = `
-          <div class="message-avatar"><img src="albert.png" alt="Albert" /></div>
-          <div>${contentHtml}</div>
-        `;
+        var htmlContent = marked.parse(content);
+        messageEl.innerHTML =
+          '<div class="message-avatar"><img src="albert.png" alt="Albert" onerror="this.parentElement.textContent=\'&#129302;\'" /></div>' +
+          '<div><div class="message-bubble"><div class="markdown-content">' + htmlContent + '</div></div></div>';
       }
 
       chat.appendChild(messageEl);
-
-      if (chartConfig && role === 'albert') {
-        setTimeout(() => {
-          const canvas = document.getElementById('chart-' + msgId);
-          if (canvas) {
-            const ctx = canvas.getContext('2d');
-            const chart = new Chart(ctx, chartConfig);
-            albertState.charts[msgId] = chart;
-          }
-        }, 0);
-      }
     }
 
     function scrollChatToBottom() {
-      const chat = document.getElementById('albert-chat');
-      setTimeout(() => {
-        chat.scrollTop = chat.scrollHeight;
-      }, 0);
-    }
-
-    function downloadChartAsPng(chartId, msgId) {
-      var chartCanvas = document.getElementById(chartId);
-      if (!chartCanvas) return;
-
-      // Find the summary text for this chart
-      var summaryText = '';
-      var chartContainer = chartCanvas.closest('.chart-container');
-      if (chartContainer) {
-        var summaryEl = chartContainer.querySelector('.ai-summary');
-        if (summaryEl) summaryText = summaryEl.textContent || '';
-      }
-
-      // Find the user query that triggered this chart
-      var queryText = '';
-      for (var i = 0; i < albertState.messages.length; i++) {
-        if (albertState.messages[i].role === 'user') {
-          queryText = albertState.messages[i].content;
-        }
-        if (albertState.messages[i].id === msgId) break;
-      }
-
-      // Create export canvas with chart + summary
-      var padding = 30;
-      var summaryHeight = summaryText ? 80 : 0;
-      var headerHeight = queryText ? 40 : 0;
-      var totalWidth = chartCanvas.width + padding * 2;
-      var totalHeight = chartCanvas.height + padding * 2 + summaryHeight + headerHeight;
-
-      var exportCanvas = document.createElement('canvas');
-      exportCanvas.width = totalWidth;
-      exportCanvas.height = totalHeight;
-      var ectx = exportCanvas.getContext('2d');
-
-      // White background
-      ectx.fillStyle = '#ffffff';
-      ectx.fillRect(0, 0, totalWidth, totalHeight);
-
-      // Query header
-      var yOffset = padding;
-      if (queryText) {
-        ectx.fillStyle = '#666666';
-        ectx.font = '14px sans-serif';
-        ectx.fillText('Query: ' + queryText, padding, yOffset + 14);
-        yOffset += headerHeight;
-      }
-
-      // Draw the chart
-      ectx.drawImage(chartCanvas, padding, yOffset);
-      yOffset += chartCanvas.height + 15;
-
-      // Draw summary with word-wrap
-      if (summaryText) {
-        ectx.fillStyle = '#333333';
-        ectx.font = '13px sans-serif';
-        var words = summaryText.split(' ');
-        var line = '';
-        var maxWidth = totalWidth - padding * 2;
-        var lineHeight = 18;
-        for (var w = 0; w < words.length; w++) {
-          var testLine = line + words[w] + ' ';
-          var metrics = ectx.measureText(testLine);
-          if (metrics.width > maxWidth && line !== '') {
-            ectx.fillText(line.trim(), padding, yOffset);
-            line = words[w] + ' ';
-            yOffset += lineHeight;
-          } else {
-            line = testLine;
-          }
-        }
-        if (line.trim()) ectx.fillText(line.trim(), padding, yOffset);
-      }
-
-      // Download
-      var link = document.createElement('a');
-      var timestamp = new Date().toISOString().slice(0, 10);
-      link.download = 'irc-albert-chart-' + timestamp + '.png';
-      link.href = exportCanvas.toDataURL('image/png');
-      link.click();
+      var chat = document.getElementById('albert-chat');
+      setTimeout(function() { chat.scrollTop = chat.scrollHeight; }, 0);
     }
 
     // ============================================================================
-    // API CALLS TO ALBERT
+    // STREAMING API CALL
     // ============================================================================
     async function getAlbertResponse(userMessage) {
-      const loadingMsgId = 'msg-' + Date.now() + '-loading';
-
-      const chat = document.getElementById('albert-chat');
-      const loadingEl = document.createElement('div');
+      var loadingMsgId = 'msg-' + Date.now() + '-loading';
+      var chat = document.getElementById('albert-chat');
+      var loadingEl = document.createElement('div');
       loadingEl.className = 'message albert';
       loadingEl.id = 'message-' + loadingMsgId;
-      loadingEl.innerHTML = `
-        <div class="message-avatar"><img src="albert.png" alt="Albert" /></div>
-        <div class="message-bubble">
-          <div class="loading-indicator">
-            <div class="loading-dot"></div>
-            <div class="loading-dot"></div>
-            <div class="loading-dot"></div>
-          </div>
-        </div>
-      `;
+      loadingEl.innerHTML =
+        '<div class="message-avatar"><img src="albert.png" alt="Albert" onerror="this.parentElement.textContent=\'&#129302;\'" /></div>' +
+        '<div class="message-bubble"><div class="loading-indicator">' +
+        '<div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>' +
+        '</div></div>';
       chat.appendChild(loadingEl);
       scrollChatToBottom();
 
       try {
-        const response = await callAlbertAPI(userMessage);
+        var systemPrompt = buildSystemPrompt(userMessage);
 
+        var conversationMessages = albertState.messages.map(function(msg) {
+          return { role: msg.role === 'albert' ? 'assistant' : msg.role, content: msg.content };
+        });
+
+        var payload = {
+          model: albertState.model,
+          messages: [
+            { role: 'system', content: systemPrompt }
+          ].concat(conversationMessages).concat([
+            { role: 'user', content: userMessage }
+          ]),
+          temperature: 0.3,
+          max_tokens: 2000,
+          stream: true
+        };
+
+        var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + albertState.apiKey,
+            'HTTP-Referer': window.location.href,
+            'X-Title': SITE_CONFIG.title
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          var errData = await response.json();
+          throw new Error(errData.error?.message || 'API request failed (' + response.status + ')');
+        }
+
+        // Remove loading indicator and create response message
         loadingEl.remove();
 
-        let isProcessMode = response.startsWith('PROCESS:');
-        let responseText = isProcessMode ? response.substring(8).trim() : response;
+        var albertMsgId = 'msg-' + Date.now() + '-albert';
+        var messageEl = document.createElement('div');
+        messageEl.className = 'message albert';
+        messageEl.id = 'message-' + albertMsgId;
+        messageEl.innerHTML =
+          '<div class="message-avatar"><img src="albert.png" alt="Albert" onerror="this.parentElement.textContent=\'&#129302;\'" /></div>' +
+          '<div><div class="message-bubble"><div class="markdown-content" id="stream-content-' + albertMsgId + '"></div></div></div>';
+        chat.appendChild(messageEl);
 
-        let chartConfig = null;
-        let summary = '';
-        let parsedQuerySpec = null;
+        var fullContent = '';
+        var contentEl = document.getElementById('stream-content-' + albertMsgId);
 
-        if (!isProcessMode) {
-          try {
-            let jsonStr = responseText;
-            const fenceMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/);
-            if (fenceMatch) jsonStr = fenceMatch[1];
-            jsonStr = jsonStr.trim();
-            if (jsonStr.charAt(0) !== '{') {
-              const braceIdx = jsonStr.indexOf('{');
-              if (braceIdx !== -1) jsonStr = jsonStr.substring(braceIdx);
-            }
-            if (jsonStr.charAt(jsonStr.length - 1) !== '}') {
-              const lastBrace = jsonStr.lastIndexOf('}');
-              if (lastBrace !== -1) jsonStr = jsonStr.substring(0, lastBrace + 1);
-            }
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder();
+        var buffer = '';
 
-            const querySpec = JSON.parse(jsonStr);
-            parsedQuerySpec = querySpec; // save for persistence
+        while (true) {
+          var result = await reader.read();
+          if (result.done) break;
 
-            const compactData = buildCompactData(albertState.classifications);
-            const queryResult = executeQuerySpec(querySpec.query, compactData);
+          buffer += decoder.decode(result.value, { stream: true });
+          var lines = buffer.split('\n');
+          buffer = lines.pop() || '';
 
-            // Handle text-answer mode (chart type "none")
-            if (querySpec.chart && querySpec.chart.type === 'none') {
-              // No chart — build the entire answer client-side from real data
-              isProcessMode = true;
-              responseText = buildTextAnswer(querySpec, queryResult);
-              summary = responseText;
-            } else {
-              chartConfig = buildChartFromSpec(querySpec.chart, queryResult);
-              chartConfig = postProcessChartConfig(chartConfig);
-              summary = querySpec.summary || '';
-            }
-          } catch (e) {
-            isProcessMode = true;
-            responseText = 'Unable to parse query response: ' + e.message;
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line.startsWith('data: ')) continue;
+            var data = line.substring(6);
+            if (data === '[DONE]') break;
+
+            try {
+              var parsed = JSON.parse(data);
+              var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
+              if (delta && delta.content) {
+                fullContent += delta.content;
+                contentEl.innerHTML = marked.parse(fullContent);
+                scrollChatToBottom();
+              }
+            } catch (e) {}
           }
         }
 
-        const albertMsgId = 'msg-' + Date.now() + '-albert';
-        const msgObj = {
-          id: albertMsgId,
-          role: 'albert',
-          content: responseText
-        };
-
-        // Always save querySpec and summary if we parsed one (for follow-up context)
-        if (parsedQuerySpec) {
-          msgObj.querySpec = parsedQuerySpec;
-          msgObj.summary = summary || responseText;
-        }
-
-        if (chartConfig) {
-          msgObj.chartConfig = chartConfig;
-          albertState.messages.push(msgObj);
-          renderMessage(albertMsgId, 'albert', '', chartConfig, summary);
-        } else {
-          albertState.messages.push(msgObj);
-          renderMessage(albertMsgId, 'albert', responseText);
-        }
-
+        albertState.messages.push({ id: albertMsgId, role: 'albert', content: fullContent });
         saveChatHistory();
         scrollChatToBottom();
+
       } catch (error) {
         loadingEl.remove();
-
-        const errorMsgId = 'msg-' + Date.now() + '-error';
-        const errorMsg = `Sorry, I encountered an error: ${error.message}`;
-        albertState.messages.push({
-          id: errorMsgId,
-          role: 'albert',
-          content: errorMsg
-        });
-
+        var errorMsgId = 'msg-' + Date.now() + '-error';
+        var errorMsg = 'Sorry, I encountered an error: ' + error.message;
+        albertState.messages.push({ id: errorMsgId, role: 'albert', content: errorMsg });
         renderMessage(errorMsgId, 'albert', errorMsg);
         scrollChatToBottom();
       } finally {
         albertState.isStreaming = false;
       }
-    }
-
-    async function callAlbertAPI(userMessage) {
-      const systemPrompt = buildSystemPrompt();
-
-      // Build conversation history with useful context for follow-ups
-      const conversationMessages = albertState.messages.map(msg => {
-        if (msg.role === 'albert' && msg.querySpec) {
-          // For data query responses, include the query spec AND the summary
-          // so the LLM can understand what was shown and modify it for follow-ups
-          const contextParts = [];
-          if (msg.summary) contextParts.push('Result: ' + msg.summary);
-          contextParts.push('Query spec used: ' + JSON.stringify(msg.querySpec));
-          return {
-            role: 'assistant',
-            content: contextParts.join('\n')
-          };
-        }
-        return {
-          role: msg.role === 'albert' ? 'assistant' : msg.role,
-          content: msg.content
-        };
-      });
-
-      const payload = {
-        model: albertState.model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...conversationMessages,
-          { role: 'user', content: userMessage }
-        ],
-        temperature: 0.3,
-        max_tokens: 2000
-      };
-
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${albertState.apiKey}`,
-          'HTTP-Referer': window.location.href,
-          'X-Title': 'IRC Emergency Classification System'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || 'API request failed');
-      }
-
-      const data = await response.json();
-      return data.choices[0].message.content;
-    }
-
-    function buildSystemPrompt() {
-      const dataSummary = buildDataSummary(albertState.classifications);
-
-      return `You are Albert, an intelligent assistant for the IRC Emergency Classification System.
-
-You have THREE modes of operation. Pick the right one for each question:
-
-═══════════════════════════════════════════════════════════════
-MODE 1 — CHART MODE (for trends, comparisons, distributions)
-═══════════════════════════════════════════════════════════════
-Use when the user wants to SEE data visually: trends over time, comparisons between groups, distributions, top-N lists, breakdowns.
-
-Respond with ONLY a JSON object (no markdown fences, no extra text):
-{
-  "query": {
-    "filters": [{"field": "stance", "op": "eq", "value": "red"}],
-    "groupBy": "country",
-    "groupBy2": null,
-    "aggregate": "count",
-    "aggregateField": null,
-    "timeUnit": null,
-    "sort": "desc",
-    "limit": 10
-  },
-  "chart": {
-    "type": "horizontal_bar",
-    "title": "Top 10 Countries with Red Classifications",
-    "xLabel": "Count",
-    "yLabel": "Country",
-    "datasetLabel": "Classifications",
-    "colorByStance": false,
-    "stacked": false,
-    "timeAxis": false
-  },
-  "summary": "A brief analytical summary of the results."
-}
-
-Chart types: "bar", "horizontal_bar", "line", "pie", "doughnut"
-- Use "line" for time series (set timeAxis: true, groupBy: "date", timeUnit: "month"/"quarter"/"year")
-- Use "bar" or "horizontal_bar" for comparisons
-- Use "pie" or "doughnut" for proportions/shares
-- Use "horizontal_bar" when labels are long (country names, emergency names)
-
-═══════════════════════════════════════════════════════════════
-MODE 2 — TEXT ANSWER MODE (for counts, facts, simple lookups)
-═══════════════════════════════════════════════════════════════
-Use when the user asks a simple question that has a direct answer: "how many X?", "what is the total?", "which country has the most?", "is there a classification for X?", "what's the average severity?"
-
-These questions do NOT need a chart. Respond with JSON using chart type "none":
-{
-  "query": {
-    "filters": [{"field": "stance", "op": "eq", "value": "red"}, {"field": "date", "op": "gte", "value": "2026-01-01"}],
-    "groupBy": null,
-    "aggregate": "count",
-    "aggregateField": null,
-    "timeUnit": null,
-    "sort": null,
-    "limit": null
-  },
-  "chart": {
-    "type": "none"
-  },
-  "summary": "red classifications recorded in 2026"
-}
-
-IMPORTANT for text answers:
-- The app computes the real answer from data and displays it. You do NOT need to know or guess the number.
-- The "summary" field is ignored — focus on getting the query spec correct.
-- Use groupBy: null for a single total count. Use groupBy: "country" (etc.) to show a breakdown by group.
-- Make sure filters are correct — this is what determines the answer.
-
-═══════════════════════════════════════════════════════════════
-MODE 3 — PROCESS ADVISOR MODE (for procedures, guidelines)
-═══════════════════════════════════════════════════════════════
-Use when the user asks about emergency response processes, procedures, guidelines, how the classification system works, or general knowledge questions not about the dataset.
-
-Start your response with "PROCESS:" followed by markdown content.
-
-═══════════════════════════════════════════════════════════════
-DECISION LOGIC — Read this carefully before every response:
-═══════════════════════════════════════════════════════════════
-Ask yourself: "Does this question need a CHART to answer, or just a NUMBER/FACT?"
-
-→ "How many red classifications this year?" = TEXT ANSWER (just a count — no chart needed)
-→ "Show me red classifications by month" = CHART (trend over time)
-→ "What's the breakdown of stances?" = CHART (distribution)
-→ "How many classifications total?" = TEXT ANSWER (single number)
-→ "Which country has the most orange?" = TEXT ANSWER (name + count)
-→ "Compare conflict vs outbreak types by region" = CHART (comparison)
-→ "What is a red classification?" = PROCESS (conceptual question)
-→ "Top 10 countries by classifications" = CHART (ranked list)
-→ "Is there a classification for Syria?" = TEXT ANSWER (yes/no + details)
-→ "Show me the trend of classifications over time" = CHART (time series)
-→ "What was the average severity of red classifications?" = TEXT ANSWER (single number)
-
-When in doubt between chart and text answer, prefer TEXT ANSWER. Only use chart mode when the user explicitly asks for a chart/graph/visualization OR the question inherently requires comparing multiple groups visually.
-
-═══════════════════════════════════════════════════════════════
-FOLLOW-UP HANDLING
-═══════════════════════════════════════════════════════════════
-When the user says things like "now show that as a bar chart", "break that down by region", "what about just for 2026?", etc.:
-- Look at the previous query context in the conversation to understand what "that" refers to
-- Modify the previous query spec as needed (change chart type, add filters, change groupBy, etc.)
-- If the user says "use a different chart" — keep the same query but change chart.type
-- If the user says "just tell me the number" — switch to text answer mode (chart type "none")
-
-═══════════════════════════════════════════════════════════════
-DATA REFERENCE
-═══════════════════════════════════════════════════════════════
-
-CLASSIFICATION CONTEXT:
-- Stances: white (Outside Mission Scope), yellow (Monitor & Prepare), orange (Mobilize), red (Maximum Response)
-- Severity 0-10. Each classification open 6 weeks (42 days)
-- Complex emergencies: 3 Yellows → Orange, 2 Oranges → Red
-- Regions: Asia, East Africa, LatAm, MENA, RAI, West and Central Africa
-
-DATA FIELDS (case-sensitive): stance, type, severity, country, region, date, expirationDate, classificationId, processingSpeed, reclassificationNumber, emergencyName
-- reclassificationNumber: 1 = initial classification, 2+ = reclassification
-- type values: conflict, outbreak, food, hazard, migration, complex, disease, accident, other
-- stance values: red, orange, yellow, white (lowercase)
-- processingSpeed values: standard, rapid, immediate
-
-QUERY SPEC FORMAT:
-- filters: Array of {field, op, value}. ops: eq, neq, gt, gte, lt, lte, in, nin, contains
-  - For date filtering, use ISO format strings: "2026-01-01"
-  - For "this year" use: {"field": "date", "op": "gte", "value": "2026-01-01"}
-  - For "last 6 months" use: {"field": "date", "op": "gte", "value": "<6 months ago ISO>"}
-- groupBy: Field name to group by. Use null for a single aggregate (text answer mode)
-- groupBy2: Optional second field for stacked/grouped charts
-- aggregate: "count", "count_distinct", "avg", "sum", "min", "max"
-- aggregateField: Required for avg/sum/min/max (e.g., "severity"). For count_distinct, use "classificationId"
-- timeUnit: If groupBy is "date", set to "month", "quarter", or "year"
-- sort: "desc" (highest first), "asc" (lowest first), "alpha" (alphabetical), or null
-- limit: Max items to show, or null for all
-
-COUNTING RULES:
-- Ambiguous questions → count ALL records (full dataset)
-- "Initial classifications" → filter reclassificationNumber eq 1
-- "Reclassifications" → filter reclassificationNumber gte 2
-- "Unique emergencies" → aggregate: "count_distinct", aggregateField: "classificationId"
-- "This year" or "in 2026" → filter date gte "2026-01-01"
-
-IRC Response System:
-- Classification stances (White/Yellow/Orange/Red) with 3 Yellows → Orange, 2 Oranges → Red rules
-- Response Imperative: respond to all Orange and Red classifications, 10% scale target
-- 7 Response Phases: Onset, Week 1, Week 2-4, Week 5-12, Months 4-6, Months 7-12, Long-term
-- 13 Functional Sectors: Agriculture, Education, Food Security, Health, Logistics, Protection, Shelter, WASH, Nutrition, Early Recovery, Camp Management, COVID-19, General
-- Emergency Unit Services including classification and escalation procedures
-
-${dataSummary}`;
     }
 
     // ============================================================================
