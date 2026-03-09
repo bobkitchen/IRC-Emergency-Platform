@@ -2,7 +2,7 @@ import processDataJson from '@/data/process-data.json';
 import searchChunksJson from '@/data/search-chunks.json';
 import type { ProcessData, SearchChunk, Task, Sector, Filters } from '@/types';
 
-export const processData = processDataJson as ProcessData;
+export const processData = processDataJson as unknown as ProcessData;
 export const searchChunks = searchChunksJson as SearchChunk[];
 
 export function getAllTasks(): Task[] {

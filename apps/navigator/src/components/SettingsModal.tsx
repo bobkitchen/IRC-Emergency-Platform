@@ -31,7 +31,7 @@ export default function SettingsModal({ isOpen, onClose }: Props) {
 
   const hasKey = !!getApiKey();
   const selectedModelInfo = MODELS.find(m => m.id === selectedModel);
-  const tiers: ModelOption['tier'][] = ['standard', 'free'];
+  const tiers: ModelOption['tier'][] = ['standard'];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
