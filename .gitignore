@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.map
+~$*
+.DS_Store
+
+# Built shared bundle (generated from packages/shared/src/)
+apps/classification/irc-shared.iife.js
+apps/classification/design-tokens.css
+apps/crf-calculator/irc-shared.iife.js
+apps/crf-calculator/design-tokens.css
+
+# Navigator build output
+apps/navigator/dist/
+apps/navigator/tsconfig.tsbuildinfo

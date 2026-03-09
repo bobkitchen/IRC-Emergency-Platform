@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data — IRC Emergency Classification</title>
+  <link rel="stylesheet" href="design-tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header-mount"></div>
+  <main>
+    <div id="nav-mount"></div>
+
+    <section class="data-section">
+      <!-- Import Section -->
+      <div class="data-panel">
+        <h2>Import Data</h2>
+
+        <div class="drop-zone" id="dropZone">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7-7 7 7" />
+          </svg>
+          <p>Drop a CSV or Excel file here, or <a href="#" id="browseLink">click to browse</a></p>
+          <p class="hint">Supported formats: .csv, .xlsx, .xls</p>
+          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" style="display: none;">
+        </div>
+
+        <!-- Column Mapping Section (hidden initially) -->
+        <div id="mappingSection" class="mapping-section" style="display: none;">
+          <h3>Column Mapping</h3>
+          <p class="mapping-info" id="mappingInfoText">Detected columns: <span id="detectedColumnsCount"></span></p>
+
+          <div class="mapping-grid" id="mappingGrid">
+            <!-- Dynamically generated mapping selects -->
+          </div>
+
+          <div class="preview-section">
+            <h4>Preview (first 5 rows)</h4>
+            <div class="table-wrapper">
+              <table class="preview-table">
+                <thead id="previewHead"></thead>
+                <tbody id="previewBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="import-actions">
+            <button id="importBtn" class="btn btn-primary">Import Records</button>
+            <button id="cancelImport" class="btn btn-secondary">Cancel</button>
+            <label class="replace-toggle" style="display:flex;align-items:center;gap:6px;margin-left:20px;cursor:pointer;font-size:14px;">
+              <input type="checkbox" id="replaceAllCheckbox">
+              <span>Replace all existing records</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Import Result (shown after import) -->
+        <div id="importResult" class="import-result" style="display: none;">
+          <h3>Import Summary</h3>
+          <p id="importSummaryText"></p>
+        </div>
+      </div>
+
+      <!-- Export Section -->
+      <div class="data-panel">
+        <h2>Export Data</h2>
+
+        <div class="export-info">
+          <p>Total records: <strong id="totalRecordsCount">0</strong></p>
+        </div>
+
+        <div class="export-actions">
+          <button id="exportCsvBtn" class="btn btn-primary">Export as CSV</button>
+          <button id="exportJsonBtn" class="btn btn-primary">Export as JSON</button>
+          <button id="deleteAllBtn" class="btn btn-danger">Delete All Records</button>
+        </div>
+      </div>
+
+      <!-- Browse Section -->
+      <div class="data-panel">
+        <h2>Browse Classifications</h2>
+
+        <div class="search-section">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by name, country, region, or code...">
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-field="date">Date</th>
+                <th class="sortable" data-field="classificationId">ID</th>
+                <th class="sortable" data-field="emergencyName">Emergency</th>
+                <th class="sortable" data-field="country">Country</th>
+                <th class="sortable" data-field="region">Region</th>
+                <th class="sortable" data-field="type">Type</th>
+                <th class="sortable" data-field="severity">Sev.</th>
+                <th class="sortable" data-field="stance">Stance</th>
+                <th class="sortable" data-field="processingSpeed">Speed</th>
+                <th class="sortable" data-field="reclassificationNumber">Reclass</th>
+              </tr>
+            </thead>
+            <tbody id="dataTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <p id="paginationInfo">Showing 0-0 of 0</p>
+          <div class="pagination-controls">
+            <button id="prevPageBtn" class="btn btn-secondary">Previous</button>
+            <button id="nextPageBtn" class="btn btn-secondary">Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-mount"></div>
+
+  <script src="irc-shared.iife.js"></script>
+  <script src="supabase.js"></script>
+  <script src="irc-platform.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    // Data Management Page Logic
+
+    var DATA = {
+      currentFile: null,
+      mappedData: null,
+      columnMapping: {},
+      fileHeaders: [],
+      isJsonBackup: false,
+      currentPage: 1,
+      pageSize: 25,
+      allFilteredData: [],
+      sortField: 'date',
+      sortAsc: false,
+
+      // Column heuristics tuned to the IRC Classification Tracking Table
+      // Each entry uses substring matching (both directions), so these cover many variations
+      // IMPORTANT: Order and specificity matter — avoid short hints that match unrelated columns
+      // e.g. 'reclass' would match "Start reclass" (a date); 'date sent' matches "Date Sent for Entry"
+      columnHeuristics: {
+        classificationId: ['classification id', 'classification_id', 'class id', 'class_id', 'classid'],
+        country: ['country', 'nation'],
+        region: ['region', 'irc region', 'irc_region'],
+        date: ['date', 'date notification sent', 'notif_sent', 'notification date', 'notification sent', 'date request received', 'date received', 'incident date', 'start date'],
+        expirationDate: ['expiration date', 'expiration', 'expiry', 'end date', 'expires'],
+        stance: ['stance'],
+        severity: ['severity', 'sev'],
+        emergencyName: ['emergency note', 'emergency details', 'emergency_details', 'emergency note/details', 'emergency name', 'emergency'],
+        type: ['emergency type', 'type', 'category', 'classification type'],
+        processingSpeed: ['processing speed', 'processing', 'urgency'],
+        reclassificationNumber: ['reclassification count', 'reclassification number', 'reclassification #', 'reclass #', 'reclass count'],
+        totalAffected: ['total affected', 'affected population', 'total_affected', 'people affected', 'affected'],
+        linkToSpreadsheet: ['link to spreadsheet', 'spreadsheet link', 'box link', 'link'],
+        ipc4Used: ['ipc 4+ food insecurity used', 'ipc4', 'ipc 4', 'ipc4_used'],
+        hazardType: ['type of natural hazard', 'hazard type', 'natural hazard type', 'hazard_type'],
+        sapTracking: ['sap tracking', 'sap', 'sap_tracking'],
+        uniqueId: ['unique id', 'unique_id', 'uid'],
+        notes: ['notes', 'additional notes', 'comments'],
+        dateRequestReceived: ['date request received', 'request received', 'date_request_received'],
+        dateSentForEntry: ['date sent for entry', 'sent for entry', 'date_sent_for_entry'],
+        dateReviewed: ['date reviewed', 'reviewed date', 'date_reviewed'],
+        dateApproved: ['date approved', 'approved date', 'date_approved'],
+        dateExpirationNoticeSent: ['date expiration notice sent', 'expiration notice sent'],
+        whoEngagesCp: ['who engages cp', 'who engages', 'engages cp'],
+        entryBy: ['entry by', 'entered by', 'entry_by'],
+        reviewedBy: ['reviewed by', 'reviewer', 'reviewed_by'],
+        approvedBy: ['approved by', 'approver', 'approved_by'],
+        notifSentBy: ['notif sent by', 'notification sent by', 'notif_sent_by'],
+        raisedWithCpRegion: ['raised with cp', 'raised with cp/region', 'raised_with_cp_region'],
+        codeNumber: ['code#', 'code number', 'code_number']
+      },
+
+      // Lookup table built from secondary sheets (e.g. classname sheet)
+      classnameMap: {},
+
+      // Initialize
+      init: function() {
+        document.getElementById('header-mount').innerHTML = IRC.renderHeader('data');
+        document.getElementById('nav-mount').innerHTML = IRC.renderNav();
+        document.getElementById('footer-mount').innerHTML = IRC.renderFooter();
+
+        this.setupDropZone();
+        this.setupFileInput();
+        this.setupExport();
+        this.setupSearch();
+        this.setupSort();
+        this.setupPagination();
+        this.refreshDataTable();
+
+        // Load from Supabase, then refresh table with latest data
+        var self = this;
+        IRC.db.migrateFromLocalStorage().then(function() {
+          return IRC.db.load();
+        }).then(function() {
+          self.refreshDataTable();
+        });
+      },
+
+      // Drop zone setup
+      setupDropZone: function() {
+        var self = this;
+        var dropZone = document.getElementById('dropZone');
+        var browseLink = document.getElementById('browseLink');
+        var fileInput = document.getElementById('fileInput');
+
+        browseLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          fileInput.click();
+        });
+
+        dropZone.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', function(e) {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+          var files = e.dataTransfer.files;
+          if (files.length > 0) {
+            self.handleFileSelect(files[0]);
+          }
+        });
+      },
+
+      setupFileInput: function() {
+        var self = this;
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+          if (this.files.length > 0) {
+            self.handleFileSelect(this.files[0]);
+          }
+        });
+      },
+
+      // Handle file selection
+      handleFileSelect: function(file) {
+        var self = this;
+        var ext = file.name.split('.').pop().toLowerCase();
+
+        if (ext === 'json') {
+          this.handleJsonBackup(file);
+        } else if (ext === 'csv') {
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+              self.showColumnMapping(results.data, results.meta.fields, file.name);
+            },
+            error: function(error) {
+              alert('Error parsing CSV: ' + error.message);
+            }
+          });
+        } else if (ext === 'xlsx' || ext === 'xls') {
+          this.handleExcelFile(file);
+        } else {
+          alert('Unsupported file format. Please use CSV, Excel, or JSON.');
+        }
+      },
+
+      handleExcelFile: function(file) {
+        var self = this;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            var workbook = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+
+            // 1. Build classname lookup from secondary sheets
+            self.classnameMap = {};
+            workbook.SheetNames.forEach(function(name) {
+              var lower = name.toLowerCase();
+              if (lower === 'classname' || lower === 'class name' || lower === 'names') {
+                var rows = XLSX.utils.sheet_to_json(workbook.Sheets[name], { raw: false });
+                rows.forEach(function(r) {
+                  var id = r['ClassID'] || r['Class ID'] || r['classid'] || r['Classification ID'] || '';
+                  var nm = r['Name'] || r['Emergency Name'] || r['name'] || '';
+                  if (id && nm) self.classnameMap[id.toString().trim()] = nm.toString().trim();
+                });
+              }
+            });
+
+            // 2. Pick the best data sheet (prefer "Tracker", skip utility sheets)
+            var skipSheets = ['drop down', 'dropdown', 'formulas', 'formula', 'classname', 'class name', 'names', 'unissued', 'reference', 'lookup'];
+            var dataSheet = null;
+            var dataSheetName = '';
+            // First pass: look for a sheet named Tracker or Classifications
+            workbook.SheetNames.forEach(function(name) {
+              if (dataSheet) return;
+              var lower = name.toLowerCase();
+              if (lower === 'tracker' || lower === 'classifications' || lower === 'data') {
+                dataSheet = workbook.Sheets[name];
+                dataSheetName = name;
+              }
+            });
+            // Fallback: first sheet that isn't a utility sheet
+            if (!dataSheet) {
+              workbook.SheetNames.forEach(function(name) {
+                if (dataSheet) return;
+                var lower = name.toLowerCase();
+                var isSkip = skipSheets.some(function(s) { return lower === s || lower.includes(s); });
+                if (!isSkip) {
+                  dataSheet = workbook.Sheets[name];
+                  dataSheetName = name;
+                }
+              });
+            }
+            // Final fallback: first sheet
+            if (!dataSheet) {
+              dataSheetName = workbook.SheetNames[0];
+              dataSheet = workbook.Sheets[dataSheetName];
+            }
+
+            // 3. Auto-detect header row (scan first 10 rows for the one with the most known keywords)
+            var rawData = XLSX.utils.sheet_to_json(dataSheet, { raw: false, dateNF: 'yyyy-mm-dd', header: 1 });
+            var bestHeaderIdx = 0;
+            var bestScore = 0;
+            var knownKeywords = [
+              'country', 'stance', 'severity', 'region', 'type', 'emergency', 'classification',
+              'class id', 'expiration', 'date', 'notification', 'notif', 'reclassification'
+            ];
+            var scanLimit = Math.min(10, rawData.length);
+            for (var ri = 0; ri < scanLimit; ri++) {
+              var row = rawData[ri];
+              if (!row || !Array.isArray(row)) continue;
+              var score = 0;
+              row.forEach(function(cell) {
+                if (!cell) return;
+                var lower = cell.toString().toLowerCase();
+                knownKeywords.forEach(function(kw) {
+                  if (lower.includes(kw)) score++;
+                });
+              });
+              if (score > bestScore) {
+                bestScore = score;
+                bestHeaderIdx = ri;
+              }
+            }
+
+            // 4. Use the detected header row to parse properly
+            var headerRow = rawData[bestHeaderIdx] || [];
+            var cleanHeaders = headerRow.map(function(h, i) {
+              return h ? h.toString().trim() : 'Column_' + i;
+            });
+
+            // Build data array from rows after header
+            var data = [];
+            for (var di = bestHeaderIdx + 1; di < rawData.length; di++) {
+              var dRow = rawData[di];
+              if (!dRow) continue;
+              var obj = {};
+              var hasValue = false;
+              cleanHeaders.forEach(function(h, ci) {
+                var val = (dRow[ci] !== undefined && dRow[ci] !== null) ? dRow[ci].toString().trim() : '';
+                obj[h] = val;
+                if (val) hasValue = true;
+              });
+              if (hasValue) data.push(obj);
+            }
+
+            var info = 'Sheet: ' + dataSheetName;
+            if (bestHeaderIdx > 0) info += ' (headers found on row ' + (bestHeaderIdx + 1) + ')';
+            if (Object.keys(self.classnameMap).length > 0) info += ', ' + Object.keys(self.classnameMap).length + ' emergency names loaded';
+
+            self.showColumnMapping(data, cleanHeaders, file.name, info);
+          } catch (error) {
+            alert('Error parsing Excel file: ' + error.message);
+          }
+        };
+        reader.onerror = function() {
+          alert('Error reading file');
+        };
+        reader.readAsArrayBuffer(file);
+      },
+
+      handleJsonBackup: function(file) {
+        var self = this;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            var backup = JSON.parse(e.target.result);
+            if (backup.version && backup.data && Array.isArray(backup.data)) {
+              self.restoreFromBackup(backup);
+            } else {
+              alert('Invalid backup format');
+            }
+          } catch (error) {
+            alert('Error reading JSON file: ' + error.message);
+          }
+        };
+        reader.readAsText(file);
+      },
+
+      restoreFromBackup: function(backup) {
+        var existing = IRC.getClassifications();
+        var imported = 0;
+        var skipped = 0;
+
+        backup.data.forEach(function(record) {
+          var isDuplicate = existing.some(function(e) {
+            return e.emergencyName === record.emergencyName &&
+                   e.country === record.country &&
+                   e.date === record.date;
+          });
+
+          if (!isDuplicate) {
+            existing.push(record);
+            imported++;
+          } else {
+            skipped++;
+          }
+        });
+
+        IRC.saveClassifications(existing);
+        // Sync to Supabase
+        var self2 = this;
+        IRC.db.importBatch(existing, true).then(function() {
+          self2.showImportSummary(imported, skipped, 0);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        }).catch(function() {
+          self2.showImportSummary(imported, skipped, 0);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        });
+      },
+
+      // Show column mapping interface
+      showColumnMapping: function(data, headers, filename, sheetInfo) {
+        var self = this;
+        this.currentFile = data;
+        this.fileHeaders = headers;
+        this.columnMapping = {};
+
+        // Auto-detect columns using heuristics
+        // Two-pass approach: first find exact/contains matches, then use contained-by as fallback
+        // This prevents short headers like "Date" from greedily matching unrelated fields
+        headers.forEach(function(header) {
+          var lowerHeader = header.toLowerCase().trim();
+          var assignedField = null;
+
+          // Pass 1: exact match or header-contains-hint (strong matches)
+          for (var field in self.columnHeuristics) {
+            if (self.columnMapping[field]) continue;
+            if (assignedField) break;
+            self.columnHeuristics[field].forEach(function(hint) {
+              if (assignedField) return;
+              if (lowerHeader === hint) { assignedField = field; return; }
+              if (lowerHeader.includes(hint)) { assignedField = field; return; }
+            });
+          }
+
+          // Pass 2: hint-contains-header (weak match, only if pass 1 found nothing)
+          if (!assignedField && lowerHeader.length >= 4) {
+            for (var field2 in self.columnHeuristics) {
+              if (self.columnMapping[field2]) continue;
+              if (assignedField) break;
+              self.columnHeuristics[field2].forEach(function(hint) {
+                if (assignedField) return;
+                if (hint.includes(lowerHeader)) { assignedField = field2; return; }
+              });
+            }
+          }
+
+          if (assignedField) {
+            self.columnMapping[assignedField] = header;
+          }
+        });
+
+        // Show mapping UI
+        this.renderMappingUI(headers);
+        this.renderPreview(data);
+
+        // Show detection info if available
+        var infoText = 'Detected columns: ' + headers.length;
+        if (sheetInfo) infoText += ' — ' + sheetInfo;
+        document.getElementById('mappingInfoText').textContent = infoText;
+
+        // Show mapping section
+        document.getElementById('mappingSection').style.display = 'block';
+        document.getElementById('importResult').style.display = 'none';
+
+        document.getElementById('importBtn').onclick = function() {
+          self.performImport();
+        };
+
+        document.getElementById('cancelImport').onclick = function() {
+          self.resetImportUI();
+        };
+      },
+
+      renderMappingUI: function(headers) {
+        var self = this;
+        var fields = [
+          'classificationId', 'country', 'region', 'date', 'expirationDate',
+          'stance', 'severity', 'emergencyName', 'type',
+          'processingSpeed', 'reclassificationNumber',
+          'totalAffected', 'notes', 'linkToSpreadsheet',
+          'ipc4Used', 'hazardType', 'sapTracking', 'uniqueId', 'codeNumber',
+          'dateRequestReceived', 'dateSentForEntry', 'dateReviewed', 'dateApproved',
+          'dateExpirationNoticeSent',
+          'whoEngagesCp', 'entryBy', 'reviewedBy', 'approvedBy', 'notifSentBy',
+          'raisedWithCpRegion'
+        ];
+        var grid = document.getElementById('mappingGrid');
+        grid.innerHTML = '';
+
+        var fieldLabels = {
+          classificationId: 'Classification ID',
+          country: 'Country',
+          region: 'IRC Region',
+          date: 'Date Notification Sent',
+          expirationDate: 'Expiration Date',
+          stance: 'Stance',
+          severity: 'Severity (0–10)',
+          emergencyName: 'Emergency Note / Details',
+          type: 'Emergency Type',
+          processingSpeed: 'Processing Speed',
+          reclassificationNumber: 'Reclassification #',
+          totalAffected: 'Total Affected Population',
+          notes: 'Notes',
+          linkToSpreadsheet: 'Link to Spreadsheet',
+          ipc4Used: 'IPC 4+ Food Insecurity Used?',
+          hazardType: 'Type of Natural Hazard',
+          sapTracking: 'SAP Tracking',
+          uniqueId: 'Unique ID',
+          codeNumber: 'Code #',
+          dateRequestReceived: 'Date Request Received',
+          dateSentForEntry: 'Date Sent for Entry',
+          dateReviewed: 'Date Reviewed',
+          dateApproved: 'Date Approved',
+          dateExpirationNoticeSent: 'Date Expiration Notice Sent',
+          whoEngagesCp: 'Who Engages CP',
+          entryBy: 'Entry By',
+          reviewedBy: 'Reviewed By',
+          approvedBy: 'Approved By',
+          notifSentBy: 'Notif Sent By',
+          raisedWithCpRegion: 'Raised with CP/Region'
+        };
+
+        fields.forEach(function(field) {
+          var div = document.createElement('div');
+          div.className = 'mapping-item';
+
+          var label = document.createElement('label');
+          label.textContent = fieldLabels[field];
+
+          var select = document.createElement('select');
+          select.id = 'map_' + field;
+          select.setAttribute('data-field', field);
+
+          var skipOption = document.createElement('option');
+          skipOption.value = '';
+          skipOption.textContent = '— skip —';
+          select.appendChild(skipOption);
+
+          headers.forEach(function(header) {
+            var option = document.createElement('option');
+            option.value = header;
+            option.textContent = header;
+            if (self.columnMapping[field] === header) {
+              option.selected = true;
+            }
+            select.appendChild(option);
+          });
+
+          select.addEventListener('change', function() {
+            self.columnMapping[field] = this.value || '';
+            self.renderPreview(self.currentFile);
+          });
+
+          div.appendChild(label);
+          div.appendChild(select);
+          grid.appendChild(div);
+        });
+
+        // Column count now set via mappingInfoText in displayColumnMapping
+      },
+
+      renderPreview: function(data) {
+        var rows = data.slice(0, 5);
+        var previewFields = [
+          { key: 'classificationId', label: 'ID' },
+          { key: 'country', label: 'Country' },
+          { key: 'region', label: 'Region' },
+          { key: 'date', label: 'Date' },
+          { key: 'stance', label: 'Stance' },
+          { key: 'severity', label: 'Sev.' },
+          { key: 'emergencyName', label: 'Emergency' },
+          { key: 'type', label: 'Type' }
+        ];
+
+        var thead = document.getElementById('previewHead');
+        var tbody = document.getElementById('previewBody');
+        thead.innerHTML = '';
+        tbody.innerHTML = '';
+
+        var headerRow = document.createElement('tr');
+        previewFields.forEach(function(f) {
+          var th = document.createElement('th');
+          th.textContent = f.label;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        rows.forEach(function(row) {
+          var tr = document.createElement('tr');
+          previewFields.forEach(function(f) {
+            var td = document.createElement('td');
+            var sourceCol = DATA.columnMapping[f.key];
+            var value = sourceCol ? row[sourceCol] : '';
+            td.textContent = value || '—';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      },
+
+      // Parse a date value from the spreadsheet into YYYY-MM-DD
+      parseDate: function(val) {
+        if (!val) return '';
+        var str = val.toString().trim();
+        if (!str) return '';
+        // Reject obvious non-date junk (single chars, symbols, etc.)
+        if (str.length < 4 || /^[^0-9a-zA-Z]/.test(str)) return '';
+        // If it's already YYYY-MM-DD, return it
+        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+        // Try parsing as Date object
+        var d = new Date(str);
+        if (!isNaN(d.getTime()) && d.getFullYear() > 1900 && d.getFullYear() < 2100) {
+          var yyyy = d.getFullYear();
+          var mm = String(d.getMonth() + 1).padStart(2, '0');
+          var dd = String(d.getDate()).padStart(2, '0');
+          return yyyy + '-' + mm + '-' + dd;
+        }
+        // Could not parse — return empty (will become null in mapToSnake)
+        return '';
+      },
+
+      performImport: function() {
+        var self = this;
+        var replaceAll = document.getElementById('replaceAllCheckbox').checked;
+        var existing = replaceAll ? [] : IRC.getClassifications();
+        var imported = 0;
+        var skipped = 0;
+        var errors = 0;
+
+        if (replaceAll) {
+          localStorage.removeItem('irc_classifications');
+          localStorage.removeItem('irc_data_repair_v2');
+        }
+
+        // Build a fast duplicate-check index
+        var dupeIndex = {};
+        existing.forEach(function(e) {
+          // Index by classificationId + reclassificationNumber (strongest match)
+          if (e.classificationId) {
+            dupeIndex['id:' + e.classificationId + ':' + (e.reclassificationNumber || 1)] = true;
+          }
+          // Also index by country + date + emergencyName (fallback)
+          if (e.country && e.date) {
+            dupeIndex['cd:' + e.country + ':' + e.date + ':' + (e.emergencyName || '')] = true;
+          }
+        });
+
+        this.currentFile.forEach(function(row) {
+          try {
+            // Get raw values from mapped columns
+            var rawCountry = self.columnMapping.country ? (row[self.columnMapping.country] || '').toString().trim() : '';
+            var rawDate = self.columnMapping.date ? row[self.columnMapping.date] : '';
+            var rawEmergency = self.columnMapping.emergencyName ? (row[self.columnMapping.emergencyName] || '').toString().trim() : '';
+
+            // Skip empty rows
+            if (!rawCountry && !rawEmergency) {
+              return; // skip blank row
+            }
+
+            var classId = self.columnMapping.classificationId ? (row[self.columnMapping.classificationId] || '').toString().trim() : '';
+
+            // Enrich emergency name from classname lookup if available
+            if (Object.keys(self.classnameMap).length > 0 && classId && self.classnameMap[classId]) {
+              // If the raw emergency text is very long (details), prefer the short name from classname sheet
+              if (!rawEmergency || rawEmergency.length > 150) {
+                rawEmergency = self.classnameMap[classId];
+              }
+            }
+            // If emergency name is still very long, truncate for display
+            if (rawEmergency && rawEmergency.length > 200) {
+              rawEmergency = rawEmergency.substring(0, 197) + '...';
+            }
+
+            var parsedDate = self.parseDate(rawDate);
+            var rawSeverity = self.columnMapping.severity ? row[self.columnMapping.severity] : '';
+            var severity = (rawSeverity !== '' && rawSeverity !== null && rawSeverity !== undefined)
+              ? parseInt(rawSeverity, 10) : null;
+            if (isNaN(severity)) severity = null;
+
+            var rawStance = self.columnMapping.stance ? (row[self.columnMapping.stance] || '').toString().trim() : '';
+            var rawType = self.columnMapping.type ? (row[self.columnMapping.type] || '').toString().trim() : '';
+
+            var rawSpeed = self.columnMapping.processingSpeed ? (row[self.columnMapping.processingSpeed] || '').toString().trim().toLowerCase() : '';
+            var processingSpeed = '';
+            if (rawSpeed.includes('immediate') || rawSpeed.includes('12')) processingSpeed = 'immediate';
+            else if (rawSpeed.includes('rapid') || rawSpeed === '2') processingSpeed = 'rapid';
+            else if (rawSpeed.includes('standard') || rawSpeed === '5') processingSpeed = 'standard';
+
+            var rawReclass = self.columnMapping.reclassificationNumber ? row[self.columnMapping.reclassificationNumber] : '';
+            var reclassNum = (rawReclass !== '' && rawReclass !== null && rawReclass !== undefined)
+              ? parseInt(rawReclass, 10) : 1;
+            if (isNaN(reclassNum) || reclassNum < 1) reclassNum = 1;
+
+            var expDate = self.columnMapping.expirationDate ? self.parseDate(row[self.columnMapping.expirationDate]) : '';
+            if (!expDate && parsedDate) {
+              expDate = IRC.calculateExpirationDate(parsedDate);
+            }
+
+            // Check for duplicates — match on classificationId+reclass# OR country+date+emergency
+            var isDuplicate = false;
+            if (classId) {
+              isDuplicate = !!dupeIndex['id:' + classId + ':' + reclassNum];
+            }
+            if (!isDuplicate && rawCountry && parsedDate) {
+              isDuplicate = !!dupeIndex['cd:' + rawCountry + ':' + parsedDate + ':' + rawEmergency];
+            }
+
+            // Helper to grab a string field from mapped column
+            function getStr(field) {
+              return self.columnMapping[field] ? (row[self.columnMapping[field]] || '').toString().trim() : '';
+            }
+            function getDate(field) {
+              return self.columnMapping[field] ? self.parseDate(row[self.columnMapping[field]]) : '';
+            }
+
+            // Total affected population
+            var rawAffected = self.columnMapping.totalAffected ? row[self.columnMapping.totalAffected] : '';
+            var totalAffected = null;
+            if (rawAffected !== '' && rawAffected !== null && rawAffected !== undefined) {
+              totalAffected = parseFloat(rawAffected);
+              if (isNaN(totalAffected)) totalAffected = null;
+            }
+
+            // IPC4 used flag
+            var rawIpc4 = getStr('ipc4Used').toLowerCase();
+            var ipc4Used = rawIpc4 === 'yes' || rawIpc4 === 'true' || rawIpc4 === '1' ? true : (rawIpc4 ? false : null);
+
+            var record = {
+              id: IRC.uuid(),
+              classificationId: classId,
+              country: IRC.normalizeCountry(rawCountry),
+              region: self.columnMapping.region ? (row[self.columnMapping.region] || '').toString().trim() : '',
+              date: parsedDate,
+              expirationDate: expDate,
+              stance: IRC.normalizeStance(rawStance),
+              severity: severity,
+              emergencyName: rawEmergency,
+              type: IRC.normalizeType(rawType),
+              processingSpeed: processingSpeed,
+              reclassificationNumber: reclassNum,
+              previousSeverity: null,
+              totalAffected: totalAffected,
+              linkToSpreadsheet: getStr('linkToSpreadsheet'),
+              ipc4Used: ipc4Used,
+              hazardType: getStr('hazardType'),
+              sapTracking: getStr('sapTracking'),
+              uniqueId: getStr('uniqueId'),
+              notes: getStr('notes'),
+              dateRequestReceived: getDate('dateRequestReceived'),
+              dateSentForEntry: getDate('dateSentForEntry'),
+              dateReviewed: getDate('dateReviewed'),
+              dateApproved: getDate('dateApproved'),
+              dateExpirationNoticeSent: getDate('dateExpirationNoticeSent'),
+              whoEngagesCp: getStr('whoEngagesCp'),
+              entryBy: getStr('entryBy'),
+              reviewedBy: getStr('reviewedBy'),
+              approvedBy: getStr('approvedBy'),
+              notifSentBy: getStr('notifSentBy'),
+              raisedWithCpRegion: getStr('raisedWithCpRegion'),
+              codeNumber: getStr('codeNumber'),
+              createdAt: new Date().toISOString()
+            };
+
+            // Must have at least country to be valid (date can be missing for some records)
+            if (!isDuplicate && record.country) {
+              existing.push(record);
+              // Add to dupe index so subsequent rows in same file don't duplicate
+              if (classId) dupeIndex['id:' + classId + ':' + reclassNum] = true;
+              if (rawCountry && parsedDate) dupeIndex['cd:' + rawCountry + ':' + parsedDate + ':' + rawEmergency] = true;
+              imported++;
+            } else if (isDuplicate) {
+              skipped++;
+            } else {
+              errors++;
+            }
+          } catch (error) {
+            errors++;
+          }
+        });
+
+        IRC.saveClassifications(existing);
+        // Sync to Supabase
+        var self2 = this;
+        var replaceAll2 = replaceAll;
+        IRC.db.importBatch(existing, replaceAll2).then(function() {
+          self2.showImportSummary(imported, skipped, errors);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        }).catch(function() {
+          self2.showImportSummary(imported, skipped, errors);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        });
+      },
+
+      showImportSummary: function(imported, skipped, errors) {
+        var summary = 'Imported ' + imported + ' records';
+        if (skipped > 0) summary += ', skipped ' + skipped + ' duplicates';
+        if (errors > 0) summary += ', ' + errors + ' errors';
+
+        document.getElementById('importSummaryText').textContent = summary;
+        document.getElementById('importResult').style.display = 'block';
+        document.getElementById('mappingSection').style.display = 'none';
+      },
+
+      resetImportUI: function() {
+        this.currentFile = null;
+        this.columnMapping = {};
+        this.fileHeaders = [];
+        document.getElementById('fileInput').value = '';
+        document.getElementById('mappingSection').style.display = 'none';
+        document.getElementById('importResult').style.display = 'none';
+      },
+
+      // Export functionality
+      setupExport: function() {
+        var self = this;
+
+        document.getElementById('exportCsvBtn').addEventListener('click', function() {
+          self.exportAsCSV();
+        });
+
+        document.getElementById('exportJsonBtn').addEventListener('click', function() {
+          self.exportAsJSON();
+        });
+
+        document.getElementById('deleteAllBtn').addEventListener('click', function() {
+          self.deleteAllRecords();
+        });
+      },
+
+      deleteAllRecords: function() {
+        var records = IRC.getClassifications();
+        if (!records.length) {
+          alert('No records to delete.');
+          return;
+        }
+        var confirmed = confirm('Are you sure you want to delete ALL ' + records.length + ' records? This cannot be undone.');
+        if (!confirmed) return;
+        var doubleConfirm = confirm('This will permanently remove all classification data. Proceed?');
+        if (!doubleConfirm) return;
+
+        localStorage.removeItem('irc_classifications');
+        localStorage.removeItem('irc_data_repair_v2');
+
+        // Clear Supabase too
+        var self = this;
+        IRC.db.clearAll().then(function() {
+          self.loadBrowseTable();
+          var countEl = document.getElementById('totalRecordCount');
+          if (countEl) countEl.textContent = '0';
+          alert('All records have been deleted. You can now re-import your spreadsheets.');
+        }).catch(function() {
+          self.loadBrowseTable();
+          var countEl = document.getElementById('totalRecordCount');
+          if (countEl) countEl.textContent = '0';
+          alert('Local records deleted. Supabase sync may have failed — check connection.');
+        });
+      },
+
+      exportAsCSV: function() {
+        var records = IRC.getClassifications();
+        var headers = [
+          'classificationId', 'country', 'region', 'date', 'expirationDate',
+          'stance', 'severity', 'emergencyName', 'type',
+          'processingSpeed', 'reclassificationNumber', 'previousSeverity', 'createdAt'
+        ];
+        var headerLabels = [
+          'Classification ID', 'Country', 'IRC Region', 'Date Notification Sent',
+          'Expiration Date', 'Stance', 'Severity', 'Emergency Note/Details',
+          'Emergency Type', 'Processing Speed', 'Reclassification #',
+          'Previous Severity', 'Created At'
+        ];
+        var csv = headerLabels.join(',') + '\n';
+
+        records.forEach(function(record) {
+          var row = headers.map(function(h) {
+            var value = record[h];
+            if (value === null || value === undefined) value = '';
+            value = value.toString();
+            if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+              value = '"' + value.replace(/"/g, '""') + '"';
+            }
+            return value;
+          });
+          csv += row.join(',') + '\n';
+        });
+
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        var url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'irc_classifications_export.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      },
+
+      exportAsJSON: function() {
+        var records = IRC.getClassifications();
+        var backup = {
+          version: '2.0',
+          exportDate: new Date().toISOString(),
+          data: records
+        };
+
+        var json = JSON.stringify(backup, null, 2);
+        var blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
+        var link = document.createElement('a');
+        var url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'irc_classifications_backup.json');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      },
+
+      // Browse & search
+      setupSearch: function() {
+        var self = this;
+        document.getElementById('searchInput').addEventListener('input', function() {
+          self.currentPage = 1;
+          self.refreshDataTable();
+        });
+      },
+
+      setupSort: function() {
+        var self = this;
+        var headers = document.querySelectorAll('.data-table th.sortable');
+        headers.forEach(function(header) {
+          header.addEventListener('click', function() {
+            var field = this.getAttribute('data-field');
+            if (self.sortField === field) {
+              self.sortAsc = !self.sortAsc;
+            } else {
+              self.sortField = field;
+              self.sortAsc = true;
+            }
+            self.currentPage = 1;
+            self.refreshDataTable();
+          });
+        });
+      },
+
+      setupPagination: function() {
+        var self = this;
+        document.getElementById('prevPageBtn').addEventListener('click', function() {
+          if (self.currentPage > 1) {
+            self.currentPage--;
+            self.refreshDataTable();
+          }
+        });
+
+        document.getElementById('nextPageBtn').addEventListener('click', function() {
+          var maxPage = Math.ceil(self.allFilteredData.length / self.pageSize);
+          if (self.currentPage < maxPage) {
+            self.currentPage++;
+            self.refreshDataTable();
+          }
+        });
+      },
+
+      refreshDataTable: function() {
+        var self = this;
+        var records = IRC.getClassifications();
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+        // Filter — search across more fields now
+        this.allFilteredData = records.filter(function(r) {
+          var groupedRegion = IRC.getGroupedRegion(r.region) || '';
+          return (r.emergencyName || '').toLowerCase().includes(searchTerm) ||
+                 (r.country || '').toLowerCase().includes(searchTerm) ||
+                 (r.region || '').toLowerCase().includes(searchTerm) ||
+                 groupedRegion.toLowerCase().includes(searchTerm) ||
+                 (r.classificationId || '').toLowerCase().includes(searchTerm) ||
+                 (r.type || '').toLowerCase().includes(searchTerm);
+        });
+
+        // Sort
+        this.allFilteredData.sort(function(a, b) {
+          var aVal = a[self.sortField] || '';
+          var bVal = b[self.sortField] || '';
+
+          if (self.sortField === 'date') {
+            aVal = new Date(aVal).getTime() || 0;
+            bVal = new Date(bVal).getTime() || 0;
+          }
+          if (self.sortField === 'severity') {
+            aVal = parseFloat(aVal) || 0;
+            bVal = parseFloat(bVal) || 0;
+          }
+
+          if (aVal < bVal) return self.sortAsc ? -1 : 1;
+          if (aVal > bVal) return self.sortAsc ? 1 : -1;
+          return 0;
+        });
+
+        // Paginate
+        var start = (this.currentPage - 1) * this.pageSize;
+        var end = start + this.pageSize;
+        var pageData = this.allFilteredData.slice(start, end);
+
+        // Render table
+        var tbody = document.getElementById('dataTableBody');
+        tbody.innerHTML = '';
+
+        if (pageData.length === 0) {
+          var tr = document.createElement('tr');
+          var td = document.createElement('td');
+          td.colSpan = 10;
+          td.style.textAlign = 'center';
+          td.style.padding = '32px 16px';
+          td.style.color = '#999';
+          td.textContent = records.length === 0
+            ? 'No classifications yet. Import data above to get started.'
+            : 'No records match your search.';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        } else {
+          pageData.forEach(function(record) {
+            var tr = document.createElement('tr');
+            tr.style.cursor = 'pointer';
+            tr.addEventListener('click', function() {
+              window.location.href = 'classify.html?view=' + record.id;
+            });
+
+            var stanceLabel = (record.stance || '').charAt(0).toUpperCase() + (record.stance || '').slice(1);
+            var typeLabel = IRC.TYPE_LABELS[record.type] || record.type || '—';
+            var speedLabel = record.processingSpeed
+              ? (IRC.PROCESSING_SPEEDS[record.processingSpeed] ? IRC.PROCESSING_SPEEDS[record.processingSpeed].label : record.processingSpeed)
+              : '—';
+            var reclassLabel = record.reclassificationNumber ? '#' + record.reclassificationNumber : '—';
+
+            // Show expiry indicator in stance column
+            var stanceExtra = '';
+            if (record.expirationDate && IRC.isExpired(record.expirationDate)) {
+              stanceExtra = ' <span style="font-size:0.7em;color:#E52911;font-weight:600;">EXP</span>';
+            }
+
+            var cells = [
+              record.date ? IRC.formatDate(record.date) : '—',
+              record.classificationId || '—',
+              record.emergencyName || '—',
+              record.country || '—',
+              record.region || '—',
+              typeLabel,
+              record.severity !== null && record.severity !== undefined ? record.severity : '—',
+              stanceLabel,
+              speedLabel,
+              reclassLabel
+            ];
+
+            cells.forEach(function(cell, idx) {
+              var td = document.createElement('td');
+              if (idx === 7) { // stance column
+                td.className = 'stance-cell';
+                var color = IRC.STANCE_COLORS[(record.stance || '').toLowerCase()] || '#E9E9E9';
+                td.innerHTML = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + color + ';margin-right:6px;vertical-align:middle;"></span>' + cell + stanceExtra;
+              } else {
+                td.textContent = cell;
+              }
+              tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+          });
+        }
+
+        // Update count
+        document.getElementById('totalRecordsCount').textContent = records.length;
+
+        // Update pagination info
+        var total = this.allFilteredData.length;
+        var showStart = total > 0 ? start + 1 : 0;
+        var showEnd = Math.min(end, total);
+        document.getElementById('paginationInfo').textContent = 'Showing ' + showStart + '–' + showEnd + ' of ' + total;
+
+        // Update button states
+        document.getElementById('prevPageBtn').disabled = this.currentPage === 1;
+        document.getElementById('nextPageBtn').disabled = this.currentPage >= Math.ceil(total / this.pageSize);
+      }
+    };
+
+    // Initialize on page load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        DATA.init();
+      });
+    } else {
+      DATA.init();
+    }
+  </script>
+</body>
+</html>

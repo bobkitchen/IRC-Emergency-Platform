@@ -1,0 +1,19 @@
+{
+  "name": "irc-emergency-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "IRC Emergency Platform — Classification, Navigator & CRF Calculator",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build:shared && npm run build:classification && npm run build:navigator && npm run build:crf",
+    "build:shared": "npm -w @irc/shared run build",
+    "build:classification": "npm -w @irc/classification run build",
+    "build:navigator": "npm -w @irc/navigator run build",
+    "build:crf": "npm -w @irc/crf-calculator run build",
+    "dev:navigator": "npm -w @irc/navigator run dev",
+    "clean": "rm -rf apps/*/dist packages/*/dist"
+  }
+}

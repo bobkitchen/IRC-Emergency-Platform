@@ -1,0 +1,65 @@
+name: Deploy IRC Emergency Platform
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared package
+        run: npm run build:shared
+
+      - name: Build Classification app
+        run: npm run build:classification
+
+      - name: Build Navigator app
+        run: npm run build:navigator
+
+      - name: Build CRF Calculator app
+        run: npm run build:crf
+
+      # Deploy each app to its respective GitHub Pages repo
+      # Classification → emergency-classification repo
+      - name: Deploy Classification
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          external_repository: bobkitchen/emergency-classification
+          publish_branch: gh-pages
+          publish_dir: ./apps/classification
+          exclude_assets: 'package.json,build.js,node_modules,*.xlsx,*.csv,*.sql,~*'
+
+      # Navigator → emergency-response-navigator repo
+      - name: Deploy Navigator
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          external_repository: bobkitchen/emergency-response-navigator
+          publish_branch: gh-pages
+          publish_dir: ./apps/navigator/dist
+
+      # CRF Calculator → crf-calculator repo
+      - name: Deploy CRF Calculator
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          external_repository: bobkitchen/crf-calculator
+          publish_branch: gh-pages
+          publish_dir: ./apps/crf-calculator
+          exclude_assets: 'package.json,build.js,node_modules,irc-classification'

@@ -1,0 +1,27 @@
+{
+  "name": "@irc/shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared data, logic, Supabase config, design tokens and header for IRC Emergency Platform",
+  "type": "module",
+  "main": "dist/irc-shared.iife.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "default": "./dist/irc-shared.iife.js"
+    },
+    "./data": "./src/data.js",
+    "./supabase": "./src/supabase.js",
+    "./site-config": "./src/site-config.js",
+    "./design-tokens": "./src/design-tokens.css",
+    "./header": "./src/header.js",
+    "./utils": "./src/utils.js"
+  },
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@irc/crf-calculator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "IRC CRF Allocation Calculator",
+  "dependencies": {
+    "@irc/shared": "*"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "prebuild": "npm -w @irc/shared run build"
+  }
+}

@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply min-h-screen text-sm leading-[1.4] font-normal;
+  }
+  /* IRC Brand Type Scale:
+     Page title: 24px bold | Section head: 18px bold
+     Card title: 14px medium | Body: 14px regular | Caption: 12px regular */
+  h1 {
+    @apply text-2xl font-bold tracking-irc-tight;
+    line-height: 1;
+  }
+  h2 {
+    @apply text-lg font-bold tracking-irc-tight;
+    line-height: 1;
+  }
+  h3 {
+    @apply text-sm font-medium tracking-irc-tight;
+    line-height: 1;
+  }
+  h4 {
+    @apply text-sm font-medium tracking-irc-tight;
+    line-height: 1;
+  }
+  p, li, td {
+    line-height: 1.4;
+  }
+}
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium;
+  }
+  .badge-red {
+    @apply bg-red-100 text-irc-crisis-red;
+  }
+  .badge-orange {
+    @apply bg-amber-100 text-amber-800;
+  }
+  .badge-yellow {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  .badge-phase {
+    @apply bg-irc-gray-100 text-irc-gray-700;
+  }
+  .badge-new {
+    @apply bg-irc-gray-100 text-irc-gray-700;
+  }
+  .badge-existing {
+    @apply bg-irc-gray-100 text-irc-gray-500;
+  }
+  .card {
+    @apply bg-white rounded-xl border border-irc-gray-100 shadow-sm;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  .btn-primary {
+    @apply bg-irc-yellow text-black hover:bg-irc-yellow-light focus:ring-irc-yellow;
+  }
+  .btn-secondary {
+    @apply bg-black text-white hover:bg-irc-gray-700 focus:ring-irc-yellow;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-irc-gray-200 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-irc-gray-400;
+}
+
+/* Chat markdown styles */
+.chat-content h1, .chat-content h2, .chat-content h3, .chat-content h4 {
+  @apply font-bold mt-3 mb-1.5 tracking-irc-tight text-black;
+}
+.chat-content h1 { @apply text-base border-b border-irc-gray-200 pb-1; }
+.chat-content h2 { @apply text-sm; }
+.chat-content h3 { @apply text-sm text-irc-gray-700; }
+.chat-content h4 { @apply text-xs text-irc-gray-700 uppercase tracking-wide; }
+.chat-content p { @apply mb-2 leading-relaxed text-sm; }
+.chat-content ul, .chat-content ol { @apply mb-2 pl-5 text-sm; }
+.chat-content ul { list-style-type: disc !important; }
+.chat-content ol { list-style-type: decimal !important; }
+.chat-content li { @apply mb-1 leading-relaxed; }
+.chat-content li::marker { @apply text-irc-gray-500; }
+.chat-content strong { @apply font-bold text-black; }
+.chat-content em { @apply italic; }
+.chat-content code {
+  @apply bg-irc-gray-100 px-1.5 py-0.5 rounded text-xs font-mono;
+}
+.chat-content pre {
+  @apply bg-irc-gray-100 rounded-md p-3 overflow-x-auto my-2 text-xs;
+}
+.chat-content pre code {
+  @apply bg-transparent p-0;
+}
+.chat-content blockquote {
+  @apply border-l-4 border-irc-yellow pl-3 italic my-2 text-irc-gray-700;
+}
+.chat-content a {
+  @apply text-irc-gray-700 underline hover:text-black;
+}
+.chat-content table {
+  @apply w-full border-collapse text-xs my-2;
+}
+.chat-content th, .chat-content td {
+  @apply border border-irc-gray-200 px-2 py-1 text-left;
+}
+.chat-content th {
+  @apply bg-irc-gray-50 font-bold;
+}
+.chat-content hr {
+  @apply my-3 border-irc-gray-200;
+}
+.chat-content > *:first-child { @apply mt-0; }
+.chat-content > *:last-child { @apply mb-0; }
+
+/* Albert welcome avatar glow */
+@keyframes albert-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 199, 44, 0); }
+  50% { box-shadow: 0 0 12px 2px rgba(255, 199, 44, 0.3); }
+}
+.albert-ring {
+  animation: albert-glow 3s ease-in-out 1;
+}

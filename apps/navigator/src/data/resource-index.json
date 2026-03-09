@@ -1,0 +1,908 @@
+[
+  {
+    "name": "Emergency Classification System",
+    "url": "https://rescuenet.rescue.org/page/9865",
+    "sector": "Response Management",
+    "task": "Request Emergency Classification"
+  },
+  {
+    "name": "Sitrep guidance",
+    "url": "https://rescue.box.com/s/bx6oc858q4wh54vi8al2mnj89usm7i5c",
+    "sector": "Response Management",
+    "task": "Establish SitRep Protocols and External Sharing"
+  },
+  {
+    "name": "sitrep template",
+    "url": "https://rescue.box.com/s/5l7gitxjnyqv84rxaxu455h16rb6ou8t",
+    "sector": "Response Management",
+    "task": "Establish SitRep Protocols and External Sharing"
+  },
+  {
+    "name": "Crisis response activation call TOR",
+    "url": "https://rescue.box.com/s/m6s7ybmenf7d6rxzvykt09ke812sd85r",
+    "sector": "Response Management",
+    "task": "Setting Up Crisis Coordination Calls"
+  },
+  {
+    "name": "Assessment report template",
+    "url": "https://rescue.box.com/s/5qc8z0hgzrddte9hfhojib62qj0ogi4o",
+    "sector": "Response Management",
+    "task": "Finalize MSNA report and Input from TAs"
+  },
+  {
+    "name": "Assessment report example",
+    "url": "https://rescue.box.com/s/9776swave3x2p7v344vpkrsk54m97myh",
+    "sector": "Response Management",
+    "task": "Finalize MSNA report and Input from TAs"
+  },
+  {
+    "name": "Code Request Forms - RescueNet",
+    "url": "https://rescuenet.rescue.org/page/13687",
+    "sector": "Finance",
+    "task": "Set up Financial Dimensions ( D4/D5)"
+  },
+  {
+    "name": "Financial Dimension codes or change Operating Unit (D4) ownership",
+    "url": "https://rescuenet.rescue.org/page/13687?SearchId=9026220",
+    "sector": "Finance",
+    "task": "Set up Financial Dimensions ( D4/D5)"
+  },
+  {
+    "name": "Integra Incident - Employee Center",
+    "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
+    "sector": "Finance",
+    "task": "Set up Financial Dimensions ( D4/D5)"
+  },
+  {
+    "name": "MDMT Consolidated Request - Integra Self-Service (service-now.com)",
+    "url": "https://nethope.service-now.com/integra?id=sc_cat_item_guide&sys_id=bf0d6d4ddb481090658c7bedae9619ba&sysparm_category=4d9761f41b87091083121173b24bcb7e",
+    "sector": "Finance",
+    "task": "Coordinate with supply chain for vendors creation and set up in Integra for centralized payments (from HQ -EHAU Finance/ AP or another CO)"
+  },
+  {
+    "name": "Integra Reporting via Power BI - RescueNet",
+    "url": "https://rescuenet.rescue.org/page/14033",
+    "sector": "Finance",
+    "task": "Ensure that all deployed staff have access to Power BI/Integra"
+  },
+  {
+    "name": "Integra Access",
+    "url": "https://rescue.service-now.com/esc?id=sc_cat_item&table=sc_cat_item&sys_id=1330137d87d04a100c4184cd0ebb3518&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=1330137d87d04a100c4184cd0ebb3518",
+    "sector": "Finance",
+    "task": "Ensure that all deployed staff have access to Power BI/Integra"
+  },
+  {
+    "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
+    "sector": "Finance",
+    "task": "Set up budgets in Integra for BVAs and PBI (upload any updates)"
+  },
+  {
+    "name": "Dimension Guide (v11).pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/kdi6a1qgu3hwjwn9b65tyynrtjqvvktf",
+    "sector": "Finance",
+    "task": "Set up budgets in Integra for BVAs and PBI (upload any updates)"
+  },
+  {
+    "name": "(66) CRRD Budget Tools (blank) | Powered by Box",
+    "url": "https://rescue.app.box.com/folder/149783156120?s=nnhkvuhaode85ep20fiowe0nz1lgbo6e",
+    "sector": "Finance",
+    "task": "Set up budgets in Integra for BVAs and PBI (upload any updates)"
+  },
+  {
+    "name": "Quick Steps for Uploading Budgets.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/mojgnzgr1go0qufegl0kygsipm9fkjpe",
+    "sector": "Finance",
+    "task": "Set up budgets in Integra for BVAs and PBI (upload any updates)"
+  },
+  {
+    "name": "CRRD Integra Training & Adoption - RescueNet",
+    "url": "https://rescuenet.rescue.org/page/IntegraCRRD",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "UG_Accounts Payable.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/zjm4c66s8sntty734yn8kooom02r5doy",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "UG_Accounts Receivable.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/305sod1588fq0nlqfw490gvc5v12ww90",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "UG_Journal Upload and Journal Entries.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/8e15xxu7nqfidaasemsg5mlc7tnqxlv8",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "UG_Month-end Close Workbook.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/t2q5prmmd8cfj5fbo5t96w4vkkm1pgyj",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "UG_Cash_and_Bank_Management.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/8lzhw34zf74qq7kzjqaya4t20f41rocg",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "UG_Intercompany Accounting.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/gw0wt7nwu9koeb3wyq2ch7esd29rzugs",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) Userguide_Item Forecasting to Purchase Order Creation.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/4twt369oe61j9i1epk07b4ojk34cz75n",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) Programs User Guide - Item Forecast, Quality Inspection, and Picking.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/nenm958rwbcvtcdtwv50aqg2uona66b0",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) UG_Procure to Confirm - GLOBAL.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/44js15eg0wloyt0790ckl59v02acmeka",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "Userguide_ Purchase Order Cancellation Scenarios and Procedures.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/jzqknz2xzjplg5xdfklgsw0uhcxve5il",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) Userguide_Procurement Reviews and Approvals.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/rxhib9edm5i66gph24q5io0828kdzp5n",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) Userguide_Product Receipt and Dispatch.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/zz6eddu8a92pjlqh2omk7uy8uozwdq6s",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) PO Accounting Treatment Guidance.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/tjiqyg9aqwb0smxbjx8nwr41j3e2yr7u",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) Userguide_Fixed Assets.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/zavccsgm9vu63pcoyhq8k623n9p8xq29",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) Userguide_Inventory Management.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/36bydq6qgof3qjckvpel4texwi4zwwkh",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) UG_Inventory Transfers and Returns - CRRD.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/3rc9ewpnldd6udiwlqhttakk3sazilo2",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "(EN) Userguide_Expense Management.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/0mfqp8i53tfgm3s0rqt9kjbirfwbjzdj",
+    "sector": "Finance",
+    "task": "Provide guidance on Integra and Power BI Training"
+  },
+  {
+    "name": "Bank Account Form Request",
+    "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=7183023e1b882210a853a970604bcbeb",
+    "sector": "Finance",
+    "task": "Determine bank requirements for opening account(S) and foreign currency holdings"
+  },
+  {
+    "name": "New Bank Account Form Request Process",
+    "url": "https://rescue.box.com/s/50x7z494k53opacvyst980lzsy17oo7i",
+    "sector": "Finance",
+    "task": "Determine bank requirements for opening account(S) and foreign currency holdings"
+  },
+  {
+    "name": "2. IRC Policy - Cash and Banking .pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/5w03cf18fhexoqtu2c1d0j9hdrnwtzh1",
+    "sector": "Finance",
+    "task": "Determine bank requirements for opening account(S) and foreign currency holdings"
+  },
+  {
+    "name": "Centralized Vendor Payment",
+    "url": "https://rescue.app.box.com/s/cwstjnzshybqlaodiv24atsg5l3rkpwa?",
+    "sector": "Finance",
+    "task": "Figure out your cashflow ( Identify cash transfer modalities - Cash equivalents transferred in and out, method of transfer and payments - Programs/Travel advances and Suppliers/Vendors etc.)"
+  },
+  {
+    "name": "Signatory Authority and Delegation Policy - RescueNet",
+    "url": "https://rescuenet.rescue.org/page/4120?SearchId=8079033",
+    "sector": "Finance",
+    "task": "Ensure DOA are completed and submitted to Legal Unit"
+  },
+  {
+    "name": "Sample Standard Authorization Matrix",
+    "url": "https://rescuenet.rescue.org/page/4120?SearchId=8079033",
+    "sector": "Finance",
+    "task": "Establish authorization matrix and workflow in Integra"
+  },
+  {
+    "name": "Sample Expanded Authorization Matrix",
+    "url": "https://rescue.box.com/s/ytlond4fuhoge17rapjtwxxdmre3rlvy",
+    "sector": "Finance",
+    "task": "Establish authorization matrix and workflow in Integra"
+  },
+  {
+    "name": "ERT Deployment Budget Scenarios - Sample",
+    "url": "https://rescue.box.com/s/kk6bachhc9piztonww39dmmkvclkb260",
+    "sector": "Finance",
+    "task": "Prepare/Update a response operating budget (6-12 month"
+  },
+  {
+    "name": "Sample Operating Budget Template",
+    "url": "https://rescue.box.com/s/pqh97dd02g4j334ejbq797sg2yxaa62v",
+    "sector": "Finance",
+    "task": "Prepare/Update a response operating budget (6-12 month"
+  },
+  {
+    "name": "Cost Allocation Policy",
+    "url": "https://rescue.app.box.com/file/1777915763352?s=h90gu2nmms3kvhjrc1cflm2bubhigrq9",
+    "sector": "Finance",
+    "task": "Prepare/Update a response operating budget (6-12 month"
+  },
+  {
+    "name": "CAM Policy Clarifications",
+    "url": "https://rescue.box.com/s/s8t8r2ny2d2nutxuptk6w3kvz883ob9n",
+    "sector": "Finance",
+    "task": "Prepare/Update a response operating budget (6-12 month"
+  },
+  {
+    "name": "CAM Budget Tool",
+    "url": "https://rescue.box.com/s/kjy0nz0j6grujuh1s2drf9gcdivzo6ct",
+    "sector": "Finance",
+    "task": "Prepare/Update a response operating budget (6-12 month"
+  },
+  {
+    "name": "Deployment Terms and Conditions- 2023",
+    "url": "https://rescue.box.com/s/6vh3hpn35dmktvrviiuctmm5ohuc97db",
+    "sector": "Finance",
+    "task": "Ensure that DDF understand the costing of ERT staff deployed for the response"
+  },
+  {
+    "name": "Finance Policies",
+    "url": "https://rescuenet.rescue.org/page/14266",
+    "sector": "Finance",
+    "task": "Share to all deployed staff IRC/ERT Manual/PEERS ( Finance/ Supply chain and Partnership Teams) the links to finance policies and procedures."
+  },
+  {
+    "name": "IRC Finance Policy & Procedures_ Sep24.pdf | Powered by Box",
+    "url": "https://rescue.app.box.com/s/gp0fss2xna4sbgdig7h5fse5z96ogb0p",
+    "sector": "Finance",
+    "task": "Share to all deployed staff IRC/ERT Manual/PEERS ( Finance/ Supply chain and Partnership Teams) the links to finance policies and procedures."
+  },
+  {
+    "name": "Start up Project Support Guidance",
+    "url": "https://rescue.app.box.com/s/2i8eav280e0973b6i1irs032e4yqo39z",
+    "sector": "Finance",
+    "task": "Share to all deployed staff IRC/ERT Manual/PEERS ( Finance/ Supply chain and Partnership Teams) the links to finance policies and procedures."
+  },
+  {
+    "name": "CRRD Per Diem SOP",
+    "url": "https://rescue.box.com/s/d126ouq3sagwyj8w34maqlrzo2g71u26",
+    "sector": "Finance",
+    "task": "Expenses Management : Establish local per diem and set it up in Integra"
+  },
+  {
+    "name": "New Secruity Role Definitions.xlsx | Powered by Box",
+    "url": "https://rescue.app.box.com/s/1k9e5f7k5scy848bnzd1a9q45sby4tbf",
+    "sector": "Finance",
+    "task": "Create/update Integra security role"
+  },
+  {
+    "name": "Bank Account Form | ServiceNow NetHope Service Desk (service-now.com)",
+    "url": "https://nethope.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1%26sysparm_id%3Da5e2f0dc1bbba51083121173b24bcb1f%26sysparm_link_parent%3D703d3aa8dbbf4050658c7bedae9619a8%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dcatalog_default",
+    "sector": "Finance",
+    "task": "Ensure bank signatories are updated"
+  },
+  {
+    "name": "Monthend Checklist",
+    "url": "https://rescue.box.com/s/3gbutzvz7fmrpaaorhuk9u5vkj7beyo1",
+    "sector": "Finance",
+    "task": "Review NY submission & reporting requirements with finance staff and CD"
+  },
+  {
+    "name": "Analytical package - June 2024 KV.xlsx | Powered by Box",
+    "url": "https://rescue.app.box.com/s/93gotklsrqp01aggz9zykg33yhge94lx/file/1598166822071",
+    "sector": "Finance",
+    "task": "Prepare/Update Analytical Pacakge"
+  },
+  {
+    "name": "Shared Cost Budgeting Tool",
+    "url": "https://rescue.box.com/s/obzr7r92xsfjrld96otgdtfarjco5r1r",
+    "sector": "Finance",
+    "task": "Coordinate with the DDF to develop CAM for the response main and field offices."
+  },
+  {
+    "name": "Finance Staff Sample JD",
+    "url": "https://rescue.box.com/s/6s9hw7yc8decsfs0jg45pvmc2o9043uj",
+    "sector": "Finance",
+    "task": "Develop job descriptions for required staff, with HR grade positions and establish salary levels"
+  },
+  {
+    "name": "CRRD Projected Funding",
+    "url": "https://rescue.box.com/s/o2n2am3oxcncqs8avzsrnl04a0d7arhs",
+    "sector": "Finance",
+    "task": "Prepare/Update Funding Projection Template"
+  },
+  {
+    "name": "Link to Integra BVA",
+    "url": "https://app.powerbi.com/groups/me/apps/40d074fe-1782-40de-afd0-93ba57c14bdd/reports/5f45480e-7bd1-469c-97dc-2294a444d3ff/ReportSection796a91e71cb8c5ad2b21?experience=power-bi",
+    "sector": "Finance",
+    "task": "Prepare budget versus actuals"
+  },
+  {
+    "name": "Finance Handover Checklist",
+    "url": "https://rescue.box.com/s/7k0v6tub499u8ut9omyj2ldc68q0sr5d",
+    "sector": "Finance",
+    "task": "Prepare handover notes and complete handover checklist"
+  },
+  {
+    "name": "Questions to select Legal Counsel",
+    "url": "https://rescue.box.com/s/yxme7iakaln55m66s7mfk2mqwlboniow",
+    "sector": "People & Culture",
+    "task": "Begin the process of identifying and contracting an adequate local labor attorney. Sometimes IRC's Office of the General Counsel can provide a recommendation, other times there needs to be an assessment done locally."
+  },
+  {
+    "name": "Labor Law Checklist for New Country Program",
+    "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
+    "sector": "People & Culture",
+    "task": "Identify, with the support of the chosen labor attorney, the key labor laws and regulations that impact employment procedures and relationships"
+  },
+  {
+    "name": "Strategy 100 - Country Program Structure Guidance",
+    "url": "https://rescue.app.box.com/s/shrtn6av3d2ndadrcgmtbvgc5ccec4ns",
+    "sector": "People & Culture",
+    "task": "Develop Staffing Structure / Plan + Request ERT/GST Deployments as needed"
+  },
+  {
+    "name": "Template Org. Chart (please use \"Save As\" before editing)",
+    "url": "https://intrescue-my.sharepoint.com/:u:/g/personal/maia_kirch_rescue_org/Ecp7IfGCciBDg2EOGvS2SssB7dwxd86JH3lzM32zzTETjA?e=kuaYRt",
+    "sector": "People & Culture",
+    "task": "Develop Staffing Structure / Plan + Request ERT/GST Deployments as needed"
+  },
+  {
+    "name": "Template Recruitment Tracker",
+    "url": "https://rescue.box.com/s/f38i0sn976j9lijqssjo4tluae6uc7st",
+    "sector": "People & Culture",
+    "task": "Develop Staffing Structure / Plan + Request ERT/GST Deployments as needed"
+  },
+  {
+    "name": "DMS Request Form",
+    "url": "https://nethope.service-now.com/sp?id=sc_cat_item&sys_id=f2ea0c4b1b257c5083121173b24bcb50",
+    "sector": "People & Culture",
+    "task": "Develop Staffing Structure / Plan + Request ERT/GST Deployments as needed"
+  },
+  {
+    "name": "Standard Recruitment Guide",
+    "url": "https://rescue.app.box.com/s/1jssaa7mq4inw7p7gcl2mhxtbfj80qdi",
+    "sector": "People & Culture",
+    "task": "Develop Staffing Structure / Plan + Request ERT/GST Deployments as needed"
+  },
+  {
+    "name": "Template R&R Policy",
+    "url": "https://rescue.box.com/s/s5qlqr5dhpovebhkwotkdj48nc0jp45b",
+    "sector": "People & Culture",
+    "task": "Establish an R&R policy to apply to deploying and long-term hired staff members."
+  },
+  {
+    "name": "Template - National Employee Handbook",
+    "url": "https://rescue.box.com/s/ofy1w6w85zytgyfup93xsxoft7mw3cij",
+    "sector": "People & Culture",
+    "task": "Develop Staff Handbook for National Staff"
+  },
+  {
+    "name": "New Employee Setup & Account Creation",
+    "url": "https://rescuenet.rescue.org/page/17961?SearchId=0",
+    "sector": "People & Culture",
+    "task": "Reach out to hroperations.support@rescue.org to ensure the new country location and local currency are updated/inputted into the following systems: \r\n1) HR Operations forms such as RRH, ECR, PTAR; \r\n2) Anti-Terrorism Check System; and \r\n3) People Directory and Workday (please note you will be asked to provide an address - this does not need to be specific and can be updated at a later date)"
+  },
+  {
+    "name": "R&R Tracker",
+    "url": "https://rescue.box.com/s/2fu5idcxl6gnn3cbxgzg37h63gy4he4g",
+    "sector": "People & Culture",
+    "task": "Begin tracking the R&R dates and schedule for deployed and hired staff. Ensure managers have visibility in order to properly plan the re-distribution of work for the needed periods"
+  },
+  {
+    "name": "Benefit Decisions Matrix",
+    "url": "https://rescue.box.com/s/6bht3oxokmrv5stiy1drsayf6ee5ypa7",
+    "sector": "People & Culture",
+    "task": "Identify additional benefit offerings (beyond those required by the IRC) that are appropriate based on the local standards and regulations, and the broader region"
+  },
+  {
+    "name": "Incentive Worker Manual Template",
+    "url": "https://rescue.box.com/s/oma19pnjfvz4az4e20iqz01rcpfmtvtz",
+    "sector": "People & Culture",
+    "task": "Develop, as needed and if in alignment with local laws, an Incentive Workers Handbook."
+  },
+  {
+    "name": "Duty of Care Site",
+    "url": "https://doc.rescue.org/",
+    "sector": "People & Culture",
+    "task": "Create a Duty of Care Plan for local and deployed staff"
+  },
+  {
+    "name": "Report a Wrongdoing Factsheet",
+    "url": "https://rescue.app.box.com/s/rjjmh07kghtzm43e23jvs441elnbvvk4/folder/242444483275",
+    "sector": "People & Culture",
+    "task": "Share/print and put up Safeguarding & Raising Concern materials around the office"
+  },
+  {
+    "name": "HR Partnership Assessment Guidance",
+    "url": "https://rescue.box.com/s/xtlmspplbtrtsfi474hvn23i0dwkjkq2",
+    "sector": "People & Culture",
+    "task": "Review partner alignment with IRC P&C standards as part of the pre-award and partnership agreement stages."
+  },
+  {
+    "name": "Staff Data Collection Documents",
+    "url": "https://rescue.box.com/s/rv74ykm82jk07p7n86uvhoeopzrtof0c",
+    "sector": "People & Culture",
+    "task": "Develop standard for the collection of staff documentation in alignment with local labor laws"
+  },
+  {
+    "name": "IRC Investigation Guidelines",
+    "url": "https://rescuenet.rescue.org/Utilities/Uploads/Handler/Uploader.ashx?area=composer&filename=ECU+Investigation+Guidelines+FINAL+4_30_2020+4.pdf&fileguid=d27bfaed-9efe-4265-bc2a-4b80ff52235a",
+    "sector": "People & Culture",
+    "task": "Manage employee relations and employee safeguarding issues with care, objectivity and integrity."
+  },
+  {
+    "name": "Organizational Policies",
+    "url": "https://rescuenet.rescue.org/page/7766?SearchId=7735590",
+    "sector": "People & Culture",
+    "task": "Ensure key policies are shared in a standardize manner with new staff and that fliers are placed around office to remind staff of IRC standards"
+  },
+  {
+    "name": "Project Design Meeting",
+    "url": "https://rescuenet.rescue.org/page/17527",
+    "sector": "People & Culture",
+    "task": "Support the establishment of SMT meeting routines. Support SMT in becoming acquainted with PDM meeting process and standards."
+  },
+  {
+    "name": "P&C RescueNet Page",
+    "url": "https://rescuenet.rescue.org/interact/Pages/Section/Default.aspx?Section=16046",
+    "sector": "People & Culture",
+    "task": "Train newly hired P&C/HR staff on IRC global, regional, and local standards, guidelines, systems, ways of working, available documentation, contacts and communications. Introduce local HR team to regional and global P&C support groups."
+  },
+  {
+    "name": "People Management at the IRC",
+    "url": "https://rescuenet.rescue.org/page/17201?SearchId=8169074",
+    "sector": "People & Culture",
+    "task": "Provide new managers with specified onboarding process to highlight management & leadership standards, confirm culture and communication expectations, feedback sharing and management tools, etc."
+  },
+  {
+    "name": "Procurement Policies & Procedures",
+    "url": "https://rescuenet.rescue.org/page/7334",
+    "sector": "Supply Chain",
+    "task": "Perform market survey."
+  },
+  {
+    "name": "https://lca.logcluster.org/",
+    "url": "https://lca.logcluster.org/",
+    "sector": "Supply Chain",
+    "task": "Perform market survey."
+  },
+  {
+    "name": "Fleet & Logistics Policies & Procedures",
+    "url": "https://rescuenet.rescue.org/page/7510",
+    "sector": "Supply Chain",
+    "task": "Develop Vehicle Use Policy."
+  },
+  {
+    "name": "Asset & Inventory Policies & Procedures",
+    "url": "https://rescuenet.rescue.org/page/7356?SearchId=0",
+    "sector": "Supply Chain",
+    "task": "Contract warehouse space."
+  },
+  {
+    "name": "Pharmaceutical Policies & Procedures",
+    "url": "https://rescuenet.rescue.org/page/7527",
+    "sector": "Supply Chain",
+    "task": "Confirm if procuring medical commodities / pharmaceuticals & nutrition commodities . Work with Pharma TA (Health), Dir Emergencies & Health SC & Pharma Procurement Mgr & Pharma QA focal point to ensure end-to-end procurement, warehousing & transport plan is in place for all required commodities."
+  },
+  {
+    "name": "https://rescuenet.rescue.org/page/7356?SearchId=0",
+    "url": "https://rescuenet.rescue.org/page/7356?SearchId=0",
+    "sector": "Supply Chain",
+    "task": "Ensure assets tracker in place & equipment assignment forms are completed for each asset"
+  },
+  {
+    "name": "Proceed on initial SRA steps, so to facilitate a more comprehensive Rapid SRA. This need to take place pre-deployment in a desk exercise. Also, check which are the legal requirements for both safety & security in coordination with HR.",
+    "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+    "sector": "Safety & Security",
+    "task": "Security Risk Analysis (SRA) preparation"
+  },
+  {
+    "name": "With the support (when applicable) of other departments, identify operational and logistic requirements. This will ensure that during the first days of the deployment, there will not be surprises.",
+    "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+    "sector": "Safety & Security",
+    "task": "Operational and Logistics requirements"
+  },
+  {
+    "name": "Pre-departure briefing including the identified risks, possible access constraints, as well as any gender-sensitive component. Upon finalising this step, staff should sign informed consent forms, including their responsibilities on S&S.",
+    "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+    "sector": "Safety & Security",
+    "task": "Pre-departure briefing"
+  },
+  {
+    "name": "A small paragraph (half page maximum), which is a common message of what IRC is, what it is doing in this country/area and what it plans to do in the future. ALL STAFF MUST KNOW AND BE ABLE TO COMMUNICATE.",
+    "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+    "sector": "Safety & Security",
+    "task": "Country's Profile Brief"
+  },
+  {
+    "name": "- All staffs need to submit PoL form to designated focal point\r\n- All national and local staffs need to submit a PoL upon onboarding and before commencing any professional relationship with IRC",
+    "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+    "sector": "Safety & Security",
+    "task": "Creation of Proof of Life database"
+  },
+  {
+    "name": "This form need to be kept at all time during a mission, for liability reasons, as we as for after-mission analysis",
+    "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+    "sector": "Safety & Security",
+    "task": "Actor Mapping"
+  },
+  {
+    "name": "Adjust and contextualize the Pre Arrival Briefing Template, taking as consideration the SRA and the observations of the operational environments, including all necessary information for a traveler.",
+    "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+    "sector": "Safety & Security",
+    "task": "Creation/Update of Pre Arrival Briefing"
+  },
+  {
+    "name": "Creation of On Arrival Briefing based on the SRA and the overall context",
+    "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+    "sector": "Safety & Security",
+    "task": "On-Arrival Briefing"
+  },
+  {
+    "name": "Taking as consideration the findings of the SRA, budget the security needs and present them to CD for revision. This need to be backed by the SRA as well as the non-security value (recommended add program's value).",
+    "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+    "sector": "Safety & Security",
+    "task": "Budgeting exercise"
+  },
+  {
+    "name": "Mandatory for any Security Level 3 and above, regardless of secured funding",
+    "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+    "sector": "Safety & Security",
+    "task": "Initiate Local Recruitment Process"
+  },
+  {
+    "name": "Fill in all contact details with all known actors who might affect the IRC operations/programs",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Creation contact list"
+  },
+  {
+    "name": "Reminder should be given to all staff about the mandate to report any incident(s) affecting IRC assets, programs, staff, reputation",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Establish and implement Incident Reporting and Management Mechanism"
+  },
+  {
+    "name": "The document have itself guidance and smooth sequence approach. At this stage, paradigm shift of assessment is not mandatory but recommended so to be more flexible and fast, while in the first change, more comprehensive assessments needs to be conducted. Ensure that during the process, you reflect the local legal requirements, both for safety and security.",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Security Risk Assessment Review"
+  },
+  {
+    "name": "Creation of Temporary Safety & Security Memo including all basic Rules and Regulations, based on the SRA.",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Establish temporary Security Regulations"
+  },
+  {
+    "name": "Proceed on infrastructure assessment of the identified/proposed IRC office/compound.",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Infrastructure Assessment"
+  },
+  {
+    "name": "Keep contacts appearing on the constant companion limited so the following: CD, CSFP, HR, Supply Chain, RSSD and/or Emergency S&S Snr. Co, EHAU VP, Snr. P&Ops Dir and DO NOT INCLUDE PERSONAL NAMES.",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Creation of Constant Companion card and communication modalities"
+  },
+  {
+    "name": "With the support and coordination of Supply Chain and HR, implement Movement Authorization timelines.",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Movements' control"
+  },
+  {
+    "name": "Establish frequent and regular vehicle safety checks, identifying possible actions points and improvements.",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Vehicle Safety Checklist"
+  },
+  {
+    "name": "Creation of communication cascade system / warden tree for IRC operational area, including all IRC staff.",
+    "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+    "sector": "Safety & Security",
+    "task": "Establish Warden System"
+  },
+  {
+    "name": "Creation of SOP, based on the identified risks and challenges.",
+    "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+    "sector": "Safety & Security",
+    "task": "Office and Residential Security"
+  },
+  {
+    "name": "Creation SOP taking as consideration the identified risks, as well as the legal framework of the targetd country.",
+    "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+    "sector": "Safety & Security",
+    "task": "Security Communications"
+  },
+  {
+    "name": "Prepare a contingency plan based on local realities and legal and perception concerns",
+    "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+    "sector": "Safety & Security",
+    "task": "Road Traffic Accident Protocols"
+  },
+  {
+    "name": "In conjuction with Medical Facilities and Medical Emergency (shall threat is in high risk level), approach this threat. This should be attemted to mitigated both from likelihood and impact, in both proactive and reactive approach. Although IRC has no general SOPs/CPs, specific SOPs/CPs per disease might be available. Contact your RSSD for more information.",
+    "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+    "sector": "Safety & Security",
+    "task": "Proceed on comprehensive assessment on Illness diseases."
+  },
+  {
+    "name": "HEAT training is preferred but an in-person delivery of a relevant training is acceptable.",
+    "url": "https://rescue.box.com/s/2uh77zitbr4u8hwk8fqesli2wwlx414m",
+    "sector": "Safety & Security",
+    "task": "Establish mitigation measures to prevent and respond to armed robbery"
+  },
+  {
+    "name": "If risk is very high and threat is probable, reach out to security and humanitarian access professional.",
+    "url": "https://rescue.box.com/s/t55xcqahzlgbwctwmpck263zni1g9ns9",
+    "sector": "Safety & Security",
+    "task": "Establish relevant mitigation measures for threats related to Arrest/Detention"
+  },
+  {
+    "name": "All staff should have an idea, prior to movement, of actors in country and what they should and could expect at a checkpoint; an active movement monitoring system must be in place.",
+    "url": "https://rescue.box.com/s/so0j3cn8q0ltpq7baxjm4pg1f43t7iij",
+    "sector": "Safety & Security",
+    "task": "Establish relevant mitigation measures for checkpoints."
+  },
+  {
+    "name": "Draft a FSMP -even if not complete- with the available information at the time",
+    "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+    "sector": "Safety & Security",
+    "task": "Field Security Management Plan"
+  },
+  {
+    "name": "Creation of MedEvac CP, including information about existing hospitals/clinics/emergency response mechanism, as well as the relevant ISOS office.\r\n\r\nIdentify all options and modalities and prepare MedEvac plan;",
+    "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+    "sector": "Safety & Security",
+    "task": "Medical Evacuation"
+  },
+  {
+    "name": "Creation SOP and CP for Sexual Violence, including legal framework; interface with Health, Gender Unit, Legal and/or Duty of Care if/where appropriate. As a core responsibility of the organization and all its staffs, this subject must be coordinated with safeguarding leads, security focal points (local and HQ or Region), under the leadership of the CD.",
+    "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+    "sector": "Safety & Security",
+    "task": "Establish mitigation measures to prevent and respond to the threat of sexual violence."
+  },
+  {
+    "name": "HR to identify legal (local laws) needs on Occupational Health and Safety; Security to advise; Supply Chain to procure",
+    "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+    "sector": "Safety & Security",
+    "task": "Fire Safety"
+  },
+  {
+    "name": "Contextualise as appropriate and, if necessary, develop separate risk analysis",
+    "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+    "sector": "Safety & Security",
+    "task": "Cash Management"
+  },
+  {
+    "name": "Establish information security protocols, including procurement of IT equipment, shrenders, etc.",
+    "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
+    "sector": "Safety & Security",
+    "task": "Information Security"
+  },
+  {
+    "name": "Creation of SFG for each field office, as well as IMT. When and if it is applicable, CIMT should also be created.",
+    "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
+    "sector": "Safety & Security",
+    "task": "ToR Security Focal Groups / IMT"
+  },
+  {
+    "name": "Proceed on a comprehensive SRA, based/challenging the existing Rapid SRA findings. Gain CD support to retain time of cross-cutting section of staffs for collaborative and comprehensive process (1-2days workshop)",
+    "url": "https://rescue.box.com/s/mnsraf2dbzfbbw9l3purx2lcvfgyphp2",
+    "sector": "Safety & Security",
+    "task": "Update SRA"
+  },
+  {
+    "name": "Review with Technical Focal Point (RSSD or Emergency Safety & Security Senior Coordinator)",
+    "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
+    "sector": "Safety & Security",
+    "task": "Prepare handover note for new CSFP"
+  },
+  {
+    "name": "Cash TA",
+    "url": "https://rescue.app.box.com/folder/287401417955",
+    "sector": "Technical Programs",
+    "task": "R1.2 Assess cash readiness"
+  },
+  {
+    "name": "Supply Chain",
+    "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
+    "sector": "Technical Programs",
+    "task": "R1.3 Commence contracting of financial service provider (FSP) if none is contracted, or if we require a new or back up FSP."
+  },
+  {
+    "name": "MU Box Protocol Guidance",
+    "url": "https://rescue.app.box.com/s/obqaild0gggkzbemncbu4x5j81nwnmz1",
+    "sector": "MEAL",
+    "task": "Setup a response MEAL folder"
+  },
+  {
+    "name": "Desk Review Template",
+    "url": "https://rescue.app.box.com/file/1149922570459",
+    "sector": "MEAL",
+    "task": "Conduct multisector needs assessment"
+  },
+  {
+    "name": "MSNA tools",
+    "url": "https://rescuenet.rescue.org/page/18569",
+    "sector": "MEAL",
+    "task": "Conduct multisector needs assessment"
+  },
+  {
+    "name": "Assessment Report Template",
+    "url": "https://rescue.app.box.com/file/1208605512937?s=5qc8z0hgzrddte9hfhojib62qj0ogi4o",
+    "sector": "MEAL",
+    "task": "Conduct multisector needs assessment"
+  },
+  {
+    "name": "CRF Logframe Template",
+    "url": "https://rescue.app.box.com/s/hyucu64v6jakttw45b240cn2wg3iws4x",
+    "sector": "MEAL",
+    "task": "Develop Response Plan Logframe"
+  },
+  {
+    "name": "IRC MEAL Plan Template",
+    "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
+    "sector": "MEAL",
+    "task": "Develop Response MEAL Plan, Set Baseline & Define Targets"
+  },
+  {
+    "name": "IRC MEAL Handbook",
+    "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
+    "sector": "MEAL",
+    "task": "Develop Response MEAL Plan, Set Baseline & Define Targets"
+  },
+  {
+    "name": "Guidance on country MEAL costs",
+    "url": "https://rescue.app.box.com/s/q3mg6q9fuor70eagr6xvnpzkdeztgkz4",
+    "sector": "MEAL",
+    "task": "Ensure Adequate Budgeting for MEAL Resources, Tools, and Capacity"
+  },
+  {
+    "name": "IRC ITT Template",
+    "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
+    "sector": "MEAL",
+    "task": "Response Reach Tracker"
+  },
+  {
+    "name": "IRC Partnership Excellence for Equality and Results (PEER) System",
+    "url": "https://rescue.app.box.com/s/7sxpitlfcy4dvxcd9z8a4rb76shbla9d",
+    "sector": "MEAL",
+    "task": "Assess and Strengthen Partner MEAL Capacity"
+  },
+  {
+    "name": "Emergency Monitoring Handbook",
+    "url": "https://rescue.app.box.com/file/775682615620",
+    "sector": "MEAL",
+    "task": "Implement MEAL activities and ensure data quality"
+  },
+  {
+    "name": "PID or PCM Dashboard",
+    "url": "https://rescue.app.box.com/s/fh4eydc3jnll0dhoy4cr46vo7rm9z6i7",
+    "sector": "MEAL",
+    "task": "Implement MEAL activities and ensure data quality"
+  },
+  {
+    "name": "1.\tClient Responsiveness Toolkit For Emergencies_EN.pdf | Powered by Box\r\n\r\n2.\t6. CR Tools for Partners | Powered by Box",
+    "url": "https://rescue.app.box.com/file/1808728220953",
+    "sector": "MEAL",
+    "task": "Complaints and Feedback Mechanism (CFM)"
+  },
+  {
+    "name": "Standard Operating Procedures (SOPs) template",
+    "url": "https://rescue.app.box.com/s/4pg02ie4qwyletj8n9u65rlp621yyjbq",
+    "sector": "MEAL",
+    "task": "Complaints and Feedback Mechanism (CFM)"
+  },
+  {
+    "name": "IRC Client Responsiveness and Accountability to Affected Populations",
+    "url": "https://kayaconnect.org/course/view.php?id=2162",
+    "sector": "MEAL",
+    "task": "Complaints and Feedback Mechanism (CFM)"
+  },
+  {
+    "name": "Client Feedback Registry Toolkit v2- Configuration Matrix",
+    "url": "https://rescue.app.box.com/s/kgv08tuofjdgyknhrdpbafvmu8t9o43s/folder/184578603237",
+    "sector": "MEAL",
+    "task": "Complaints and Feedback Mechanism (CFM)"
+  },
+  {
+    "name": "Client-Centered Programming",
+    "url": "https://rescuenet.rescue.org/page/17277",
+    "sector": "MEAL",
+    "task": "Complaints and Feedback Mechanism (CFM)"
+  },
+  {
+    "name": "Guidance to Communicate with Communities for Safeguarding Prevention and Reporting",
+    "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
+    "sector": "MEAL",
+    "task": "Complaints and Feedback Mechanism (CFM)"
+  },
+  {
+    "name": "Client Feedback Registry",
+    "url": "https://rescuenet.rescue.org/page/18426",
+    "sector": "MEAL",
+    "task": "Complaints and Feedback Mechanism (CFM)"
+  },
+  {
+    "name": "Client Satisfaction Survey Toolkit",
+    "url": "https://rescuenet.rescue.org/page/18335?SearchId=7364267",
+    "sector": "MEAL",
+    "task": "Conduct Client Satisfaction Survey"
+  },
+  {
+    "name": "Program Indicator Dashboard (PID)",
+    "url": "https://rescuenet.rescue.org/page/18506?SearchId=8928631",
+    "sector": "MEAL",
+    "task": "Setup Program dashboard indicator- PID v2 or V3"
+  },
+  {
+    "name": "PID User Guide for end-users",
+    "url": "https://rescue.app.box.com/s/z41cg5f1yz2xwu960c6iiuaupcg0q9my",
+    "sector": "MEAL",
+    "task": "Setup Program dashboard indicator- PID v2 or V3"
+  },
+  {
+    "name": "MEAL Budget",
+    "url": "https://rescuenet.rescue.org/page/13776",
+    "sector": "MEAL",
+    "task": "Recruit MEAL Staff"
+  },
+  {
+    "name": "MEAL and CCRA job descriptions",
+    "url": "https://rescue.app.box.com/s/49ytlqeoobwk9ze9q11c1xegiclm1gbm/folder/133651937133",
+    "sector": "MEAL",
+    "task": "Recruit MEAL Staff"
+  },
+  {
+    "name": "MEAL Onboarding",
+    "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=15294",
+    "sector": "MEAL",
+    "task": "Recruit MEAL Staff"
+  },
+  {
+    "name": "After Action Review  Facilitation Guide",
+    "url": "https://rescue.app.box.com/file/775682703220?s=8bdtnd0me1cdo8glvwctxlxfp4lxsjxo",
+    "sector": "MEAL",
+    "task": "MEAL Coordinator to contact the EHAU MEAL team to organize an After Action Review (AAR)"
+  }
+]

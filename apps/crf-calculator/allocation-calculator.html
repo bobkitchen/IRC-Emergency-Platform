@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRF Allocation Calculator — IRC</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --irc-yellow: #FFC72C;
+      --irc-yellow-light: #FFD44B;
+      --irc-yellow-lightest: #FFF4D6;
+      --black: #000000;
+      --white: #FFFFFF;
+      --light-gray: #F6F6F6;
+      --mid-gray: #D1D1D1;
+      --dark-gray: #383838;
+      --muted: #6B6B6B;
+      --warning: #C4421A;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--black);
+      background: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--black);
+      padding: 20px 24px;
+    }
+
+    .header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-container svg {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    .header-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      line-height: 1.2;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    /* ── Sections ── */
+    .calc-section {
+      margin-bottom: 32px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--dark-gray);
+      margin-bottom: 8px;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--mid-gray);
+      margin-bottom: 32px;
+    }
+
+    /* ── Country selector ── */
+    .country-select {
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--black);
+      background: var(--light-gray);
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      padding: 14px 20px;
+      transition: border-color 0.15s ease;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 44px;
+    }
+
+    .country-select:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      background-color: var(--white);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    .country-meta {
+      margin-top: 8px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .country-meta span {
+      font-weight: 600;
+      color: var(--dark-gray);
+    }
+
+    /* ── Input fields ── */
+    .number-input {
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      background: var(--light-gray);
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      padding: 16px 20px;
+      transition: border-color 0.15s ease;
+      -moz-appearance: textfield;
+    }
+
+    .number-input::-webkit-outer-spin-button,
+    .number-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .number-input:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      background: var(--white);
+    }
+
+    .number-input::placeholder {
+      color: var(--mid-gray);
+      font-weight: 400;
+    }
+
+    /* ── Population row (side by side) ── */
+    .pop-row {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--mid-gray);
+    }
+
+    .pop-col-input {
+      flex: 1;
+      min-width: 0;
+      padding: 16px 20px;
+      background: var(--light-gray);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .pop-col-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .pop-col-input .number-input {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      padding: 4px 0;
+      font-size: 2rem;
+      border-bottom: 2px solid var(--mid-gray);
+    }
+
+    .pop-col-input .number-input:focus {
+      border-bottom-color: var(--irc-yellow);
+      background: transparent;
+    }
+
+    .pop-col-target {
+      flex: 1.15;
+      min-width: 0;
+      background: var(--black);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .target-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--irc-yellow);
+      margin-bottom: 6px;
+    }
+
+    .target-input {
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--white);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 0;
+      outline: none;
+      -moz-appearance: textfield;
+      transition: border-color 0.15s ease;
+    }
+
+    .target-input::-webkit-outer-spin-button,
+    .target-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .target-input:focus {
+      border-bottom-color: var(--irc-yellow);
+    }
+
+    .target-input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 400;
+    }
+
+    .target-hint {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .target-hint strong {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* ── Response stance buttons ── */
+    .stance-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stance-btn {
+      flex: 1;
+      padding: 18px 16px;
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      background: var(--light-gray);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .stance-btn:hover:not(.selected) {
+      border-color: var(--dark-gray);
+      background: var(--white);
+    }
+
+    .stance-btn:active {
+      transform: scale(0.97);
+    }
+
+    .stance-btn-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .stance-btn-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    /* Orange stance */
+    .stance-btn[data-stance="orange"].selected {
+      border-color: #E87722;
+      background: #FFF3E8;
+    }
+
+    .stance-btn[data-stance="orange"] .stance-btn-name {
+      color: #E87722;
+    }
+
+    .stance-btn[data-stance="orange"].selected .stance-btn-sub {
+      color: #B55E1A;
+    }
+
+    /* Red stance */
+    .stance-btn[data-stance="red"].selected {
+      border-color: #C4421A;
+      background: #FFF0EB;
+    }
+
+    .stance-btn[data-stance="red"] .stance-btn-name {
+      color: #C4421A;
+    }
+
+    .stance-btn[data-stance="red"].selected .stance-btn-sub {
+      color: #9A3414;
+    }
+
+    .stance-hint {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .stance-hint strong {
+      color: var(--dark-gray);
+    }
+
+    .stance-auto-badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--irc-yellow-lightest);
+      color: var(--dark-gray);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .stance-not-eligible {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: var(--light-gray);
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.4;
+      display: none;
+    }
+
+    /* ── Total cost card (dark top) ── */
+    .total-cost-card {
+      background: var(--black);
+      border-radius: 12px;
+      padding: 28px 24px;
+      margin-bottom: 0;
+    }
+
+    .total-cost-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--irc-yellow);
+      margin-bottom: 4px;
+    }
+
+    .total-cost-amount {
+      font-size: 2.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .total-cost-sub {
+      margin-top: 12px;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.4;
+    }
+
+    .total-cost-sub strong {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 700;
+    }
+
+    .total-cost-placeholder {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.35);
+      font-weight: 400;
+    }
+
+    /* ── Allocation card (white bottom) ── */
+    .allocation-card {
+      border: 2px solid var(--black);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 28px 24px;
+      background: var(--white);
+    }
+
+    /* ── Coverage selector label ── */
+    .selector-label {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+
+    /* ── Coverage buttons ── */
+    .coverage-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .coverage-btn {
+      flex: 1;
+      padding: 14px 4px;
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      background: var(--light-gray);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .coverage-btn:hover:not(.selected) {
+      border-color: var(--irc-yellow);
+      background: var(--irc-yellow-lightest);
+    }
+
+    .coverage-btn:active {
+      transform: scale(0.97);
+    }
+
+    .coverage-btn.selected {
+      border: 2px solid var(--black);
+      background: var(--irc-yellow);
+    }
+
+    .coverage-btn-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      line-height: 1.1;
+    }
+
+    .coverage-btn-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    .coverage-btn.selected .coverage-btn-label {
+      color: var(--black);
+    }
+
+    /* ── Results panel ── */
+    .results-panel {
+      display: flex;
+      gap: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--mid-gray);
+    }
+
+    .result-col {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .result-col-crf {
+      background: var(--black);
+    }
+
+    .result-col-gap {
+      background: var(--light-gray);
+    }
+
+    .result-col-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .result-col-crf .result-col-label {
+      color: var(--irc-yellow);
+    }
+
+    .result-col-gap .result-col-label {
+      color: var(--muted);
+    }
+
+    .result-people {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .result-col-crf .result-people {
+      color: var(--white);
+    }
+
+    .result-col-gap .result-people {
+      color: var(--black);
+    }
+
+    .result-people-label {
+      font-size: 0.8125rem;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .result-col-crf .result-people-label {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .result-col-gap .result-people-label {
+      color: var(--muted);
+    }
+
+    .result-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .result-col-crf .result-amount {
+      color: var(--irc-yellow);
+    }
+
+    .result-col-gap .result-amount {
+      color: var(--dark-gray);
+    }
+
+    .result-amount-label {
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+
+    .result-col-crf .result-amount-label {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .result-col-gap .result-amount-label {
+      color: var(--muted);
+    }
+
+    /* ── Ceiling warning ── */
+    .ceiling-warning {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #FFF0EB;
+      border: 1px solid var(--warning);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      color: var(--warning);
+      font-weight: 600;
+      line-height: 1.4;
+      display: none;
+    }
+
+    /* ── Split bar ── */
+    .split-bar {
+      height: 10px;
+      border-radius: 5px;
+      background: var(--mid-gray);
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .split-bar-crf {
+      height: 100%;
+      background: var(--irc-yellow);
+      border-radius: 5px 0 0 5px;
+      transition: width 0.3s ease;
+    }
+
+    .split-bar-gap {
+      height: 100%;
+      flex: 1;
+    }
+
+    /* ── Empty state ── */
+    .allocation-empty {
+      border: 2px dashed var(--mid-gray);
+      border-radius: 12px;
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9375rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 3px solid var(--black);
+      padding: 32px 24px;
+      background: var(--light-gray);
+    }
+
+    .footer-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .footer-methodology {
+      margin-bottom: 24px;
+    }
+
+    .footer-methodology h2 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+
+    .footer-methodology p {
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+    }
+
+    .footer-methodology p + p {
+      margin-top: 8px;
+    }
+
+    .footer-legal {
+      font-size: 0.75rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .pop-row {
+        flex-direction: column;
+      }
+
+      .pop-col-target {
+        flex: none;
+      }
+
+      .results-panel {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-inner {
+        gap: 14px;
+      }
+
+      .logo-container svg {
+        height: 32px;
+      }
+
+      .header-title {
+        font-size: 1rem;
+      }
+
+      main {
+        padding: 24px 16px 40px;
+      }
+
+      .number-input {
+        font-size: 1.5rem;
+        padding: 14px 16px;
+      }
+
+      .target-input {
+        font-size: 1.5rem;
+      }
+
+      .total-cost-card {
+        padding: 20px;
+      }
+
+      .total-cost-amount {
+        font-size: 2rem;
+      }
+
+      .allocation-card {
+        padding: 20px;
+      }
+
+      .selector-label {
+        font-size: 1.125rem;
+      }
+
+      .coverage-btn {
+        padding: 12px 4px;
+      }
+
+      .coverage-btn-num {
+        font-size: 1.375rem;
+      }
+
+      .result-people {
+        font-size: 1.375rem;
+      }
+
+      .result-amount {
+        font-size: 1.5rem;
+      }
+
+      .result-col {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div class="logo-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="287 160 220 300" aria-label="International Rescue Committee logo">
+          <defs><style>.cls-1{fill:#ffc72c;}</style></defs>
+          <g>
+            <rect class="cls-1" x="287.52" y="163.66" width="216" height="288"/>
+            <g>
+              <path d="M322.31,422.88c-.12.32-.36.88-.84,1.46-.69.8-1.78,1.5-3.36,1.5-2.58,0-4.55-1.89-4.55-5.14s2.14-5.08,4.62-5.08c3.03,0,3.75,2.33,3.97,3l-1.82.48c-.03-.18-.11-.59-.36-.96-.21-.31-.75-.86-1.75-.86-1.58,0-2.69,1.31-2.69,3.39,0,2.22,1.17,3.45,2.7,3.45.91,0,1.46-.44,1.86-.96.32-.42.44-.78.51-1.01l1.71.72ZM338.46,425.84c-1.23,0-2.36-.34-3.35-1.49-.96-1.12-1.3-2.39-1.3-3.61,0-2.98,2.01-5.12,4.67-5.12,2.41,0,4.67,1.79,4.66,5.11-.01,2.79-1.7,5.11-4.69,5.11ZM338.48,417.28c-1.67,0-2.79,1.35-2.79,3.38,0,2.19,1.21,3.5,2.83,3.5,1.21,0,2.77-.88,2.81-3.22.04-1.9-.94-3.66-2.85-3.66ZM364.52,415.86v9.73h-1.78l.17-8-2.1,8h-1.64l-2.11-8,.18,8h-1.78v-9.73h2.65l1.9,7.22,1.86-7.22h2.65ZM386.34,415.86v9.73h-1.78l.16-8-2.09,8h-1.64l-2.11-8,.18,8h-1.78v-9.73h2.65l1.9,7.22,1.86-7.22h2.65ZM400.95,415.86v9.73h-1.79v-9.73h1.79ZM420.17,417.52h-2.69v8.08h-1.82v-8.08h-2.63v-1.65h7.14v1.65ZM438.54,417.52h-2.69v8.08h-1.82v-8.08h-2.63v-1.65h7.14v1.65ZM452.33,417.49v2.29h4.69v1.57h-4.69v2.6h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13ZM471.57,417.49v2.29h4.69v1.57h-4.69v2.6h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13Z"/>
+              <path d="M313.99,190.13h163.05v62.86h-54.96l54.96,54.96v45.23h-45.23l-54.96-54.96v54.96h-62.86v-163.05Z"/>
+              <path d="M315.79,366.42v9.73h-1.79v-9.73h1.79ZM329.18,366.42h1.79v9.73h-1.58l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM344.37,368.07h-2.69v8.08h-1.82v-8.08h-2.63v-1.66h7.14v1.66ZM352.35,368.04v2.29h4.69v1.57h-4.69v2.61h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13ZM364.63,366.42h3.1c1.3.01,2.16.01,3.02.7.61.5,1.08,1.27,1.08,2.4,0,1.86-1.36,2.51-1.92,2.68l2.17,3.96h-2.08l-1.93-3.61h-1.63v3.61h-1.81v-9.73ZM366.43,367.99v3.05h.63c.62,0,.85-.01,1.2-.03.4-.01,1.71-.08,1.71-1.51,0-.2-.01-.92-.77-1.31-.38-.19-.85-.21-1.93-.21h-.84ZM384.67,366.42h1.79v9.73h-1.59l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM398.67,374.25h-3.65l-.56,1.91h-1.95l3.28-9.73h2.07l3.32,9.73h-1.95l-.56-1.91ZM398.18,372.66l-1.34-4.48-1.35,4.48h2.69ZM412.48,368.07h-2.69v8.08h-1.82v-8.08h-2.63v-1.66h7.14v1.66ZM420.48,366.42v9.73h-1.79v-9.73h1.79ZM431.75,376.4c-1.23,0-2.36-.35-3.35-1.49-.96-1.12-1.29-2.39-1.29-3.61,0-2.98,2.01-5.13,4.67-5.13,2.41,0,4.67,1.79,4.66,5.12-.01,2.78-1.7,5.11-4.69,5.11ZM431.76,367.83c-1.67,0-2.79,1.35-2.79,3.38,0,2.19,1.21,3.5,2.83,3.5,1.21,0,2.77-.88,2.81-3.23.04-1.9-.94-3.65-2.85-3.65ZM448.75,366.42h1.79v9.73h-1.59l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM462.74,374.25h-3.65l-.56,1.91h-1.95l3.28-9.73h2.07l3.33,9.73h-1.94l-.57-1.91ZM462.26,372.66l-1.34-4.48-1.35,4.48h2.69ZM473.18,374.5h3.86v1.66h-5.7v-9.75h1.84v8.09Z"/>
+              <path d="M313.99,382.77h13.2c2.51,0,4.91.15,6.52.83,3.52,1.49,4.57,5.1,4.57,7.65,0,.98-.11,3.34-2.02,5.29-1.05,1.13-2.18,1.54-3.41,2.03l6.45,10.69h-9.3l-5.13-9.33h-2.48v9.33h-8.4v-26.48ZM322.39,388.32v6.15h3.49c1.39,0,4.05-.07,4.05-3.04s-2.62-3.11-4.08-3.11h-3.45ZM342.79,382.77h20.96v5.82h-12.58v3.91h11.75v5.75h-11.75v5.25h13.7v5.74h-22.09v-26.48ZM374,400.08c.75,1.16,1.39,2.14,3.68,2.89,1.09.38,2.44.6,3.72.6.68,0,3.98-.07,3.98-1.99,0-.19,0-1.17-1.46-1.65-.94-.34-5.82-1.2-6.91-1.47-2.44-.64-7.21-2.14-7.21-7.7,0-1.17.26-2.37.75-3.42,1.73-3.91,6.2-5.44,10.96-5.44,3.04,0,5.79.6,7.97,1.69,1.99.98,2.97,2.02,3.91,3l-5.25,4.39c-.41-.53-.86-1.12-2-1.73-1.54-.75-3.57-.97-4.92-.97-1.43,0-3,.38-3,1.72,0,1.28,1.35,1.59,3.64,2,5.86,1.02,11.72,2.07,11.72,8.64,0,2.78-1.16,4.73-2.37,5.97-3.34,3.41-8.64,3.41-10.11,3.41-1.99,0-4.09-.19-6.16-.79-4.2-1.2-6.16-3.56-7.36-5.03l6.42-4.13ZM422.96,402.41c-.67,1.28-1.31,2.48-2.59,3.75-2.71,2.66-6.5,3.9-10.29,3.9-9.46,0-13.74-7.14-13.74-13.93s4.77-14.35,13.74-14.35c4.02,0,7.85,1.43,10.62,4.28,1.13,1.16,1.65,2.06,2.22,3.11l-7.02,3.46c-.68-1.55-1.95-4.36-5.48-4.36-1.84,0-3,.86-3.57,1.42-1.99,1.89-1.99,4.89-1.99,5.94,0,3.94,1.46,7.66,5.59,7.66,3.9,0,5.07-3.45,5.37-4.35l7.13,3.46ZM426.27,382.77h8.38v16.53c0,1.13.04,2.29.98,3.19.68.72,1.69.98,2.67.98,1.31,0,2.18-.49,2.67-.94.97-.93,1.01-2.1,1.01-3.23v-16.53h8.45v14.09c0,3.04,0,6.98-3.11,9.95-1.92,1.8-4.99,3.15-9.08,3.15s-7.29-1.28-9.24-3.15c-2.6-2.55-2.64-5.52-2.71-8.3v-15.74ZM454.96,382.77h20.96v5.82h-12.55v3.91h11.72v5.75h-11.72v5.25h13.67v5.74h-22.08v-26.48Z"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="header-title">CRF Allocation Calculator</div>
+    </div>
+  </header>
+
+  <!-- Calculator -->
+  <main>
+
+    <!-- Country selector -->
+    <div class="calc-section">
+      <div class="section-label">Emergency Country</div>
+      <select class="country-select" id="country-select">
+        <option value="">Select a country…</option>
+      </select>
+      <div class="country-meta" id="country-meta"></div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Population inputs -->
+    <div class="calc-section">
+      <div class="section-label">Affected Population &amp; IRC Target</div>
+      <div class="pop-row">
+        <div class="pop-col-input">
+          <div class="pop-col-label">Affected Population</div>
+          <input
+            type="text"
+            id="affected-pop"
+            class="number-input"
+            inputmode="numeric"
+            placeholder="e.g. 2,000,000"
+            autocomplete="off"
+          />
+        </div>
+        <div class="pop-col-target" id="target-col">
+          <div class="target-label">IRC Target Population</div>
+          <input
+            type="text"
+            id="target-pop"
+            class="target-input"
+            inputmode="numeric"
+            placeholder="10% auto"
+            autocomplete="off"
+          />
+          <div class="target-hint" id="target-hint">Defaults to 10% — editable</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Response stance -->
+    <div class="calc-section">
+      <div class="section-label">Emergency Classification</div>
+      <div class="stance-buttons" id="stance-buttons">
+        <button class="stance-btn" data-stance="orange" type="button">
+          <div class="stance-btn-name">Orange</div>
+          <div class="stance-btn-sub">Ceiling: $1M</div>
+        </button>
+        <button class="stance-btn" data-stance="red" type="button">
+          <div class="stance-btn-name">Red</div>
+          <div class="stance-btn-sub">Ceiling: $2M</div>
+        </button>
+      </div>
+      <div class="stance-hint" id="stance-hint">Select the emergency response stance to set the allocation ceiling.</div>
+      <div class="stance-not-eligible" id="stance-not-eligible">Based on the affected population and country profile, this emergency would be classified <strong>Yellow or White</strong>, which does not qualify for CRF allocation. You can override this by selecting a stance above.</div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Allocation section -->
+    <div class="calc-section">
+      <div class="section-label">CRF Allocation</div>
+
+      <!-- Total funding card (dark top) -->
+      <div class="total-cost-card" id="total-cost-card">
+        <div class="total-cost-label" id="total-cost-label">Total funding needed to serve 10% of the affected population (6 months)</div>
+        <div class="total-cost-amount" id="total-cost-amount">
+          <span class="total-cost-placeholder">Enter affected population above</span>
+        </div>
+        <div class="total-cost-sub" id="total-cost-sub" style="display: none;">
+          <strong id="total-cost-people">—</strong> people &times; $47.34 per person over 6 months
+        </div>
+      </div>
+
+      <!-- Allocation card (white bottom) — hidden until inputs provided -->
+      <div class="allocation-card" id="allocation-card" style="display: none;">
+
+        <!-- Coverage selector -->
+        <div class="selector-label">CRF funds programming for</div>
+
+        <div class="coverage-buttons" id="coverage-buttons">
+          <button class="coverage-btn selected" data-coverage="1" type="button">
+            <div class="coverage-btn-num">1%</div>
+            <div class="coverage-btn-label">of affected people</div>
+          </button>
+          <button class="coverage-btn" data-coverage="2" type="button">
+            <div class="coverage-btn-num">2%</div>
+            <div class="coverage-btn-label">of affected people</div>
+          </button>
+          <button class="coverage-btn" data-coverage="3" type="button">
+            <div class="coverage-btn-num">3%</div>
+            <div class="coverage-btn-label">of affected people</div>
+          </button>
+        </div>
+
+        <!-- Split bar -->
+        <div class="split-bar">
+          <div class="split-bar-crf" id="split-bar-crf" style="width: 10%;"></div>
+          <div class="split-bar-gap"></div>
+        </div>
+
+        <!-- Results panel -->
+        <div class="results-panel">
+          <div class="result-col result-col-crf">
+            <div class="result-col-label">CRF Serves</div>
+            <div class="result-people" id="crf-people">—</div>
+            <div class="result-people-label">people</div>
+            <div class="result-amount" id="crf-amount">—</div>
+            <div class="result-amount-label">CRF allocation</div>
+          </div>
+          <div class="result-col result-col-gap">
+            <div class="result-col-label">Additional Funding Required</div>
+            <div class="result-people" id="gap-people">—</div>
+            <div class="result-people-label">people still need support</div>
+            <div class="result-amount" id="gap-amount">—</div>
+            <div class="result-amount-label">to be raised from donors</div>
+          </div>
+        </div>
+
+        <!-- Ceiling warning -->
+        <div class="ceiling-warning" id="ceiling-warning">
+          This allocation exceeds $2M. Consider whether the CRF pool can sustain this alongside other active emergencies.
+        </div>
+
+      </div>
+
+      <!-- Empty state -->
+      <div class="allocation-empty" id="allocation-empty">
+        Enter an affected population to see allocation options
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-methodology">
+        <h2>Methodology</h2>
+        <p>
+          This calculator estimates CRF allocations using the IRC's standard per-client cost
+          of <strong>$47.34</strong>, representing the average direct program cost per person served across IRC
+          emergency responses over 6 months. The IRC target population defaults to 10% of the affected population,
+          adjustable based on operational access and feasibility.
+        </p>
+        <p>
+          Coverage options represent the percentage of the total affected population that CRF funds directly,
+          from <strong>1%</strong> up to <strong>3%</strong> of affected people. The remaining gap represents
+          the external fundraising required to reach the IRC's 10% response goal.
+          All figures are rounded to the nearest $25,000.
+        </p>
+      </div>
+      <div class="footer-legal">
+        &copy; International Rescue Committee. For internal use only.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Load shared platform bundle -->
+  <script src="irc-shared.iife.js"></script>
+  <script>
+    (function () {
+      // Pull shared data from @irc/shared
+      var STANCE_MATRIX = IRCShared.STANCE_MATRIX;
+      var COUNTRIES = IRCShared.COUNTRIES;
+
+      var PER_CLIENT_COST = 47.34;
+      var DEFAULT_COVERAGE = 1;
+
+      var STANCE_CEILINGS = { orange: 1000000, red: 2000000 };
+
+      // ── Severity thresholds: affected population ──
+      var AFFECTED_THRESHOLDS = [
+        [500, 1], [23000, 2], [88000, 3], [160000, 4], [330000, 5],
+        [550000, 6], [1000000, 7], [1800000, 8], [2500000, 9], [4000000, 10]
+      ];
+
+      // ── Severity thresholds: proportion affected (affected / country pop) ──
+      var PROPORTION_THRESHOLDS = [
+        [0.0002, 1], [0.0009, 2], [0.001, 3], [0.0021, 4], [0.008, 5],
+        [0.0131, 6], [0.03, 7], [0.078, 8], [0.14, 9], [0.2, 10]
+      ];
+
+      // STANCE_MATRIX and COUNTRIES loaded from IRCShared at top of this function
+
+      // ── DOM refs ──
+      var countrySelect = document.getElementById('country-select');
+      var countryMeta = document.getElementById('country-meta');
+      var affectedInput = document.getElementById('affected-pop');
+      var targetInput = document.getElementById('target-pop');
+      var targetHint = document.getElementById('target-hint');
+      var totalCostLabel = document.getElementById('total-cost-label');
+      var totalCostAmount = document.getElementById('total-cost-amount');
+      var totalCostSub = document.getElementById('total-cost-sub');
+      var totalCostPeople = document.getElementById('total-cost-people');
+      var totalCostCard = document.getElementById('total-cost-card');
+      var allocationCard = document.getElementById('allocation-card');
+      var allocationEmpty = document.getElementById('allocation-empty');
+      var coverageButtons = document.querySelectorAll('.coverage-btn');
+      var splitBarCrf = document.getElementById('split-bar-crf');
+      var crfPeopleEl = document.getElementById('crf-people');
+      var crfAmountEl = document.getElementById('crf-amount');
+      var gapPeopleEl = document.getElementById('gap-people');
+      var gapAmountEl = document.getElementById('gap-amount');
+      var ceilingWarning = document.getElementById('ceiling-warning');
+      var stanceButtons = document.querySelectorAll('.stance-btn');
+      var stanceHint = document.getElementById('stance-hint');
+      var stanceNotEligible = document.getElementById('stance-not-eligible');
+
+      // ── State ──
+      var selectedCountry = null; // {name, pop, pv, rob}
+      var affectedPop = 0;
+      var targetPop = 0;
+      var targetManuallyEdited = false;
+      var selectedCoverage = DEFAULT_COVERAGE;
+      var selectedStance = null;
+      var stanceManuallyOverridden = false;
+      var totalCost = 0;
+
+      // ── Populate country dropdown ──
+      COUNTRIES.sort(function (a, b) { return a[0].localeCompare(b[0]); });
+      COUNTRIES.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c[0];
+        opt.textContent = c[0];
+        countrySelect.appendChild(opt);
+      });
+
+      // ── Helpers ──
+      function formatNum(n) { return n.toLocaleString('en-US'); }
+      function formatCurrency(n) { return '$' + n.toLocaleString('en-US'); }
+      function roundToNearest25K(n) { return Math.round(n / 25000) * 25000; }
+
+      function getSeverity(affected, countryPop) {
+        var sevAffected = 0;
+        for (var i = AFFECTED_THRESHOLDS.length - 1; i >= 0; i--) {
+          if (affected >= AFFECTED_THRESHOLDS[i][0]) { sevAffected = AFFECTED_THRESHOLDS[i][1]; break; }
+        }
+        var sevProportion = 0;
+        if (countryPop > 0) {
+          var proportion = affected / countryPop;
+          for (var j = PROPORTION_THRESHOLDS.length - 1; j >= 0; j--) {
+            if (proportion >= PROPORTION_THRESHOLDS[j][0]) { sevProportion = PROPORTION_THRESHOLDS[j][1]; break; }
+          }
+        }
+        return Math.max(sevAffected, sevProportion);
+      }
+
+      function lookupStance(severity, pv, rob) {
+        if (severity < 1) return 'white';
+        var sevKey = String(Math.min(severity, 10));
+        var pvKey = String(Math.max(1, Math.min(pv, 4)));
+        var robKey = String(Math.max(0, Math.min(rob, 5)));
+        var sevMatrix = STANCE_MATRIX[sevKey];
+        if (!sevMatrix) return 'white';
+        var pvMatrix = sevMatrix[pvKey];
+        if (!pvMatrix) return 'white';
+        return pvMatrix[robKey] || 'white';
+      }
+
+      function formatInput(input) {
+        var raw = input.value.replace(/[^0-9]/g, '');
+        if (raw === '') { input.value = ''; return 0; }
+        var num = parseInt(raw, 10);
+        var selStart = input.selectionStart;
+        var beforeCursor = input.value.substring(0, selStart).replace(/[^0-9]/g, '').length;
+        input.value = formatNum(num);
+        var digitCount = 0, newPos = 0;
+        for (var i = 0; i < input.value.length; i++) {
+          if (/[0-9]/.test(input.value[i])) digitCount++;
+          if (digitCount === beforeCursor) { newPos = i + 1; break; }
+        }
+        if (beforeCursor === 0) newPos = 0;
+        input.setSelectionRange(newPos, newPos);
+        return num;
+      }
+
+      function formatTargetInput(input) {
+        var raw = input.value.replace(/[^0-9]/g, '');
+        if (raw === '') { input.value = ''; return 0; }
+        var num = parseInt(raw, 10);
+        input.value = formatNum(num);
+        return num;
+      }
+
+      // ── Country selection ──
+      countrySelect.addEventListener('change', function () {
+        var name = this.value;
+        selectedCountry = null;
+        if (name) {
+          for (var i = 0; i < COUNTRIES.length; i++) {
+            if (COUNTRIES[i][0] === name) {
+              selectedCountry = { name: COUNTRIES[i][0], pop: COUNTRIES[i][1], pv: COUNTRIES[i][2], rob: COUNTRIES[i][3] };
+              break;
+            }
+          }
+        }
+        if (selectedCountry) {
+          countryMeta.innerHTML = 'Population: <span>' + formatNum(selectedCountry.pop) + '</span> · Pre-crisis vulnerability: <span>' + selectedCountry.pv + '</span> · Robustness: <span>' + selectedCountry.rob + '</span>';
+        } else {
+          countryMeta.innerHTML = '';
+        }
+        stanceManuallyOverridden = false;
+        updateAutoStance();
+        calculate();
+      });
+
+      // ── Affected population ──
+      affectedInput.addEventListener('input', function () {
+        affectedPop = formatInput(this);
+        if (!targetManuallyEdited && affectedPop > 0) {
+          targetPop = Math.round(affectedPop * 0.1);
+          targetInput.value = formatNum(targetPop);
+        } else if (affectedPop === 0 && !targetManuallyEdited) {
+          targetPop = 0;
+          targetInput.value = '';
+        }
+        if (!stanceManuallyOverridden) updateAutoStance();
+        updateTargetHint();
+        calculate();
+      });
+
+      // ── Target population ──
+      targetInput.addEventListener('input', function () {
+        targetManuallyEdited = true;
+        targetPop = formatTargetInput(this);
+        updateTargetHint();
+        calculate();
+      });
+
+      function updateTargetHint() {
+        if (affectedPop > 0 && targetPop > 0) {
+          var pct = (targetPop / affectedPop) * 100;
+          var pctStr = pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
+          targetHint.innerHTML = '<strong>' + pctStr + '%</strong> of affected pop.';
+          totalCostLabel.textContent = 'Total funding needed to serve ' + pctStr + '% of the affected population (6 months)';
+        } else {
+          targetHint.textContent = 'Defaults to 10% — editable';
+          totalCostLabel.textContent = 'Total funding needed to serve 10% of the affected population (6 months)';
+        }
+      }
+
+      // ── Auto stance from matrix ──
+      function updateAutoStance() {
+        stanceNotEligible.style.display = 'none';
+
+        if (!selectedCountry || affectedPop <= 0) {
+          if (!stanceManuallyOverridden) {
+            selectedStance = null;
+            stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
+            stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
+          }
+          return;
+        }
+
+        var severity = getSeverity(affectedPop, selectedCountry.pop);
+        var autoStance = lookupStance(severity, selectedCountry.pv, selectedCountry.rob);
+
+        if (autoStance === 'orange' || autoStance === 'red') {
+          selectedStance = autoStance;
+          stanceButtons.forEach(function (b) {
+            b.classList.toggle('selected', b.getAttribute('data-stance') === autoStance);
+          });
+          var ceiling = STANCE_CEILINGS[selectedStance];
+          var ceilingStr = '$' + (ceiling / 1000000) + 'M';
+          stanceHint.innerHTML = '<strong>' + autoStance.charAt(0).toUpperCase() + autoStance.slice(1) + '</strong> — indicative ceiling <strong>' + ceilingStr + '</strong> <span class="stance-auto-badge">Auto</span>';
+          stanceNotEligible.style.display = 'none';
+        } else {
+          // White or Yellow — not CRF eligible
+          selectedStance = null;
+          stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
+          stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
+          stanceNotEligible.style.display = 'block';
+          stanceNotEligible.innerHTML = 'Based on the affected population and country profile, this emergency would not typically qualify for CRF allocation. You can override this by selecting a stance above.';
+        }
+      }
+
+      // ── Stance buttons (manual override) ──
+      stanceButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          stanceManuallyOverridden = true;
+          stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
+          btn.classList.add('selected');
+          selectedStance = btn.getAttribute('data-stance');
+          stanceNotEligible.style.display = 'none';
+
+          var ceiling = STANCE_CEILINGS[selectedStance];
+          var ceilingStr = '$' + (ceiling / 1000000) + 'M';
+          stanceHint.innerHTML = '<strong>' + selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) + '</strong> — indicative allocation ceiling of <strong>' + ceilingStr + '</strong>';
+
+          calculate();
+        });
+      });
+
+      // ── Coverage buttons ──
+      coverageButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          coverageButtons.forEach(function (b) { b.classList.remove('selected'); });
+          btn.classList.add('selected');
+          selectedCoverage = parseInt(btn.getAttribute('data-coverage'), 10);
+          updateAllocation();
+        });
+      });
+
+      // ── Update allocation display ──
+      function updateAllocation() {
+        if (totalCost <= 0) return;
+        // selectedCoverage is 1, 2, or 3 (percent of affected pop)
+        // which equals 10%, 20%, or 30% of the target pop (10% of affected)
+        var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
+        var gapPeople = Math.max(0, targetPop - crfPeople);
+        var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
+        var gapAmount = Math.max(0, totalCost - crfAmount);
+
+        var barPercent = targetPop > 0 ? (crfPeople / targetPop) * 100 : 0;
+        splitBarCrf.style.width = Math.min(barPercent, 100).toFixed(1) + '%';
+        crfPeopleEl.textContent = formatNum(crfPeople);
+        crfAmountEl.textContent = formatCurrency(crfAmount);
+        gapPeopleEl.textContent = formatNum(gapPeople);
+        gapAmountEl.textContent = formatCurrency(gapAmount);
+
+        var ceiling = selectedStance ? STANCE_CEILINGS[selectedStance] : 2000000;
+        var ceilingStr = '$' + (ceiling / 1000000) + 'M';
+        if (crfAmount > ceiling) {
+          ceilingWarning.textContent = 'This allocation (' + formatCurrency(crfAmount) + ') exceeds the indicative ' + ceilingStr + ' ceiling for ' + (selectedStance ? selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) : '') + ' emergencies.';
+          ceilingWarning.style.display = 'block';
+        } else {
+          ceilingWarning.style.display = 'none';
+        }
+      }
+
+      // ── Calculate ──
+      function calculate() {
+        if (targetPop <= 0 || !selectedStance) {
+          if (targetPop <= 0) {
+            totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Enter affected population above</span>';
+          } else if (!selectedCountry) {
+            totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Select a country above</span>';
+          } else {
+            totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Select a response stance</span>';
+          }
+          totalCostSub.style.display = 'none';
+          allocationCard.style.display = 'none';
+          allocationEmpty.style.display = 'block';
+          totalCostCard.style.borderRadius = '12px';
+          totalCost = 0;
+
+          if (targetPop > 0 && !selectedStance) {
+            allocationEmpty.textContent = 'Select a response stance to see allocation options';
+          } else {
+            allocationEmpty.textContent = 'Enter an affected population to see allocation options';
+          }
+          return;
+        }
+
+        totalCost = roundToNearest25K(targetPop * PER_CLIENT_COST);
+        totalCostAmount.textContent = formatCurrency(totalCost);
+        totalCostPeople.textContent = formatNum(targetPop);
+        totalCostSub.style.display = 'block';
+
+        allocationCard.style.display = 'block';
+        allocationEmpty.style.display = 'none';
+        totalCostCard.style.borderRadius = '12px 12px 0 0';
+
+        updateAllocation();
+      }
+    })();
+  </script>
+
+</body>
+</html>

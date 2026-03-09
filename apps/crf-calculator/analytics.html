@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics — IRC Emergency Classification</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap');
+
+    /* ── Analytics — IRC Brand Aligned ── */
+
+    .analytics-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--black);
+    }
+
+    /* ── API Key Setup ── */
+    .api-setup {
+      background: var(--white);
+      border: 2px dashed var(--mid-gray);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: left;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .api-setup h2 {
+      margin-top: 0;
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+    }
+
+    .api-setup p {
+      color: var(--muted);
+      font-size: 0.9375rem;
+      font-weight: 400;
+      margin-top: 0.5rem;
+    }
+
+    .api-setup-input-group {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 500px;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .api-setup-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 0.625rem 0.75rem;
+      border: 1.5px solid var(--gray-e9);
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .api-setup-input::placeholder {
+      color: var(--mid-gray);
+    }
+
+    .api-setup-input:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      box-shadow: 0 0 0 3px rgba(255, 199, 44, 0.12);
+    }
+
+    .api-setup-link {
+      color: var(--muted);
+      text-decoration: underline;
+      font-size: 0.8125rem;
+      display: block;
+    }
+
+    .api-setup-link:hover {
+      color: var(--black);
+    }
+
+    /* ── Query Section ── */
+    .query-section {
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin-bottom: 2.5rem;
+    }
+
+    .query-composer {
+      border: 1.5px solid var(--gray-e9);
+      border-radius: 12px;
+      background: var(--white);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .query-composer:focus-within {
+      border-color: var(--irc-yellow);
+      box-shadow: 0 0 0 3px rgba(255, 199, 44, 0.15);
+    }
+
+    .query-input {
+      display: block;
+      width: 100%;
+      padding: 12px 16px 0;
+      border: none;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      font-weight: 400;
+      line-height: 1.5;
+      resize: none;
+      overflow-y: auto;
+      min-height: 48px;
+      max-height: 240px;
+      box-sizing: border-box;
+      background: transparent;
+      color: var(--black);
+    }
+
+    .query-input:focus {
+      outline: none;
+    }
+
+    .query-input::placeholder {
+      color: var(--mid-gray);
+    }
+
+    .query-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+    }
+
+    .query-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .query-footer-left select {
+      padding: 4px 8px;
+      border: 1px solid var(--gray-e9);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: inherit;
+      font-weight: 500;
+      background: var(--light-gray);
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .query-footer-left .settings-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.875rem;
+      background: none;
+      border: 1px solid var(--gray-e9);
+      border-radius: 6px;
+      color: var(--muted);
+      transition: background 0.15s ease;
+    }
+
+    .query-footer-left .settings-btn:hover {
+      background: var(--light-gray);
+      color: var(--dark-gray);
+    }
+
+    .query-footer .ask-btn {
+      padding: 0.5rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+      border-radius: 6px;
+      border: none;
+      background: var(--irc-yellow);
+      color: var(--black);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .query-footer .ask-btn:hover {
+      background: var(--irc-yellow-light);
+    }
+
+    /* ── Suggested Query Chips ── */
+    .suggested-queries {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .query-chip {
+      background: var(--light-gray);
+      border: 1px solid var(--gray-e9);
+      padding: 5px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.15s ease;
+    }
+
+    .query-chip:hover {
+      background: var(--dark-gray);
+      color: var(--white);
+      border-color: var(--dark-gray);
+    }
+
+    /* ── Summary Cards ── */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .summary-card {
+      background: var(--white);
+      border: 1px solid var(--gray-e9);
+      border-left: 4px solid var(--gray-e9);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: left;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+
+    .summary-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
+    .summary-card-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-card-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+    }
+
+    /* Stance-colored left borders */
+    .summary-card.red {
+      border-left-color: var(--red-5);
+    }
+    .summary-card.red .summary-card-value {
+      color: var(--black);
+    }
+
+    .summary-card.orange {
+      border-left-color: var(--orange-4);
+    }
+    .summary-card.orange .summary-card-value {
+      color: var(--black);
+    }
+
+    .summary-card.yellow {
+      border-left-color: var(--irc-yellow);
+    }
+    .summary-card.yellow .summary-card-value {
+      color: var(--black);
+    }
+
+    .summary-card.blue {
+      border-left-color: var(--irc-yellow);
+    }
+    .summary-card.blue .summary-card-value {
+      color: var(--black);
+    }
+
+    /* ── Chart Section ── */
+    .chart-section {
+      background: var(--white);
+      border: 1px solid var(--gray-e9);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .chart-area {
+      position: relative;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chart-placeholder {
+      color: var(--mid-gray);
+      text-align: center;
+      font-size: 0.9375rem;
+      font-weight: 400;
+    }
+
+    .loading-spinner {
+      border: 4px solid var(--gray-e9);
+      border-top: 4px solid var(--irc-yellow);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ── Error Message ── */
+    .error-message {
+      background: #FFF5F5;
+      color: var(--red-5);
+      border: 1px solid #FFCDD2;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+    }
+
+    .error-message button {
+      margin-left: 1rem;
+      padding: 0.375rem 0.75rem;
+      background: var(--red-5);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      font-family: inherit;
+    }
+
+    .error-message button:hover {
+      opacity: 0.9;
+    }
+
+    /* ── AI Summary ── */
+    .ai-summary {
+      background: var(--light-gray);
+      border-left: 4px solid var(--irc-yellow);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+      font-size: 0.9375rem;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--dark-gray);
+    }
+
+    .ai-summary-label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── Query History ── */
+    .query-history {
+      background: var(--white);
+      border: 1px solid var(--gray-e9);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-top: 2.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .query-history h3 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .history-item {
+      padding: 0.625rem 0.5rem;
+      border-bottom: 1px solid var(--light-gray);
+      cursor: pointer;
+      transition: background 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-item:hover {
+      background: var(--light-gray);
+    }
+
+    .history-query {
+      flex: 1;
+      color: var(--dark-gray);
+      font-size: 0.875rem;
+      font-weight: 400;
+    }
+
+    .history-time {
+      color: var(--mid-gray);
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-left: 1rem;
+      white-space: nowrap;
+    }
+
+    .empty-message {
+      color: var(--mid-gray);
+      text-align: left;
+      padding: 1.5rem 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    /* ── Canvas ── */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+    }
+
+    canvas {
+      max-height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div id="header-mount"></div>
+  <main>
+    <div id="nav-mount"></div>
+
+    <div class="analytics-container">
+      <!-- API Key Setup (shown if no key) -->
+      <div id="api-setup" class="api-setup" style="display: none;">
+        <h2>Enable AI-Powered Analytics</h2>
+        <p>Enter your OpenRouter API key to unlock natural language queries about your classification data.</p>
+        <div class="api-setup-input-group">
+          <input
+            type="password"
+            id="api-key-input"
+            class="api-setup-input"
+            placeholder="Enter your OpenRouter API key..."
+          >
+          <button id="save-api-key-btn" class="btn btn-primary">Save Key</button>
+        </div>
+        <a href="https://openrouter.ai/keys" target="_blank" class="api-setup-link">
+          Get a free API key at openrouter.ai/keys
+        </a>
+      </div>
+
+      <!-- Query Section (shown when key exists) -->
+      <div id="query-section" class="query-section" style="display: none;">
+        <div class="query-composer">
+          <textarea
+            id="query-input"
+            class="query-input"
+            rows="1"
+            placeholder="Ask a question about your classification data..."
+          ></textarea>
+          <div class="query-footer">
+            <div class="query-footer-left">
+              <select id="model-select" title="Choose AI model">
+                <option value="google/gemini-2.5-flash">Gemini 2.5 Flash</option>
+                <option value="google/gemini-3-flash-preview">Gemini 3 Flash</option>
+                <option value="anthropic/claude-haiku-4.5">Claude Haiku 4.5</option>
+                <option value="mistralai/mistral-small-3.2-24b-instruct">Mistral Small 3.2</option>
+              </select>
+              <button id="settings-btn" class="settings-btn" title="API key">⚙</button>
+            </div>
+            <button id="ask-btn" class="ask-btn">Ask</button>
+          </div>
+        </div>
+
+        <div class="suggested-queries">
+          <div class="query-chip" data-query="Show a pie chart of classifications by stance (white, yellow, orange, red)">Stance breakdown</div>
+          <div class="query-chip" data-query="Show a line chart of classifications per month over time">Trends over time</div>
+          <div class="query-chip" data-query="Show a bar chart of the top 10 countries by number of classifications">Top countries</div>
+          <div class="query-chip" data-query="Show a doughnut chart of classifications by emergency type">By emergency type</div>
+          <div class="query-chip" data-query="Show a bar chart of how many classifications at each severity level (0-10)">Severity distribution</div>
+          <div class="query-chip" data-query="Show a stacked bar chart of classifications by IRC region, colored by stance">By region</div>
+        </div>
+      </div>
+
+      <!-- Summary Cards (always visible) -->
+      <div id="summary-cards-container" class="summary-cards"></div>
+
+      <!-- Error Message Container -->
+      <div id="error-container"></div>
+
+      <!-- Chart Section -->
+      <div class="chart-section">
+        <div id="chart-toolbar" style="display:none;text-align:right;margin-bottom:0.75rem;">
+          <button id="download-chart-btn" title="Download chart and summary as PNG" style="font-size:0.8125rem;padding:0.4rem 1rem;background:var(--white);border:1px solid var(--gray-e9);border-radius:8px;cursor:pointer;color:var(--dark-gray);font-weight:500;font-family:inherit;transition:all 0.15s;">&#11015; Download PNG</button>
+        </div>
+        <div class="chart-area">
+          <div class="chart-placeholder">Ask a question to see a visualization</div>
+        </div>
+        <div id="ai-summary-container" style="display: none;">
+          <div class="ai-summary">
+            <div class="ai-summary-label">AI Summary</div>
+            <div id="ai-summary-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Query History -->
+      <div id="query-history-container" class="query-history" style="display: none;">
+        <h3>Recent Queries</h3>
+        <ul id="history-list" class="history-list"></ul>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-mount"></div>
+
+  <script src="shared.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+  <script>
+    // ====== Global State ======
+    var analyticsState = {
+      apiKey: null,
+      model: 'google/gemini-2.5-flash',
+      currentChart: null,
+      queryHistory: [],
+      lastError: null
+    };
+
+    var ircColors = {
+      red: '#E52911',
+      orange: '#F58220',
+      yellow: '#FFC72C',
+      white: '#E9E9E9',
+      green: '#4CAF50',
+      blue: '#2196F3',
+      gray: '#999999'
+    };
+
+    // ====== Initialization ======
+    function initAnalytics() {
+      // Mount header, nav, footer
+      if (typeof IRC !== 'undefined' && IRC.renderHeader && IRC.renderNav && IRC.renderFooter) {
+        var headerMount = document.getElementById('header-mount');
+        var navMount = document.getElementById('nav-mount');
+        var footerMount = document.getElementById('footer-mount');
+
+        if (headerMount) headerMount.innerHTML = IRC.renderHeader('analytics');
+        if (navMount) navMount.innerHTML = IRC.renderNav();
+        if (footerMount) footerMount.innerHTML = IRC.renderFooter();
+      }
+
+      // Check for API key and saved model preference
+      analyticsState.apiKey = localStorage.getItem('irc_openrouter_key');
+      var savedModel = localStorage.getItem('irc_analytics_model');
+      if (savedModel) analyticsState.model = savedModel;
+
+      if (analyticsState.apiKey) {
+        showQueryInterface();
+      } else {
+        showApiSetup();
+      }
+
+      // Set model dropdown to saved value
+      var modelSelect = document.getElementById('model-select');
+      if (modelSelect && savedModel) modelSelect.value = savedModel;
+
+      // Render summary cards
+      updateSummaryCards();
+
+      // Attach event listeners
+      attachEventListeners();
+
+      // Restore last analytics result from cache
+      restoreLastResult();
+    }
+
+    // ====== UI State Management ======
+    function showApiSetup() {
+      var setupDiv = document.getElementById('api-setup');
+      var querySection = document.getElementById('query-section');
+
+      if (setupDiv) setupDiv.style.display = 'block';
+      if (querySection) querySection.style.display = 'none';
+    }
+
+    function showQueryInterface() {
+      var setupDiv = document.getElementById('api-setup');
+      var querySection = document.getElementById('query-section');
+
+      if (setupDiv) setupDiv.style.display = 'none';
+      if (querySection) querySection.style.display = 'block';
+    }
+
+    // ====== Summary Cards ======
+    function updateSummaryCards() {
+      var classifications = IRC.getClassifications();
+      var container = document.getElementById('summary-cards-container');
+
+      if (!container) return;
+
+      var redCount = 0;
+      var orangeCount = 0;
+      var whiteCount = 0;
+      var activeCount = 0;
+      var severitySum = 0;
+      var severityCount = 0;
+
+      for (var i = 0; i < classifications.length; i++) {
+        var c = classifications[i];
+        if (c.stance === 'red') redCount++;
+        if (c.stance === 'orange') orangeCount++;
+        if (c.stance === 'white') whiteCount++;
+        if (c.stance !== 'white' && (!c.expirationDate || !IRC.isExpired(c.expirationDate))) {
+          activeCount++;
+        }
+        if (c.severity) {
+          severitySum += parseFloat(c.severity);
+          severityCount++;
+        }
+      }
+
+      var avgSeverity = severityCount > 0 ? (severitySum / severityCount).toFixed(1) : '0.0';
+
+      var html = '';
+      html += '<div class="summary-card"><div class="summary-card-label">Total</div><div class="summary-card-value">' + classifications.length + '</div></div>';
+      html += '<div class="summary-card blue"><div class="summary-card-label">Mission-Aligned Active</div><div class="summary-card-value">' + activeCount + '</div></div>';
+      html += '<div class="summary-card red"><div class="summary-card-label">Red</div><div class="summary-card-value">' + redCount + '</div></div>';
+      html += '<div class="summary-card orange"><div class="summary-card-label">Orange</div><div class="summary-card-value">' + orangeCount + '</div></div>';
+      html += '<div class="summary-card"><div class="summary-card-label">White</div><div class="summary-card-value">' + whiteCount + '</div></div>';
+      html += '<div class="summary-card blue"><div class="summary-card-label">Avg Severity</div><div class="summary-card-value">' + avgSeverity + '</div></div>';
+
+      container.innerHTML = html;
+    }
+
+    // ====== Event Listeners ======
+    function attachEventListeners() {
+      // API key save
+      var saveKeyBtn = document.getElementById('save-api-key-btn');
+      if (saveKeyBtn) {
+        saveKeyBtn.addEventListener('click', saveApiKey);
+      }
+
+      var apiKeyInput = document.getElementById('api-key-input');
+      if (apiKeyInput) {
+        apiKeyInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') saveApiKey();
+        });
+      }
+
+      // Ask button
+      var askBtn = document.getElementById('ask-btn');
+      if (askBtn) {
+        askBtn.addEventListener('click', submitQuery);
+      }
+
+      var queryInput = document.getElementById('query-input');
+      if (queryInput) {
+        queryInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submitQuery();
+          }
+        });
+        // Auto-grow textarea as user types
+        queryInput.addEventListener('input', autoGrowTextarea);
+      }
+
+      // Model selector
+      var modelSelect = document.getElementById('model-select');
+      if (modelSelect) {
+        modelSelect.addEventListener('change', function() {
+          analyticsState.model = this.value;
+          localStorage.setItem('irc_analytics_model', this.value);
+        });
+      }
+
+      // Settings button
+      var settingsBtn = document.getElementById('settings-btn');
+      if (settingsBtn) {
+        settingsBtn.addEventListener('click', changeApiKey);
+      }
+
+      // Download button
+      var dlBtn = document.getElementById('download-chart-btn');
+      if (dlBtn) {
+        dlBtn.addEventListener('click', downloadChartAsPng);
+      }
+
+      // Query chips
+      var chips = document.querySelectorAll('.query-chip');
+      for (var i = 0; i < chips.length; i++) {
+        chips[i].addEventListener('click', function() {
+          var query = this.getAttribute('data-query');
+          var input = document.getElementById('query-input');
+          if (input) input.value = query;
+          submitQuery();
+        });
+      }
+    }
+
+    // ====== API Key Management ======
+    function saveApiKey() {
+      var input = document.getElementById('api-key-input');
+      var key = input.value.trim();
+
+      if (!key) {
+        alert('Please enter an API key');
+        return;
+      }
+
+      localStorage.setItem('irc_openrouter_key', key);
+      analyticsState.apiKey = key;
+      input.value = '';
+      showQueryInterface();
+    }
+
+    function changeApiKey() {
+      var newKey = prompt('Enter new OpenRouter API key:');
+      if (newKey !== null && newKey.trim()) {
+        localStorage.setItem('irc_openrouter_key', newKey.trim());
+        analyticsState.apiKey = newKey.trim();
+        clearError();
+      }
+    }
+
+    // ====== Query Submission ======
+    function submitQuery() {
+      var input = document.getElementById('query-input');
+      var query = input.value.trim();
+
+      if (!query) {
+        alert('Please enter a question');
+        return;
+      }
+
+      clearError();
+      showLoading();
+      performQuery(query);
+    }
+
+    function performQuery(userQuery) {
+      var classifications = IRC.getClassifications();
+
+      if (classifications.length === 0) {
+        showError('No classifications yet. Import data or create classifications first.');
+        hideLoading();
+        return;
+      }
+
+      // Build compact data for local execution (not sent to LLM)
+      var compactData = buildCompactData(classifications);
+
+      // Build data summary (sent to LLM instead of raw data)
+      var dataSummary = buildDataSummary(classifications);
+
+      // System message — LLM outputs a QUERY SPEC, not a Chart.js config
+      var systemMessage = {
+        role: 'system',
+        content: [
+          'You are an expert data analyst for the IRC (International Rescue Committee) Emergency Classification System.',
+          'You do NOT process data directly. Instead, you output a STRUCTURED QUERY SPEC that our app executes deterministically.',
+          '',
+          'CLASSIFICATION CONTEXT:',
+          '- Stances: white (Outside Mission Scope), yellow (Monitor & Prepare), orange (Mobilize), red (Maximum Response).',
+          '- Severity 0-10. Each classification open 6 weeks (42 days).',
+          '- Complex emergencies: 3 Yellows → Orange, 2 Oranges → Red.',
+          '- Regions: Asia, East Africa, LatAm, MENA, RAI, West and Central Africa.',
+          '',
+          'DATA FIELDS (case-sensitive): stance, type, severity, country, region, date, expirationDate, classificationId, processingSpeed, reclassificationNumber, emergencyName.',
+          '- reclassificationNumber: 1 = initial classification, 2+ = reclassification.',
+          '- type values: conflict, outbreak, food, hazard, migration, complex, disease, accident, other.',
+          '- stance values: red, orange, yellow, white (lowercase).',
+          '- processingSpeed values: standard, rapid, immediate.',
+          '',
+          'QUERY SPEC FORMAT — respond ONLY with a JSON object like this:',
+          '{',
+          '  "query": {',
+          '    "filters": [{"field": "stance", "op": "eq", "value": "red"}],',
+          '    "groupBy": "country",',
+          '    "groupBy2": null,',
+          '    "aggregate": "count",',
+          '    "aggregateField": null,',
+          '    "timeUnit": null,',
+          '    "sort": "desc",',
+          '    "limit": 10',
+          '  },',
+          '  "chart": {',
+          '    "type": "horizontal_bar",',
+          '    "title": "Top 10 Countries by Total Classifications",',
+          '    "xLabel": "Total Classifications (Initial + Reclassifications)",',
+          '    "yLabel": "Country",',
+          '    "datasetLabel": "Classifications",',
+          '    "colorByStance": false,',
+          '    "stacked": false,',
+          '    "timeAxis": false',
+          '  },',
+          '  "summary": "Analytical summary here."',
+          '}',
+          '',
+          'QUERY FIELDS:',
+          '- filters: Array of {field, op, value}. ops: eq, neq, gt, gte, lt, lte, in, nin, contains. Use [] for no filter.',
+          '- groupBy: Field name to group by (e.g., "country", "stance", "type", "region", "date" for time series).',
+          '- groupBy2: Optional second field for stacked/grouped charts (e.g., groupBy="region", groupBy2="stance").',
+          '- aggregate: "count", "count_distinct", "avg", "sum", "min", "max".',
+          '- aggregateField: Required for avg/sum/min/max (e.g., "severity"). Not needed for count.',
+          '- timeUnit: If groupBy is "date", set to "month", "quarter", or "year" to bucket dates.',
+          '- sort: "desc" (highest first), "asc" (lowest first), "alpha" (alphabetical). Time series ignore this.',
+          '- limit: Max items to show (e.g., 10 for "top 10"). Omit or null for all.',
+          '',
+          'CHART TYPES: "bar", "horizontal_bar", "line", "pie", "doughnut".',
+          '- Proportions → pie or doughnut.',
+          '- Comparisons across categories → horizontal_bar, sort desc.',
+          '- Trends over time → line with timeAxis: true.',
+          '- Distributions → bar (vertical).',
+          '- Two dimensions → bar or horizontal_bar with stacked: true.',
+          '',
+          'COUNTING RULES:',
+          '- Ambiguous "number of classifications" or "how many" → count ALL records (no filter). Label clearly.',
+          '- "Initial classifications" → filter reclassificationNumber eq 1.',
+          '- "Reclassifications" → filter reclassificationNumber gte 2.',
+          '- "Unique emergencies" or "distinct crises" → aggregate: "count_distinct", aggregateField: "classificationId".',
+          '',
+          'RESPONSE: Respond ONLY with the JSON object. No markdown fences, no explanation outside the JSON.',
+          'Ensure valid JSON — no trailing commas, no comments.',
+          'The summary should provide insight (patterns, anomalies), not just describe the chart.'
+        ].join('\n')
+      };
+
+      // User message — data summary only, no raw data
+      var userMessage = {
+        role: 'user',
+        content: dataSummary + '\n\nQuestion: ' + userQuery
+      };
+
+      // Call OpenRouter API
+      callOpenRouterAPI([systemMessage, userMessage], function(success, data) {
+        hideLoading();
+
+        if (!success) {
+          showError(data);
+          return;
+        }
+
+        // Execute the query spec locally
+        try {
+          var queryResult = executeQuerySpec(data.query, compactData);
+          var chartConfig = buildChartFromSpec(data.chart, queryResult);
+          chartConfig = postProcessChartConfig(chartConfig);
+
+          renderChart(chartConfig);
+          showSummary(data.summary);
+          addToHistory(userQuery, chartConfig, data.summary);
+        } catch (e) {
+          console.error('Query execution error:', e);
+          showError('Failed to execute query: ' + e.message);
+        }
+      });
+    }
+
+    // ====== API Call ======
+    function callOpenRouterAPI(messages, callback) {
+      var requestBody = {
+        model: analyticsState.model,
+        messages: messages,
+        response_format: { type: 'json_object' }
+      };
+
+      fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + analyticsState.apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('API error: ' + response.status + ' ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(function(data) {
+        if (data.error) {
+          callback(false, 'API error: ' + (data.error.message || 'Unknown error'));
+          return;
+        }
+
+        var content = data.choices[0].message.content;
+
+        // Robust JSON extraction — handle markdown fences, leading text, etc.
+        var jsonStr = content;
+        // Strip markdown code fences if present
+        var fenceMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (fenceMatch) jsonStr = fenceMatch[1];
+        // Trim whitespace
+        jsonStr = jsonStr.trim();
+        // If it doesn't start with {, try to find first {
+        if (jsonStr.charAt(0) !== '{') {
+          var braceIdx = jsonStr.indexOf('{');
+          if (braceIdx !== -1) jsonStr = jsonStr.substring(braceIdx);
+        }
+        // If it doesn't end with }, trim to last }
+        if (jsonStr.charAt(jsonStr.length - 1) !== '}') {
+          var lastBrace = jsonStr.lastIndexOf('}');
+          if (lastBrace !== -1) jsonStr = jsonStr.substring(0, lastBrace + 1);
+        }
+
+        var parsed = JSON.parse(jsonStr);
+
+        if (!parsed.query || !parsed.chart || !parsed.summary) {
+          throw new Error('Invalid response format — missing query, chart, or summary');
+        }
+
+        callback(true, parsed);
+      })
+      .catch(function(error) {
+        console.error('API error:', error);
+        callback(false, 'Something went wrong. Check your API key and try again. ' + error.message);
+      });
+    }
+
+    // ====== Data Processing ======
+    function buildCompactData(classifications) {
+      var data = [];
+      for (var i = 0; i < classifications.length; i++) {
+        var c = classifications[i];
+        data.push({
+          classificationId: c.classificationId || '',
+          stance: c.stance,
+          type: c.type,
+          severity: c.severity,
+          country: c.country,
+          region: IRC.getGroupedRegion(c.region) || '',
+          date: c.date,
+          expirationDate: c.expirationDate || '',
+          emergencyName: c.emergencyName || '',
+          processingSpeed: c.processingSpeed || '',
+          reclassificationNumber: c.reclassificationNumber || 1
+        });
+      }
+      return data;
+    }
+
+    function buildDataSummary(classifications) {
+      var total = classifications.length;
+      var initials = 0;
+      var reclassifications = 0;
+      var stances = {};
+      var types = {};
+      var countries = {};
+      var regions = {};
+      var classificationIds = {};
+      var severitySum = 0;
+      var severityCount = 0;
+      var minDate = null;
+      var maxDate = null;
+
+      for (var i = 0; i < total; i++) {
+        var c = classifications[i];
+        var reclass = c.reclassificationNumber || 1;
+        if (reclass <= 1) { initials++; } else { reclassifications++; }
+
+        var st = (c.stance || 'unknown').toLowerCase();
+        stances[st] = (stances[st] || 0) + 1;
+
+        var tp = (c.type || 'unknown').toLowerCase();
+        types[tp] = (types[tp] || 0) + 1;
+
+        if (c.country) countries[c.country] = true;
+
+        var rg = IRC.getGroupedRegion(c.region) || 'unknown';
+        regions[rg] = (regions[rg] || 0) + 1;
+
+        if (c.classificationId) classificationIds[c.classificationId] = true;
+
+        if (c.severity) {
+          severitySum += parseFloat(c.severity);
+          severityCount++;
+        }
+
+        if (c.date) {
+          if (!minDate || c.date < minDate) minDate = c.date;
+          if (!maxDate || c.date > maxDate) maxDate = c.date;
+        }
+      }
+
+      // Sort stances and types by count descending for readability
+      var sortedStances = Object.keys(stances).sort(function(a, b) { return stances[b] - stances[a]; });
+      var stanceSummary = sortedStances.map(function(s) { return s + ': ' + stances[s]; }).join(', ');
+
+      var sortedTypes = Object.keys(types).sort(function(a, b) { return types[b] - types[a]; });
+      var typeSummary = sortedTypes.map(function(t) { return t + ': ' + types[t]; }).join(', ');
+
+      var sortedRegions = Object.keys(regions).sort(function(a, b) { return regions[b] - regions[a]; });
+      var regionSummary = sortedRegions.map(function(r) { return r + ': ' + regions[r]; }).join(', ');
+
+      return [
+        'DATA SUMMARY (pre-computed from ' + total + ' records):',
+        '- Total records: ' + total + ' (' + initials + ' initial classifications where reclassificationNumber=1, ' + reclassifications + ' reclassifications where reclassificationNumber≥2)',
+        '- Unique emergencies (distinct classificationId values): ' + Object.keys(classificationIds).length,
+        '- Unique countries: ' + Object.keys(countries).length,
+        '- Date range: ' + (minDate || 'N/A') + ' to ' + (maxDate || 'N/A'),
+        '- Average severity: ' + (severityCount > 0 ? (severitySum / severityCount).toFixed(1) : 'N/A'),
+        '- By stance (all records): ' + stanceSummary,
+        '- By type (all records): ' + typeSummary,
+        '- By region (all records): ' + regionSummary,
+        '',
+        'IMPORTANT: When the user\'s question is ambiguous about whether to count all records or only initials, use this summary to inform your interpretation. If both readings are plausible, count ALL records (the full dataset) and note the distinction in your summary.'
+      ].join('\n');
+    }
+
+    // ====== Query Execution Engine ======
+    // Executes a structured query spec against raw data — deterministic, model-independent.
+
+    function executeQuerySpec(spec, data) {
+      var rows = data.slice(); // shallow copy
+
+      // 1. Apply filters
+      if (spec.filters && spec.filters.length > 0) {
+        for (var f = 0; f < spec.filters.length; f++) {
+          var filter = spec.filters[f];
+          rows = applyFilter(rows, filter);
+        }
+      }
+
+      // 2. Time-bucket if needed (groupBy a date field with timeUnit)
+      if (spec.timeUnit && spec.groupBy) {
+        rows = rows.map(function(r) {
+          var copy = {};
+          for (var k in r) copy[k] = r[k];
+          copy['_timeBucket'] = timeBucket(r[spec.groupBy], spec.timeUnit);
+          return copy;
+        });
+      }
+
+      // 3. Group
+      var groupField = spec.timeUnit ? '_timeBucket' : spec.groupBy;
+      var groupField2 = spec.groupBy2 || null; // for stacked/grouped charts
+
+      if (!groupField) {
+        // No grouping — single aggregate over entire dataset
+        return { type: 'scalar', value: computeAggregate(rows, spec.aggregate, spec.aggregateField) };
+      }
+
+      var groups = {};
+      for (var i = 0; i < rows.length; i++) {
+        var key = String(rows[i][groupField] || 'Unknown');
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(rows[i]);
+      }
+
+      // 4. Aggregate each group
+      if (groupField2) {
+        // Two-dimensional grouping (e.g., region × stance)
+        // Collect all values of groupField2
+        var subKeys = {};
+        for (var gi in groups) {
+          for (var j = 0; j < groups[gi].length; j++) {
+            var sk = String(groups[gi][j][groupField2] || 'Unknown');
+            subKeys[sk] = true;
+          }
+        }
+        var subKeyList = Object.keys(subKeys).sort();
+
+        var result = { type: 'matrix', labels: [], series: {} };
+        for (var s = 0; s < subKeyList.length; s++) {
+          result.series[subKeyList[s]] = [];
+        }
+
+        var groupKeys = Object.keys(groups);
+        // Sort groups
+        groupKeys = sortGroupKeys(groupKeys, groups, spec, groupField2);
+
+        for (var g = 0; g < groupKeys.length; g++) {
+          var gk = groupKeys[g];
+          result.labels.push(gk);
+          // Sub-group within this group
+          var subGroups = {};
+          for (var sg = 0; sg < subKeyList.length; sg++) subGroups[subKeyList[sg]] = [];
+          for (var r = 0; r < groups[gk].length; r++) {
+            var subVal = String(groups[gk][r][groupField2] || 'Unknown');
+            subGroups[subVal].push(groups[gk][r]);
+          }
+          for (var sk2 = 0; sk2 < subKeyList.length; sk2++) {
+            result.series[subKeyList[sk2]].push(computeAggregate(subGroups[subKeyList[sk2]], spec.aggregate, spec.aggregateField));
+          }
+        }
+
+        if (spec.limit && result.labels.length > spec.limit) {
+          result.labels = result.labels.slice(0, spec.limit);
+          for (var sKey in result.series) {
+            result.series[sKey] = result.series[sKey].slice(0, spec.limit);
+          }
+        }
+
+        return result;
+      }
+
+      // Single-dimension grouping
+      var entries = [];
+      for (var key2 in groups) {
+        entries.push({
+          label: key2,
+          value: computeAggregate(groups[key2], spec.aggregate, spec.aggregateField),
+          count: groups[key2].length
+        });
+      }
+
+      // 5. Sort
+      var sortDir = (spec.sort || 'desc').toLowerCase();
+      if (spec.timeUnit) {
+        // Time series — always sort chronologically
+        entries.sort(function(a, b) { return a.label < b.label ? -1 : a.label > b.label ? 1 : 0; });
+      } else if (sortDir === 'asc') {
+        entries.sort(function(a, b) { return a.value - b.value; });
+      } else if (sortDir === 'alpha') {
+        entries.sort(function(a, b) { return a.label < b.label ? -1 : a.label > b.label ? 1 : 0; });
+      } else {
+        entries.sort(function(a, b) { return b.value - a.value; });
+      }
+
+      // 6. Limit
+      if (spec.limit && entries.length > spec.limit) {
+        entries = entries.slice(0, spec.limit);
+      }
+
+      return { type: 'grouped', entries: entries };
+    }
+
+    function applyFilter(rows, filter) {
+      return rows.filter(function(r) {
+        var val = r[filter.field];
+        var target = filter.value;
+
+        // Normalize strings for comparison
+        if (typeof val === 'string') val = val.toLowerCase();
+        if (typeof target === 'string') target = target.toLowerCase();
+        if (Array.isArray(target)) target = target.map(function(t) { return typeof t === 'string' ? t.toLowerCase() : t; });
+
+        switch (filter.op) {
+          case 'eq': return val == target;
+          case 'neq': return val != target;
+          case 'gt': return parseFloat(val) > parseFloat(target);
+          case 'gte': return parseFloat(val) >= parseFloat(target);
+          case 'lt': return parseFloat(val) < parseFloat(target);
+          case 'lte': return parseFloat(val) <= parseFloat(target);
+          case 'in': return Array.isArray(target) && target.indexOf(val) !== -1;
+          case 'nin': return Array.isArray(target) && target.indexOf(val) === -1;
+          case 'contains': return typeof val === 'string' && val.indexOf(target) !== -1;
+          default: return true;
+        }
+      });
+    }
+
+    function computeAggregate(rows, aggregate, field) {
+      if (!rows || rows.length === 0) return 0;
+      var agg = (aggregate || 'count').toLowerCase();
+
+      if (agg === 'count') return rows.length;
+
+      if (agg === 'countdistinct' || agg === 'count_distinct') {
+        var seen = {};
+        for (var i = 0; i < rows.length; i++) {
+          var v = rows[i][field];
+          if (v !== undefined && v !== null && v !== '') seen[v] = true;
+        }
+        return Object.keys(seen).length;
+      }
+
+      // Numeric aggregates
+      var nums = [];
+      for (var j = 0; j < rows.length; j++) {
+        var n = parseFloat(rows[j][field]);
+        if (!isNaN(n)) nums.push(n);
+      }
+      if (nums.length === 0) return 0;
+
+      if (agg === 'sum') {
+        var s = 0; for (var k = 0; k < nums.length; k++) s += nums[k];
+        return Math.round(s * 100) / 100;
+      }
+      if (agg === 'avg' || agg === 'average') {
+        var sum = 0; for (var m = 0; m < nums.length; m++) sum += nums[m];
+        return Math.round((sum / nums.length) * 100) / 100;
+      }
+      if (agg === 'min') return Math.min.apply(null, nums);
+      if (agg === 'max') return Math.max.apply(null, nums);
+
+      return rows.length; // fallback to count
+    }
+
+    function timeBucket(dateStr, unit) {
+      if (!dateStr) return 'Unknown';
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return 'Unknown';
+
+      var y = d.getFullYear();
+      var m = d.getMonth(); // 0-based
+
+      if (unit === 'year') return String(y);
+      if (unit === 'quarter') return y + '-Q' + (Math.floor(m / 3) + 1);
+      if (unit === 'month') return y + '-' + String(m + 1).padStart(2, '0');
+      if (unit === 'week') {
+        // ISO week approximation
+        var jan1 = new Date(y, 0, 1);
+        var week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+        return y + '-W' + String(week).padStart(2, '0');
+      }
+      return dateStr; // day-level
+    }
+
+    function sortGroupKeys(groupKeys, groups, spec, groupField2) {
+      // For matrix results, sort by total aggregate across sub-groups
+      var totals = {};
+      for (var i = 0; i < groupKeys.length; i++) {
+        totals[groupKeys[i]] = computeAggregate(groups[groupKeys[i]], spec.aggregate, spec.aggregateField);
+      }
+      var dir = (spec.sort || 'desc').toLowerCase();
+      if (spec.timeUnit) {
+        groupKeys.sort(function(a, b) { return a < b ? -1 : a > b ? 1 : 0; });
+      } else if (dir === 'asc') {
+        groupKeys.sort(function(a, b) { return totals[a] - totals[b]; });
+      } else if (dir === 'alpha') {
+        groupKeys.sort(function(a, b) { return a < b ? -1 : a > b ? 1 : 0; });
+      } else {
+        groupKeys.sort(function(a, b) { return totals[b] - totals[a]; });
+      }
+      return groupKeys;
+    }
+
+    // ====== Chart Builder ======
+    // Converts query results + chart spec into a Chart.js v4 config
+
+    function buildChartFromSpec(chartSpec, queryResult) {
+      var type = chartSpec.type || 'bar';
+      var config = {
+        type: type === 'horizontal_bar' ? 'bar' : type,
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            title: { display: true, text: chartSpec.title || 'Chart', font: { size: 16, weight: 'bold' } }
+          }
+        }
+      };
+
+      // Horizontal bar
+      if (type === 'horizontal_bar' || chartSpec.indexAxis === 'y') {
+        config.options.indexAxis = 'y';
+      }
+
+      var ircBrandColors = ['#2196F3', '#E52911', '#F58220', '#FFC72C', '#4CAF50', '#9C27B0', '#00BCD4', '#795548', '#607D8B', '#E91E63', '#3F51B5', '#009688', '#FF5722', '#CDDC39', '#FF9800', '#673AB7', '#03A9F4', '#8BC34A', '#FFC107', '#F44336'];
+
+      if (queryResult.type === 'scalar') {
+        // Single value — show as a simple metric (small bar chart with one bar)
+        config.data.labels = ['Total'];
+        config.data.datasets = [{ data: [queryResult.value], backgroundColor: '#2196F3' }];
+      }
+
+      else if (queryResult.type === 'grouped') {
+        var labels = [];
+        var values = [];
+        for (var i = 0; i < queryResult.entries.length; i++) {
+          labels.push(queryResult.entries[i].label);
+          values.push(queryResult.entries[i].value);
+        }
+        config.data.labels = labels;
+
+        // Color by stance if groupBy is stance
+        var colors = ircBrandColors.slice(0, labels.length);
+        if (chartSpec.colorByStance || isStanceLabels(labels)) {
+          colors = labels.map(function(l) {
+            var lower = l.toLowerCase();
+            if (lower === 'red') return '#E52911';
+            if (lower === 'orange') return '#F58220';
+            if (lower === 'yellow') return '#FFC72C';
+            if (lower === 'white') return '#E9E9E9';
+            return '#2196F3';
+          });
+        }
+
+        config.data.datasets = [{
+          label: chartSpec.datasetLabel || chartSpec.yLabel || 'Count',
+          data: values,
+          backgroundColor: (type === 'pie' || type === 'doughnut') ? colors : colors,
+          borderColor: (type === 'pie' || type === 'doughnut') ? '#ffffff' : colors,
+          borderWidth: (type === 'pie' || type === 'doughnut') ? 2 : 1
+        }];
+
+        // For pie/doughnut, no axes
+        if (type === 'pie' || type === 'doughnut') {
+          delete config.options.scales;
+        }
+      }
+
+      else if (queryResult.type === 'matrix') {
+        config.data.labels = queryResult.labels;
+
+        var seriesKeys = Object.keys(queryResult.series);
+        for (var s = 0; s < seriesKeys.length; s++) {
+          var seriesName = seriesKeys[s];
+          var seriesColor = ircBrandColors[s % ircBrandColors.length];
+          // Stance-aware coloring
+          var lower = seriesName.toLowerCase();
+          if (lower === 'red') seriesColor = '#E52911';
+          else if (lower === 'orange') seriesColor = '#F58220';
+          else if (lower === 'yellow') seriesColor = '#FFC72C';
+          else if (lower === 'white') seriesColor = '#E9E9E9';
+
+          config.data.datasets.push({
+            label: seriesName,
+            data: queryResult.series[seriesName],
+            backgroundColor: seriesColor,
+            borderColor: seriesColor === '#E9E9E9' ? '#BDBDBD' : seriesColor,
+            borderWidth: 1
+          });
+        }
+
+        if (chartSpec.stacked) {
+          if (!config.options.scales) config.options.scales = {};
+          config.options.scales.x = config.options.scales.x || {};
+          config.options.scales.y = config.options.scales.y || {};
+          config.options.scales.x.stacked = true;
+          config.options.scales.y.stacked = true;
+        }
+      }
+
+      // Axis labels
+      if (chartSpec.xLabel || chartSpec.yLabel) {
+        if (!config.options.scales) config.options.scales = {};
+        if (chartSpec.xLabel) {
+          config.options.scales.x = config.options.scales.x || {};
+          config.options.scales.x.title = { display: true, text: chartSpec.xLabel };
+        }
+        if (chartSpec.yLabel) {
+          config.options.scales.y = config.options.scales.y || {};
+          config.options.scales.y.title = { display: true, text: chartSpec.yLabel };
+        }
+      }
+
+      // Time axis for time series
+      if (chartSpec.timeAxis) {
+        if (!config.options.scales) config.options.scales = {};
+        config.options.scales.x = config.options.scales.x || {};
+        config.options.scales.x.type = 'category'; // time buckets are pre-computed as strings
+      }
+
+      return config;
+    }
+
+    function isStanceLabels(labels) {
+      var stanceSet = { red: 1, orange: 1, yellow: 1, white: 1 };
+      for (var i = 0; i < labels.length; i++) {
+        if (!stanceSet[labels[i].toLowerCase()]) return false;
+      }
+      return labels.length > 0;
+    }
+
+    // ====== Chart Post-Processing ======
+    var stanceColorMap = {
+      red: '#E52911', orange: '#F58220', yellow: '#FFC72C', white: '#E9E9E9',
+      Red: '#E52911', Orange: '#F58220', Yellow: '#FFC72C', White: '#E9E9E9'
+    };
+
+    function mapStanceColor(colorStr) {
+      if (typeof colorStr !== 'string') return null;
+      var lower = colorStr.toLowerCase().trim();
+      return stanceColorMap[lower] || null;
+    }
+
+    function postProcessChartConfig(config) {
+      if (!config) return config;
+      if (!config.options) config.options = {};
+
+      var isScatterLike = (config.type === 'scatter' || config.type === 'bubble' || config.type === 'line');
+
+      // 1. Enforce stance colors on datasets
+      if (config.data && config.data.datasets) {
+        for (var d = 0; d < config.data.datasets.length; d++) {
+          var ds = config.data.datasets[d];
+
+          // Map stance names to hex in any color array property
+          var colorArrayProps = ['backgroundColor', 'borderColor', 'pointBackgroundColor', 'pointBorderColor'];
+          for (var cp = 0; cp < colorArrayProps.length; cp++) {
+            var prop = colorArrayProps[cp];
+            if (Array.isArray(ds[prop])) {
+              for (var p = 0; p < ds[prop].length; p++) {
+                var mapped = mapStanceColor(ds[prop][p]);
+                if (mapped) ds[prop][p] = mapped;
+              }
+            }
+          }
+
+          // If dataset label matches a stance, set its color
+          var labelColor = mapStanceColor(ds.label);
+          if (labelColor) {
+            if (!Array.isArray(ds.backgroundColor)) ds.backgroundColor = labelColor;
+            if (!Array.isArray(ds.borderColor)) ds.borderColor = labelColor;
+            if (!Array.isArray(ds.pointBackgroundColor)) ds.pointBackgroundColor = labelColor;
+          }
+
+          // For scatter/line with data points that have a 'stance' field —
+          // build per-point color arrays from the data itself
+          if (isScatterLike && ds.data && ds.data.length > 0 && ds.data[0] && typeof ds.data[0] === 'object') {
+            var hasStanceField = false;
+            for (var si = 0; si < ds.data.length; si++) {
+              if (ds.data[si].stance) { hasStanceField = true; break; }
+            }
+            if (hasStanceField) {
+              var ptColors = [];
+              var ptBorders = [];
+              for (var pi = 0; pi < ds.data.length; pi++) {
+                var stVal = (ds.data[pi].stance || '').toLowerCase();
+                var stColor = stanceColorMap[stVal] || '#999999';
+                ptColors.push(stColor);
+                ptBorders.push(stColor === '#E9E9E9' ? '#BDBDBD' : stColor);
+              }
+              ds.pointBackgroundColor = ptColors;
+              ds.pointBorderColor = ptBorders;
+              ds.backgroundColor = ptColors;
+              ds.borderColor = ptBorders;
+            }
+          }
+
+          // Enlarge point radius for scatter for readability
+          if (isScatterLike) {
+            if (!ds.pointRadius || ds.pointRadius < 6) ds.pointRadius = 7;
+            if (!ds.pointHoverRadius || ds.pointHoverRadius < 8) ds.pointHoverRadius = 10;
+            ds.pointBorderWidth = 1;
+          }
+        }
+
+        // 1b. If single scatter dataset with mixed stances, hide its useless legend
+        if (isScatterLike && config.data.datasets.length === 1) {
+          var onlyDs = config.data.datasets[0];
+          if (Array.isArray(onlyDs.pointBackgroundColor) && onlyDs.pointBackgroundColor.length > 1) {
+            // Multiple colors on one dataset — default legend is useless
+            // Replace with a custom stance legend via plugin
+            if (!config.options.plugins) config.options.plugins = {};
+            config.options.plugins.legend = { display: false };
+          }
+        }
+      }
+
+      // 2. Y-axis: only force 0–10 severity scale when y-axis is actually severity
+      if (!config.options.scales) config.options.scales = {};
+      if (isScatterLike) {
+        var yTitle = '';
+        if (config.options.scales.y && config.options.scales.y.title && config.options.scales.y.title.text) {
+          yTitle = config.options.scales.y.title.text.toLowerCase();
+        }
+        var isSeverityAxis = yTitle.indexOf('severity') !== -1;
+
+        if (!config.options.scales.y) config.options.scales.y = {};
+        var yAxis = config.options.scales.y;
+
+        if (isSeverityAxis) {
+          // Severity scale: fixed 0–10 with hidden 11 for headroom
+          delete yAxis.grace;
+          delete yAxis.suggestedMax;
+          yAxis.min = 0;
+          yAxis.max = 11;
+          if (!yAxis.ticks) yAxis.ticks = {};
+          yAxis.ticks.stepSize = 1;
+          yAxis.ticks.callback = function(value) { return value <= 10 ? value : ''; };
+        } else {
+          // Count/other scale: let Chart.js auto-scale, just ensure it starts at 0
+          yAxis.beginAtZero = true;
+          if (!yAxis.ticks) yAxis.ticks = {};
+          yAxis.ticks.precision = 0; // whole numbers only for counts
+        }
+      }
+
+      // 2b. X-axis: add padding so edge points aren't clipped
+      if (isScatterLike) {
+        if (!config.options.scales.x) config.options.scales.x = {};
+        var xAxis = config.options.scales.x;
+        if (!xAxis.afterFit) {
+          // Add right-side padding via offset
+          xAxis.offset = true;
+        }
+        // If it's a category axis, ensure offset is on
+        if (!xAxis.type || xAxis.type === 'category') {
+          xAxis.offset = true;
+        }
+        // If time axis, add right padding by extending bounds
+        if (xAxis.type === 'time') {
+          xAxis.bounds = 'data';
+          if (!xAxis.time) xAxis.time = {};
+        }
+      }
+
+      // 3. Layout padding for breathing room around chart edges
+      if (!config.options.layout) config.options.layout = {};
+      if (!config.options.layout.padding) config.options.layout.padding = {};
+      var lp = config.options.layout.padding;
+      if (!lp.top || lp.top < 10) lp.top = 15;
+      if (!lp.right || lp.right < 20) lp.right = 30;
+      if (!lp.bottom || lp.bottom < 5) lp.bottom = 5;
+
+      // 4. Ensure responsive + maintainAspectRatio
+      config.options.responsive = true;
+      config.options.maintainAspectRatio = true;
+
+      return config;
+    }
+
+    // ====== Chart Rendering ======
+    function renderChart(chartConfig) {
+      var chartArea = document.querySelector('.chart-area');
+      if (!chartArea) return;
+
+      // Remove existing chart
+      if (analyticsState.currentChart) {
+        analyticsState.currentChart.destroy();
+        analyticsState.currentChart = null;
+      }
+
+      // Post-process the config for colors and padding
+      chartConfig = postProcessChartConfig(chartConfig);
+
+      // Clear the chart area
+      chartArea.innerHTML = '<canvas id="analytics-canvas"></canvas>';
+
+      // Show the toolbar with download button
+      var toolbar = document.getElementById('chart-toolbar');
+      if (toolbar) toolbar.style.display = 'block';
+
+      // Get canvas and create chart
+      var canvas = document.getElementById('analytics-canvas');
+      var ctx = canvas.getContext('2d');
+
+      analyticsState.currentChart = new Chart(ctx, chartConfig);
+    }
+
+    // ====== Download Chart as PNG ======
+    function downloadChartAsPng() {
+      if (!analyticsState.currentChart) return;
+
+      // Get chart canvas as image
+      var chartCanvas = document.getElementById('analytics-canvas');
+      if (!chartCanvas) return;
+
+      // Get the AI summary text
+      var summaryText = '';
+      var summaryEl = document.getElementById('ai-summary-text');
+      if (summaryEl) summaryText = summaryEl.textContent || '';
+
+      // Get the query
+      var queryText = '';
+      var queryEl = document.getElementById('query-input');
+      if (queryEl) queryText = queryEl.value || '';
+
+      // Create an offscreen canvas with the chart + summary
+      var padding = 30;
+      var summaryHeight = summaryText ? 80 : 0;
+      var headerHeight = queryText ? 40 : 0;
+      var totalWidth = chartCanvas.width + padding * 2;
+      var totalHeight = chartCanvas.height + padding * 2 + summaryHeight + headerHeight;
+
+      var exportCanvas = document.createElement('canvas');
+      exportCanvas.width = totalWidth;
+      exportCanvas.height = totalHeight;
+      var ectx = exportCanvas.getContext('2d');
+
+      // White background
+      ectx.fillStyle = '#ffffff';
+      ectx.fillRect(0, 0, totalWidth, totalHeight);
+
+      // Query header
+      var yOffset = padding;
+      if (queryText) {
+        ectx.fillStyle = '#666666';
+        ectx.font = '14px sans-serif';
+        ectx.fillText('Query: ' + queryText, padding, yOffset + 14);
+        yOffset += headerHeight;
+      }
+
+      // Draw the chart
+      ectx.drawImage(chartCanvas, padding, yOffset);
+      yOffset += chartCanvas.height + 15;
+
+      // Draw summary
+      if (summaryText) {
+        ectx.fillStyle = '#333333';
+        ectx.font = '13px sans-serif';
+        // Word-wrap summary
+        var words = summaryText.split(' ');
+        var line = '';
+        var maxWidth = totalWidth - padding * 2;
+        var lineHeight = 18;
+        for (var w = 0; w < words.length; w++) {
+          var testLine = line + words[w] + ' ';
+          var metrics = ectx.measureText(testLine);
+          if (metrics.width > maxWidth && line !== '') {
+            ectx.fillText(line.trim(), padding, yOffset);
+            line = words[w] + ' ';
+            yOffset += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        if (line.trim()) ectx.fillText(line.trim(), padding, yOffset);
+      }
+
+      // Download
+      var link = document.createElement('a');
+      var timestamp = new Date().toISOString().slice(0, 10);
+      link.download = 'irc-analytics-' + timestamp + '.png';
+      link.href = exportCanvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // ====== Summary Display ======
+    function showSummary(summaryText) {
+      var container = document.getElementById('ai-summary-container');
+      var summaryDiv = document.getElementById('ai-summary-text');
+
+      if (container && summaryDiv) {
+        summaryDiv.textContent = summaryText;
+        container.style.display = 'block';
+      }
+    }
+
+    // ====== Loading State ======
+    function showLoading() {
+      var chartArea = document.querySelector('.chart-area');
+      if (chartArea) {
+        chartArea.innerHTML = '<div class="loading-spinner"></div>';
+      }
+    }
+
+    function hideLoading() {
+      // Chart rendering handles this
+    }
+
+    // ====== Error Handling ======
+    function showError(message) {
+      var container = document.getElementById('error-container');
+      if (!container) return;
+
+      var html = '<div class="error-message">';
+      html += '<span>' + escapeHtml(message) + '</span>';
+      html += '<button onclick="document.getElementById(\'error-container\').innerHTML = \'\'">Dismiss</button>';
+      html += '</div>';
+
+      container.innerHTML = html;
+      analyticsState.lastError = message;
+    }
+
+    function clearError() {
+      var container = document.getElementById('error-container');
+      if (container) {
+        container.innerHTML = '';
+      }
+      analyticsState.lastError = null;
+    }
+
+    // ====== Query History (persisted to localStorage) ======
+    var HISTORY_KEY = 'irc_analytics_history';
+    var MAX_HISTORY = 10;
+
+    function loadHistory() {
+      try {
+        var raw = localStorage.getItem(HISTORY_KEY);
+        if (raw) {
+          analyticsState.queryHistory = JSON.parse(raw);
+        }
+      } catch (e) {
+        analyticsState.queryHistory = [];
+      }
+    }
+
+    function saveHistory() {
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(analyticsState.queryHistory));
+      } catch (e) {
+        // localStorage full — trim oldest entries and retry
+        if (analyticsState.queryHistory.length > 3) {
+          analyticsState.queryHistory = analyticsState.queryHistory.slice(0, 3);
+          try { localStorage.setItem(HISTORY_KEY, JSON.stringify(analyticsState.queryHistory)); } catch (e2) { /* give up */ }
+        }
+      }
+    }
+
+    function addToHistory(query, chartConfig, summary) {
+      var historyContainer = document.getElementById('query-history-container');
+      if (!historyContainer) return;
+
+      // Remove duplicate if same query exists
+      analyticsState.queryHistory = analyticsState.queryHistory.filter(function(item) {
+        return item.query !== query;
+      });
+
+      // Add to front
+      analyticsState.queryHistory.unshift({
+        query: query,
+        chartConfig: chartConfig,
+        summary: summary,
+        timestamp: new Date().toISOString()
+      });
+
+      // Trim to max
+      if (analyticsState.queryHistory.length > MAX_HISTORY) {
+        analyticsState.queryHistory = analyticsState.queryHistory.slice(0, MAX_HISTORY);
+      }
+
+      saveHistory();
+      renderHistory();
+      historyContainer.style.display = 'block';
+    }
+
+    function renderHistory() {
+      var historyList = document.getElementById('history-list');
+      if (!historyList) return;
+
+      if (analyticsState.queryHistory.length === 0) {
+        historyList.innerHTML = '<li class="empty-message">No queries yet</li>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < analyticsState.queryHistory.length; i++) {
+        var item = analyticsState.queryHistory[i];
+        var relativeTime = getRelativeTime(new Date(item.timestamp));
+        var hasResult = item.chartConfig ? ' ✓' : '';
+        html += '<li class="history-item" onclick="restoreFromHistory(' + i + ')">';
+        html += '<div class="history-query">' + escapeHtml(item.query) + '<span style="color:#4CAF50;font-size:0.8em;">' + hasResult + '</span></div>';
+        html += '<div class="history-time">' + relativeTime + '</div>';
+        html += '</li>';
+      }
+
+      historyList.innerHTML = html;
+    }
+
+    function restoreFromHistory(index) {
+      if (index < 0 || index >= analyticsState.queryHistory.length) return;
+
+      var item = analyticsState.queryHistory[index];
+      var input = document.getElementById('query-input');
+      if (input) input.value = item.query;
+
+      // If we have cached results, restore them instantly — no API call needed
+      if (item.chartConfig && item.summary) {
+        clearError();
+        try {
+          renderChart(item.chartConfig);
+          showSummary(item.summary);
+        } catch (e) {
+          // Cached config failed to render — re-run the query
+          clearError();
+          showLoading();
+          performQuery(item.query);
+        }
+      } else {
+        // No cached result — re-run
+        clearError();
+        showLoading();
+        performQuery(item.query);
+      }
+    }
+
+    // Restore the most recent result on page load
+    function restoreLastResult() {
+      loadHistory();
+      if (analyticsState.queryHistory.length === 0) return;
+
+      var historyContainer = document.getElementById('query-history-container');
+      if (historyContainer) historyContainer.style.display = 'block';
+      renderHistory();
+
+      // Restore the most recent result
+      var last = analyticsState.queryHistory[0];
+      if (last && last.chartConfig && last.summary) {
+        var input = document.getElementById('query-input');
+        if (input) input.value = last.query;
+        try {
+          renderChart(last.chartConfig);
+          showSummary(last.summary);
+        } catch (e) {
+          // Silently fail — user can re-run
+        }
+      }
+    }
+
+    function getRelativeTime(date) {
+      var now = new Date();
+      var diff = Math.floor((now - date) / 1000);
+
+      if (diff < 60) return 'Just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+      return 'More than a week ago';
+    }
+
+    // ====== Utilities ======
+    function autoGrowTextarea() {
+      var el = document.getElementById('query-input');
+      if (!el) return;
+      el.style.height = 'auto';
+      var newHeight = Math.min(el.scrollHeight, 240); // max-height matches CSS
+      el.style.height = newHeight + 'px';
+    }
+
+    function escapeHtml(text) {
+      var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(c) { return map[c]; });
+    }
+
+    // ====== Start ======
+    document.addEventListener('DOMContentLoaded', initAnalytics);
+  </script>
+</body>
+</html>

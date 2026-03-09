@@ -1,0 +1,51 @@
+/* ══════════════════════════════════════════════
+   @irc/shared — Design Tokens
+   Single source of truth for IRC brand colors,
+   typography, and spacing across all apps.
+   ══════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap');
+
+:root {
+  /* IRC Brand Primary */
+  --irc-yellow: #FFC72C;
+  --irc-yellow-light: #FFD44B;
+  --irc-yellow-mid: #FFD960;
+  --irc-yellow-lightest: #FFF8E5;
+  --black: #000000;
+  --white: #FFFFFF;
+
+  /* IRC Brand Grays */
+  --light-gray: #F6F6F6;
+  --gray-e9: #E9E9E9;
+  --mid-gray: #D1D1D1;
+  --muted: #666666;
+  --dark-gray: #383838;
+
+  /* Severity scale */
+  --green-1: #4CAF50;
+  --green-2: #8BC34A;
+  --yellow-3: #FFC72C;
+  --orange-4: #F58220;
+  --red-5: #E52911;
+
+  /* Stance colors */
+  --stance-white: #E9E9E9;
+  --stance-yellow: #FFC72C;
+  --stance-orange: #F58220;
+  --stance-red: #E52911;
+
+  /* Typography */
+  --font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Layout */
+  --header-height: 60px;
+  --header-height-mobile: 52px;
+  --max-width: 1280px;
+  --border-radius: 12px;
+  --border-radius-sm: 8px;
+}
