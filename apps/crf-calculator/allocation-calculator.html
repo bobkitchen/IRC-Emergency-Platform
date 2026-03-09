@@ -178,6 +178,94 @@
       color: var(--dark-gray);
     }
 
+    /* ── Classification section ── */
+    .classification-select {
+      width: 100%;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--black);
+      background: var(--light-gray);
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      padding: 14px 20px;
+      transition: border-color 0.15s ease;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 44px;
+    }
+
+    .classification-select:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      background-color: var(--white);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    .classification-info {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: var(--light-gray);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+      border-left: 3px solid var(--mid-gray);
+    }
+
+    .classification-info.stance-orange {
+      border-left-color: #E87722;
+    }
+
+    .classification-info.stance-red {
+      border-left-color: #C4421A;
+    }
+
+    .classification-info strong {
+      font-weight: 700;
+    }
+
+    .classification-info .classification-meta {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+
+    .classification-loading {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: normal;
+      text-transform: none;
+    }
+
+    .classification-error {
+      margin-top: 8px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .auto-populated-badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--irc-yellow-lightest);
+      color: var(--dark-gray);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
     /* ── Input fields ── */
     .number-input {
       width: 100%;
@@ -808,11 +896,21 @@
       <div class="country-meta" id="country-meta"></div>
     </div>
 
+    <!-- Active Classification (hidden by default) -->
+    <div class="calc-section" id="classification-section" style="display: none;">
+      <div class="section-label">Active Classification <span class="classification-loading" id="classification-loading" style="display:none;">Loading…</span></div>
+      <select class="classification-select" id="classification-select">
+        <option value="">None — enter manually</option>
+      </select>
+      <div class="classification-info" id="classification-info" style="display: none;"></div>
+      <div class="classification-error" id="classification-error" style="display: none;"></div>
+    </div>
+
     <div class="section-divider"></div>
 
     <!-- Population inputs -->
     <div class="calc-section">
-      <div class="section-label">Affected Population &amp; IRC Target</div>
+      <div class="section-label">Affected Population &amp; IRC Target <span class="auto-populated-badge" id="affected-auto-badge" style="display:none;">FROM CLASSIFICATION</span></div>
       <div class="pop-row">
         <div class="pop-col-input">
           <div class="pop-col-label">Affected Population</div>
@@ -844,7 +942,7 @@
 
     <!-- Response stance -->
     <div class="calc-section">
-      <div class="section-label">Emergency Classification</div>
+      <div class="section-label">Emergency Classification <span class="auto-populated-badge" id="stance-auto-badge" style="display:none;">FROM CLASSIFICATION</span></div>
       <div class="stance-buttons" id="stance-buttons">
         <button class="stance-btn" data-stance="orange" type="button">
           <div class="stance-btn-name">Orange</div>
@@ -1019,6 +1117,13 @@
       var stanceButtons = document.querySelectorAll('.stance-btn');
       var stanceHint = document.getElementById('stance-hint');
       var stanceNotEligible = document.getElementById('stance-not-eligible');
+      var classificationSection = document.getElementById('classification-section');
+      var classificationSelect = document.getElementById('classification-select');
+      var classificationInfo = document.getElementById('classification-info');
+      var classificationError = document.getElementById('classification-error');
+      var classificationLoading = document.getElementById('classification-loading');
+      var affectedAutoBadge = document.getElementById('affected-auto-badge');
+      var stanceAutoBadge = document.getElementById('stance-auto-badge');
 
       // ── State ──
       var selectedCountry = null; // {name, pop, pv, rob}
@@ -1029,6 +1134,9 @@
       var selectedStance = null;
       var stanceManuallyOverridden = false;
       var totalCost = 0;
+      var classificationsCache = null; // null = not yet fetched
+      var classificationsFetchFailed = false;
+      var selectedClassification = null;
 
       // ── Populate country dropdown ──
       COUNTRIES.sort(function (a, b) { return a[0].localeCompare(b[0]); });
@@ -1114,7 +1222,10 @@
           countryMeta.innerHTML = '';
         }
         stanceManuallyOverridden = false;
+        affectedAutoBadge.style.display = 'none';
+        stanceAutoBadge.style.display = 'none';
         updateAutoStance();
+        updateClassificationDropdown();
         calculate();
       });
 
@@ -1277,6 +1388,156 @@
 
         updateAllocation();
       }
+      // ── Classification functions ──
+      function getOpenClassifications(countryName) {
+        if (!classificationsCache || !countryName) return [];
+        return classificationsCache.filter(function (c) {
+          return c.country === countryName && !IRCShared.isExpired(c.expirationDate);
+        }).sort(function (a, b) {
+          return (b.date || '').localeCompare(a.date || '');
+        });
+      }
+
+      function updateClassificationDropdown() {
+        selectedClassification = null;
+        classificationSelect.innerHTML = '<option value="">None — enter manually</option>';
+        classificationInfo.style.display = 'none';
+        classificationError.style.display = 'none';
+
+        if (!selectedCountry) {
+          classificationSection.style.display = 'none';
+          return;
+        }
+
+        if (classificationsCache === null) {
+          // Still loading
+          classificationSection.style.display = 'block';
+          classificationLoading.style.display = 'inline';
+          classificationSelect.style.display = 'none';
+          return;
+        }
+
+        classificationLoading.style.display = 'none';
+        classificationSelect.style.display = 'block';
+
+        if (classificationsFetchFailed) {
+          classificationSection.style.display = 'block';
+          classificationSelect.style.display = 'none';
+          classificationError.style.display = 'block';
+          classificationError.textContent = 'Could not load classifications. Enter values manually.';
+          return;
+        }
+
+        var open = getOpenClassifications(selectedCountry.name);
+        if (open.length === 0) {
+          classificationSection.style.display = 'none';
+          return;
+        }
+
+        classificationSection.style.display = 'block';
+        open.forEach(function (c) {
+          var opt = document.createElement('option');
+          opt.value = c.id || c.classificationId || '';
+          var stanceLabel = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : '?';
+          var sevLabel = c.severity != null ? 'Sev ' + c.severity : '';
+          var label = (c.classificationId || c.codeNumber || '???') + ' — ' + (c.emergencyName || 'Unnamed') + ' (' + stanceLabel + (sevLabel ? ', ' + sevLabel : '') + ')';
+          opt.textContent = label;
+          classificationSelect.appendChild(opt);
+        });
+      }
+
+      function applyClassification(classification) {
+        selectedClassification = classification;
+        classificationInfo.style.display = 'none';
+        affectedAutoBadge.style.display = 'none';
+        stanceAutoBadge.style.display = 'none';
+
+        if (!classification) {
+          // "None — enter manually" selected; keep current values, hide info card
+          return;
+        }
+
+        // Show info card
+        var stanceColor = classification.stance === 'red' ? 'stance-red' : classification.stance === 'orange' ? 'stance-orange' : '';
+        classificationInfo.className = 'classification-info ' + stanceColor;
+        var infoHtml = '<strong>' + (classification.emergencyName || 'Unnamed') + '</strong> · ' + (classification.type || 'Unknown type');
+        infoHtml += '<div class="classification-meta">';
+        infoHtml += 'Classified ' + (classification.date ? IRCShared.formatDate(classification.date) : '—');
+        infoHtml += ' · Severity ' + (classification.severity != null ? classification.severity + '/10' : '—');
+        if (classification.expirationDate) {
+          infoHtml += ' · Expires ' + IRCShared.formatDate(classification.expirationDate);
+        }
+        infoHtml += '</div>';
+        classificationInfo.innerHTML = infoHtml;
+        classificationInfo.style.display = 'block';
+
+        // Auto-populate affected population
+        if (classification.totalAffected && classification.totalAffected > 0) {
+          affectedPop = Math.round(classification.totalAffected);
+          affectedInput.value = formatNum(affectedPop);
+          affectedAutoBadge.style.display = 'inline-block';
+
+          if (!targetManuallyEdited) {
+            targetPop = Math.round(affectedPop * 0.1);
+            targetInput.value = formatNum(targetPop);
+          }
+          updateTargetHint();
+        }
+
+        // Auto-populate stance (only orange/red)
+        var stance = classification.stance ? classification.stance.toLowerCase() : '';
+        if (stance === 'orange' || stance === 'red') {
+          selectedStance = stance;
+          stanceManuallyOverridden = true; // prevent auto-override from matrix
+          stanceButtons.forEach(function (b) {
+            b.classList.toggle('selected', b.getAttribute('data-stance') === stance);
+          });
+          var ceiling = STANCE_CEILINGS[stance];
+          var ceilingStr = '$' + (ceiling / 1000000) + 'M';
+          stanceHint.innerHTML = '<strong>' + stance.charAt(0).toUpperCase() + stance.slice(1) + '</strong> — indicative ceiling <strong>' + ceilingStr + '</strong> <span class="stance-auto-badge">Auto</span>';
+          stanceNotEligible.style.display = 'none';
+          stanceAutoBadge.style.display = 'inline-block';
+        }
+
+        calculate();
+      }
+
+      // ── Classification select handler ──
+      classificationSelect.addEventListener('change', function () {
+        var val = this.value;
+        if (!val) {
+          applyClassification(null);
+          return;
+        }
+        var open = getOpenClassifications(selectedCountry ? selectedCountry.name : '');
+        var match = open.find(function (c) {
+          return (c.id || c.classificationId || '') === val;
+        });
+        applyClassification(match || null);
+      });
+
+      // ── Hide affected badge on manual edit ──
+      affectedInput.addEventListener('input', function () {
+        affectedAutoBadge.style.display = 'none';
+      });
+
+      // ── Hide stance badge on manual stance click ──
+      stanceButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          stanceAutoBadge.style.display = 'none';
+        });
+      });
+
+      // ── Fetch classifications on load ──
+      IRCShared.fetchClassifications().then(function (rows) {
+        classificationsCache = rows;
+        updateClassificationDropdown();
+      }).catch(function () {
+        classificationsFetchFailed = true;
+        classificationsCache = [];
+        updateClassificationDropdown();
+      });
+
     })();
   </script>
 
