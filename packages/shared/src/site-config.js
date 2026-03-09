@@ -31,6 +31,15 @@ export function getSiteConfig() {
         {id: 'data', url: 'data.html', label: 'Data'}
       ]
     },
+    crf: {
+      label: 'CRF Calculator',
+      shortLabel: 'CRF',
+      description: 'Crisis Response Fund allocation calculator',
+      url: env === 'github' ? '/crf-calculator/' : 'allocation-calculator.html',
+      pages: [
+        {id: 'calculator', url: 'allocation-calculator.html', label: 'Calculator'}
+      ]
+    },
     navigator: {
       label: 'Response Navigator',
       shortLabel: 'Navigator',
@@ -40,15 +49,6 @@ export function getSiteConfig() {
         {id: 'home', url: '', label: 'Home'},
         {id: 'navigator', url: 'navigator', label: 'Navigator'},
         {id: 'resources', url: 'resources', label: 'Resources'}
-      ]
-    },
-    crf: {
-      label: 'CRF Calculator',
-      shortLabel: 'CRF',
-      description: 'Crisis Response Fund allocation calculator',
-      url: env === 'github' ? '/crf-calculator/' : 'allocation-calculator.html',
-      pages: [
-        {id: 'calculator', url: 'allocation-calculator.html', label: 'Calculator'}
       ]
     }
   };
