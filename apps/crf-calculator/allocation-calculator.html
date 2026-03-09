@@ -574,31 +574,39 @@
     }
 
     /* Orange stance */
-    .stance-btn[data-stance="orange"].selected {
-      border-color: #E87722;
-      background: #FFF3E8;
-    }
-
     .stance-btn[data-stance="orange"] .stance-btn-name {
       color: #E87722;
     }
 
+    .stance-btn[data-stance="orange"].selected {
+      border-color: #E87722;
+      background: #E87722;
+    }
+
+    .stance-btn[data-stance="orange"].selected .stance-btn-name {
+      color: var(--black);
+    }
+
     .stance-btn[data-stance="orange"].selected .stance-btn-sub {
-      color: #B55E1A;
+      color: rgba(0, 0, 0, 0.7);
     }
 
     /* Red stance */
-    .stance-btn[data-stance="red"].selected {
-      border-color: #C4421A;
-      background: #FFF0EB;
-    }
-
     .stance-btn[data-stance="red"] .stance-btn-name {
       color: #C4421A;
     }
 
+    .stance-btn[data-stance="red"].selected {
+      border-color: #C4421A;
+      background: #C4421A;
+    }
+
+    .stance-btn[data-stance="red"].selected .stance-btn-name {
+      color: var(--white);
+    }
+
     .stance-btn[data-stance="red"].selected .stance-btn-sub {
-      color: #9A3414;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .stance-hint {
@@ -1646,9 +1654,9 @@
 
       function classificationLabel(c) {
         var dateStr = c.date ? IRCShared.formatDate(c.date) : 'No date';
-        var stanceLabel = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : '?';
-        var sevLabel = c.severity != null ? 'Sev ' + c.severity : '';
-        return dateStr + ' — ' + (c.emergencyName || 'Unnamed') + ' (' + stanceLabel + (sevLabel ? ', ' + sevLabel : '') + ')';
+        var code = c.classificationId || c.codeNumber || '';
+        var type = c.type || 'Unknown';
+        return dateStr + (code ? ' · ' + code : '') + ' · ' + type.charAt(0).toUpperCase() + type.slice(1);
       }
 
       function renderClassificationList(filter) {
