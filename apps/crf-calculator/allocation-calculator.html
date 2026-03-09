@@ -1732,12 +1732,15 @@
         classificationSearchInput.value = classificationLabel(classification);
 
         // Show info card
-        var stanceColor = classification.stance === 'red' ? 'stance-red' : classification.stance === 'orange' ? 'stance-orange' : '';
+        var stanceLower = classification.stance ? classification.stance.toLowerCase() : '';
+        var stanceColor = stanceLower === 'red' ? 'stance-red' : stanceLower === 'orange' ? 'stance-orange' : '';
         classificationInfo.className = 'classification-info ' + stanceColor;
+        var stanceDisplay = classification.stance ? classification.stance.charAt(0).toUpperCase() + classification.stance.slice(1) : '—';
+        var sevDisplay = classification.severity != null ? classification.severity : '—';
         var infoHtml = '<strong>' + (classification.emergencyName || 'Unnamed') + '</strong> · ' + (classification.type || 'Unknown type');
         infoHtml += '<div class="classification-meta">';
-        infoHtml += 'Classified ' + (classification.date ? IRCShared.formatDate(classification.date) : '—');
-        infoHtml += ' · Severity ' + (classification.severity != null ? classification.severity + '/10' : '—');
+        infoHtml += 'Response Stance: <strong>' + stanceDisplay + '</strong> · Severity: <strong>' + sevDisplay + '/10</strong>';
+        infoHtml += ' · Classified ' + (classification.date ? IRCShared.formatDate(classification.date) : '—');
         if (classification.expirationDate) {
           infoHtml += ' · Expires ' + IRCShared.formatDate(classification.expirationDate);
         }
