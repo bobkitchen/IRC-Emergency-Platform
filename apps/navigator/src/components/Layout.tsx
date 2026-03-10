@@ -2,9 +2,12 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ChatPanel from './ChatPanel';
 import SettingsModal from './SettingsModal';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Settings } from 'lucide-react';
 // @ts-ignore — @irc/shared is a workspace dependency (plain JS)
-import { getSiteConfig, IRC_LOGO_DATA_URI } from '@irc/shared';
+import { getSiteConfig, getSettingsUrl, IRC_LOGO_DATA_URI } from '@irc/shared';
+
+// Settings page URL (environment-aware — works on GH Pages + localhost)
+const SETTINGS_URL = getSettingsUrl();
 
 /* ── useWindowWidth hook for responsive inline styles ── */
 function useWindowWidth() {
@@ -280,6 +283,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <MessageCircle style={{ width: '14px', height: '14px' }} />
                 Ask Albert
               </button>
+
+              {/* Settings gear — links to shared settings page */}
+              <a
+                href={SETTINGS_URL}
+                style={{
+                  ...navLinkBase,
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: '#D1D1D1',
+                  background: 'transparent',
+                  padding: '8px',
+                  marginLeft: '4px',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = '#FFF';
+                  e.currentTarget.style.background = '#383838';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = '#D1D1D1';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+                title="Settings"
+              >
+                <Settings style={{ width: '18px', height: '18px' }} />
+              </a>
             </nav>
           )}
 
@@ -358,6 +386,28 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <MessageCircle style={{ width: '14px', height: '14px' }} />
               Ask Albert
             </button>
+            <a
+              href={SETTINGS_URL}
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 14px',
+                borderRadius: '6px',
+                fontSize: '0.8125rem',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase' as const,
+                textDecoration: 'none',
+                color: '#D1D1D1',
+                background: 'transparent',
+                marginTop: '4px',
+              }}
+            >
+              <Settings style={{ width: '16px', height: '16px' }} />
+              Settings
+            </a>
           </nav>
         )}
       </header>

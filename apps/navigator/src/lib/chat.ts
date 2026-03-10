@@ -82,7 +82,7 @@ export function getApiKey(): string | null {
 
 export function setApiKey(key: string) {
   localStorage.setItem('irc_openrouter_api_key', key);
-  localStorage.removeItem('ern-api-key');
+  localStorage.setItem('ern-api-key', key); // legacy compat
 }
 
 export function getModel(): string {
@@ -94,7 +94,7 @@ export function getModel(): string {
 
 export function setModel(model: string) {
   localStorage.setItem('irc_openrouter_model', model);
-  localStorage.removeItem('ern-model');
+  localStorage.setItem('ern-model', model); // legacy compat
 }
 
 // --- Resource search ---
