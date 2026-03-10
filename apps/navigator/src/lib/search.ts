@@ -1,63 +1,69 @@
-import { create, insert, search as oramaSearch } from '@orama/orama';
-import type { SearchChunk } from '@/types';
-import searchChunksData from '@/data/search-chunks.json';
+/**
+ * Search via Supabase Edge Function (hybrid vector + FTS).
+ * Replaces the previous client-side Orama BM25 search.
+ */
 
-const chunks = searchChunksData as SearchChunk[];
+const SUPABASE_FUNCTION_URL =
+  import.meta.env.VITE_SUPABASE_FUNCTION_URL ||
+  'https://qykjjfbdvwqxqmsgiebs.supabase.co/functions/v1';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let db: any = null;
-
-export async function getSearchDb() {
-  if (db) return db;
-
-  db = await create({
-    schema: {
-      id: 'string',
-      type: 'string',
-      sector: 'string',
-      sectorId: 'string',
-      phase: 'string',
-      title: 'string',
-      content: 'string',
-      priority: 'string',
-    } as const,
-  });
-
-  for (const chunk of chunks) {
-    await insert(db, {
-      id: chunk.id,
-      type: chunk.type,
-      sector: chunk.sector,
-      sectorId: chunk.sectorId,
-      phase: chunk.phase,
-      title: chunk.title,
-      content: chunk.content,
-      priority: chunk.priority,
-    });
-  }
-
-  return db;
+interface SearchResult {
+  id: string;
+  title: string;
+  content: string;
+  sector: string;
+  sector_id: string;
+  phase: string;
+  type: string;
+  priority: string;
+  similarity: number;
 }
 
-export async function searchProcess(query: string, limit = 10) {
-  const database = await getSearchDb();
-  const results = await oramaSearch(database, {
-    term: query,
-    limit,
-    boost: {
-      title: 2,
-      content: 1,
-    },
+interface ResourceResult {
+  id: number;
+  name: string;
+  url: string;
+  sector: string;
+  task: string;
+  similarity: number;
+}
+
+export interface SearchResponse {
+  chunks: SearchResult[];
+  resources: ResourceResult[];
+}
+
+export async function searchProcess(query: string, limit = 10): Promise<SearchResult[]> {
+  const response = await fetch(`${SUPABASE_FUNCTION_URL}/search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, limit }),
   });
 
-  return results.hits.map((hit: any) => ({
-    id: hit.document.id as string,
-    title: hit.document.title as string,
-    content: hit.document.content as string,
-    sector: hit.document.sector as string,
-    sectorId: hit.document.sectorId as string,
-    phase: hit.document.phase as string,
-    type: hit.document.type as string,
-    score: hit.score,
+  if (!response.ok) {
+    console.warn('Search failed:', response.status);
+    return [];
+  }
+
+  const data: SearchResponse = await response.json();
+  return data.chunks.map(c => ({
+    ...c,
+    sectorId: c.sector_id,
+    score: c.similarity,
   }));
+}
+
+export async function searchAll(query: string, limit = 10): Promise<SearchResponse> {
+  const response = await fetch(`${SUPABASE_FUNCTION_URL}/search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, limit }),
+  });
+
+  if (!response.ok) {
+    console.warn('Search failed:', response.status);
+    return { chunks: [], resources: [] };
+  }
+
+  return response.json();
 }

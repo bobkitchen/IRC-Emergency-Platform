@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getApiKey, getModel, setModel, MODELS, type ModelOption } from '@/lib/chat';
+import { getModel, setModel, MODELS, type ModelOption } from '@/lib/chat';
 
 interface Props {
   isOpen: boolean;
@@ -29,7 +29,6 @@ export default function SettingsModal({ isOpen, onClose }: Props) {
     setTimeout(() => onClose(), 800);
   };
 
-  const hasKey = !!getApiKey();
   const selectedModelInfo = MODELS.find(m => m.id === selectedModel);
   const tiers: ModelOption['tier'][] = ['standard'];
 
@@ -47,15 +46,9 @@ export default function SettingsModal({ isOpen, onClose }: Props) {
         </div>
 
         <div className="space-y-4">
-          {hasKey ? (
-            <p className="text-xs text-green-700 bg-green-50 rounded-md px-3 py-2">
-              API key is pre-configured. No setup needed.
-            </p>
-          ) : (
-            <p className="text-xs text-amber-700 bg-amber-50 rounded-md px-3 py-2">
-              No API key configured. Ask the admin for a deployed version or set <code>VITE_OPENROUTER_KEY</code> in your environment.
-            </p>
-          )}
+          <p className="text-xs text-green-700 bg-green-50 rounded-md px-3 py-2">
+            Albert is ready to use — no API key needed.
+          </p>
 
           <div>
             <label className="block text-sm font-medium text-irc-gray-700 mb-1">

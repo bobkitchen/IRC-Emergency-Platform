@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom';
 import { processData } from '@/lib/data';
-import searchChunksData from '@/data/search-chunks.json';
 import SectorIcon from '@/components/SectorIcon';
 import CountrySearch from '@/components/CountrySearch';
 import { Compass, Library, MessageCircle } from 'lucide-react';
 
 export default function Home() {
   const { metadata, sectors, phases } = processData;
-  const totalSearchable = searchChunksData.length;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -118,7 +116,7 @@ export default function Home() {
       {/* Stats footer */}
       <div className="mt-10 text-center text-xs text-irc-gray-400">
         <p>
-          {totalSearchable.toLocaleString()} knowledge chunks · {metadata.totalDownloadedDocs} indexed documents
+          4,005 knowledge chunks · {metadata.totalDownloadedDocs} indexed documents
           {' · '}Built {new Date(metadata.buildDate).toLocaleDateString()}
         </p>
       </div>

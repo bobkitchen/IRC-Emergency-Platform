@@ -2,13 +2,16 @@
  * Albert Slide-Over Panel — Self-contained vanilla JS module.
  *
  * Drop this + albert-panel.css onto any Classification / CRF page.
- * Auto-detects which site it's on and intercepts Ask Albert nav clicks
- * to toggle a Navigator-style slide-over chat panel.
+ * Auto-detects which site it's on and uses Supabase Edge Functions
+ * for RAG search and chat — no API key required.
  *
- * Dependencies: marked.js (loaded dynamically if missing), irc-shared.iife.js
+ * Dependencies: marked.js (loaded dynamically if missing)
  */
 (function () {
   'use strict';
+
+  // ── Edge Function URL ─────────────────────────────────────────────
+  var SUPABASE_FUNCTION_URL = 'https://qykjjfbdvwqxqmsgiebs.supabase.co/functions/v1';
 
   // ── Site detection ──────────────────────────────────────────────
   var SITE_CONFIGS = {
@@ -39,7 +42,6 @@
   function detectSite() {
     var path = window.location.pathname;
     if (path.indexOf('crf') !== -1) return 'crf';
-    // Check page title or hostname for CRF
     if (document.title.toLowerCase().indexOf('crf') !== -1) return 'crf';
     return 'classification';
   }
@@ -47,25 +49,12 @@
   var siteKey = detectSite();
   var SITE = SITE_CONFIGS[siteKey];
 
-  // ── Navigator base URL for RAG data ─────────────────────────────
-  var NAVIGATOR_BASE = (function () {
-    var h = window.location.hostname;
-    if (h === 'bobkitchen.github.io') return '/emergency-response-navigator/';
-    if (h === 'localhost' || h === '127.0.0.1') return '/emergency-response-navigator/';
-    return 'https://bobkitchen.github.io/emergency-response-navigator/';
-  })();
-
   // ── State ───────────────────────────────────────────────────────
   var state = {
     isOpen: false,
-    apiKey: null,
     model: 'google/gemini-2.5-flash',
     messages: [],
-    isStreaming: false,
-    classifications: [],
-    ragChunks: null,
-    ragResources: null,
-    ragReady: false
+    isStreaming: false
   };
 
   // ── DOM references (set in buildDOM) ────────────────────────────
@@ -104,9 +93,7 @@
     els.clearBtn = panel.querySelector('#ap-clear-btn');
     els.closeBtn = panel.querySelector('#ap-close-btn');
     els.messages = panel.querySelector('.albert-panel-messages');
-    els.apiWarning = panel.querySelector('#ap-api-warning');
     els.examplesWrap = panel.querySelector('#ap-examples-wrap');
-    els.ragStatus = panel.querySelector('#ap-rag-status');
     els.streamingIndicator = panel.querySelector('#ap-streaming');
     els.scrollAnchor = panel.querySelector('#ap-scroll-anchor');
     els.textarea = panel.querySelector('#ap-textarea');
@@ -118,7 +105,6 @@
     settingsOverlay.innerHTML = buildSettingsHTML();
     document.body.appendChild(settingsOverlay);
     els.settingsOverlay = settingsOverlay;
-    els.settingsKeyInput = settingsOverlay.querySelector('#ap-settings-key');
     els.settingsModelSelect = settingsOverlay.querySelector('#ap-settings-model');
 
     bindEvents();
@@ -146,15 +132,10 @@
       '</div>' +
 
       '<div class="albert-panel-messages">' +
-        '<div id="ap-api-warning" class="albert-panel-api-warning" style="display:none;">' +
-          '<strong>API Key Required</strong>' +
-          '<p>Set your OpenRouter API key in <button id="ap-open-settings-inline">Settings</button> to use Ask Albert. Free models available.</p>' +
-        '</div>' +
         '<div id="ap-examples-wrap">' +
           '<p class="albert-panel-examples-label">Try asking</p>' +
           '<div class="albert-panel-examples" id="ap-examples"></div>' +
         '</div>' +
-        '<div id="ap-rag-status" class="albert-panel-rag-status loading">Loading knowledge base...</div>' +
         '<div id="ap-streaming" class="albert-panel-streaming" style="display:none;">' +
           '<div class="albert-panel-dots"><span class="albert-panel-dot"></span><span class="albert-panel-dot"></span><span class="albert-panel-dot"></span></div>' +
         '</div>' +
@@ -176,19 +157,11 @@
     return (
       '<div class="albert-panel-settings-box">' +
         '<h3>Albert Settings</h3>' +
-        '<div class="albert-panel-settings-field">' +
-          '<label for="ap-settings-key">OpenRouter API Key</label>' +
-          '<input type="password" id="ap-settings-key" placeholder="sk-or-v1-..." autocomplete="off">' +
-          '<div class="albert-panel-settings-help">' +
-            'Get a free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>' +
-          '</div>' +
-        '</div>' +
+        '<p style="font-size:12px;color:#16a34a;background:#f0fdf4;padding:8px 12px;border-radius:6px;margin-bottom:12px;">Albert is ready to use — no API key needed.</p>' +
         '<div class="albert-panel-settings-field">' +
           '<label for="ap-settings-model">AI Model</label>' +
           '<select id="ap-settings-model">' +
             '<option value="google/gemini-2.5-flash">Google Gemini 2.5 Flash</option>' +
-            '<option value="meta-llama/llama-3.1-70b-instruct">Llama 3.1 70B Instruct</option>' +
-            '<option value="meta-llama/llama-3.1-8b-instruct">Llama 3.1 8B Instruct</option>' +
           '</select>' +
         '</div>' +
         '<button class="albert-panel-clear-btn" id="ap-settings-clear">Clear conversation</button>' +
@@ -201,19 +174,13 @@
   }
 
   function getAlbertAvatarSrc() {
-    // Both sites have albert.png in their root
     return 'albert.png';
   }
 
   // ── Event binding ───────────────────────────────────────────────
   function bindEvents() {
-    // Close panel
     els.closeBtn.addEventListener('click', closePanel);
-
-    // Clear chat
     els.clearBtn.addEventListener('click', clearChat);
-
-    // Send message
     els.sendBtn.addEventListener('click', sendMessage);
     els.textarea.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -237,12 +204,6 @@
       });
       examplesContainer.appendChild(btn);
     });
-
-    // Inline settings open
-    var inlineSettingsBtn = els.panel.querySelector('#ap-open-settings-inline');
-    if (inlineSettingsBtn) {
-      inlineSettingsBtn.addEventListener('click', openSettings);
-    }
 
     // Settings modal
     els.settingsOverlay.querySelector('#ap-settings-cancel').addEventListener('click', closeSettings);
@@ -271,7 +232,6 @@
   }
 
   function interceptAskAlbertLinks() {
-    // Intercept all Ask Albert nav links (current and future via event delegation)
     document.addEventListener('click', function (e) {
       var link = e.target.closest('.ask-albert-btn');
       if (!link) return;
@@ -292,7 +252,6 @@
     els.overlay.classList.add('visible');
     updateHeaderState();
     els.textarea.focus();
-    // Disable body scroll on mobile
     if (window.innerWidth <= 640) {
       document.body.style.overflow = 'hidden';
     }
@@ -307,7 +266,6 @@
   }
 
   function updateHeaderState() {
-    // Toggle active class on Ask Albert buttons
     var btns = document.querySelectorAll('.ask-albert-btn');
     btns.forEach(function (btn) {
       if (state.isOpen) {
@@ -342,11 +300,9 @@
   function sendMessage() {
     var text = els.textarea.value.trim();
     if (!text || state.isStreaming) return;
-    if (!state.apiKey) { openSettings(); return; }
 
     // Hide welcome, show chat
     els.examplesWrap.style.display = 'none';
-    if (els.ragStatus) els.ragStatus.style.display = 'none';
 
     // User message
     var userMsgId = 'ap-' + Date.now() + '-u';
@@ -381,13 +337,11 @@
         '</div>';
     }
 
-    // Insert before streaming indicator and scroll anchor
     els.messages.insertBefore(div, els.streamingIndicator);
   }
 
   function clearChat() {
     state.messages = [];
-    // Remove all message elements
     var msgs = els.messages.querySelectorAll('.albert-panel-msg');
     msgs.forEach(function (m) { m.remove(); });
     localStorage.removeItem('irc_albert_chat_' + SITE.site);
@@ -401,16 +355,10 @@
   }
 
   function updateInputState() {
-    var hasKey = !!state.apiKey;
-    els.textarea.disabled = !hasKey || state.isStreaming;
-    els.sendBtn.disabled = !hasKey || state.isStreaming;
-    els.textarea.placeholder = hasKey ? 'Ask about emergency response...' : 'Set API key first...';
-    els.apiWarning.style.display = hasKey ? 'none' : '';
+    els.textarea.disabled = state.isStreaming;
+    els.sendBtn.disabled = state.isStreaming;
+    els.textarea.placeholder = 'Ask about emergency response...';
     els.streamingIndicator.style.display = state.isStreaming ? '' : 'none';
-
-    // Disable example buttons if no key
-    var exBtns = els.panel.querySelectorAll('.albert-panel-example-btn');
-    exBtns.forEach(function (b) { b.disabled = !hasKey; });
   }
 
   function autoResize() {
@@ -418,33 +366,24 @@
     els.textarea.style.height = Math.min(els.textarea.scrollHeight, 120) + 'px';
   }
 
-  // ── Streaming API call ──────────────────────────────────────────
+  // ── Streaming via Edge Function ──────────────────────────────────
   async function streamAlbertResponse(userMessage) {
     els.streamingIndicator.style.display = '';
     scrollToBottom();
 
     try {
-      var systemPrompt = buildSystemPrompt(userMessage);
+      // Build conversation history for the Edge Function
       var conversationMessages = state.messages.map(function (m) {
         return { role: m.role === 'albert' ? 'assistant' : m.role, content: m.content };
       });
 
-      var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      var response = await fetch(SUPABASE_FUNCTION_URL + '/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + state.apiKey,
-          'HTTP-Referer': window.location.href,
-          'X-Title': SITE.xTitle
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: state.model,
-          messages: [{ role: 'system', content: systemPrompt }]
-            .concat(conversationMessages)
-            .concat([{ role: 'user', content: userMessage }]),
-          temperature: 0.3,
-          max_tokens: 2000,
-          stream: true
+          messages: conversationMessages,
+          site: SITE.site,
+          model: state.model
         })
       });
 
@@ -453,9 +392,9 @@
         var errMsg;
         try {
           var errData = JSON.parse(errText);
-          errMsg = errData.error?.message || 'API error (' + response.status + ')';
+          errMsg = errData.error || 'Service error (' + response.status + ')';
         } catch (_) {
-          errMsg = 'API error (' + response.status + ')';
+          errMsg = 'Service error (' + response.status + ')';
         }
         throw new Error(errMsg);
       }
@@ -515,7 +454,7 @@
       var errorDetail = (error && error.message) ? error.message : String(error);
       var errorMsg;
       if (errorDetail === 'Type error' || errorDetail === 'Failed to fetch') {
-        errorMsg = 'Unable to reach the AI service. Check your API key or try again in a moment.';
+        errorMsg = 'Unable to reach the AI service. Please try again in a moment.';
       } else {
         errorMsg = 'Error: ' + errorDetail;
       }
@@ -529,173 +468,6 @@
       updateHeaderAppearance();
       scrollToBottom();
     }
-  }
-
-  // ── RAG engine ──────────────────────────────────────────────────
-  function loadRAGData() {
-    var chunksP = fetch(NAVIGATOR_BASE + 'search-chunks.json')
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (d) { state.ragChunks = d; })
-      .catch(function () {});
-
-    var resP = fetch(NAVIGATOR_BASE + 'resource-index.json')
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (d) { state.ragResources = d; })
-      .catch(function () {});
-
-    Promise.all([chunksP, resP]).then(function () {
-      state.ragReady = !!(state.ragChunks || state.ragResources);
-      if (els.ragStatus) {
-        if (state.ragChunks && state.ragResources) {
-          els.ragStatus.textContent = 'Knowledge base loaded (' + state.ragChunks.length + ' chunks, ' + state.ragResources.length + ' resources)';
-          els.ragStatus.className = 'albert-panel-rag-status ready';
-        } else if (state.ragChunks || state.ragResources) {
-          els.ragStatus.textContent = 'Knowledge base partially loaded';
-          els.ragStatus.className = 'albert-panel-rag-status ready';
-        } else {
-          els.ragStatus.textContent = 'Knowledge base unavailable';
-          els.ragStatus.className = 'albert-panel-rag-status error';
-        }
-        setTimeout(function () { els.ragStatus.style.display = 'none'; }, 5000);
-      }
-    });
-  }
-
-  function searchRAG(query, limit) {
-    limit = limit || 8;
-    if (!state.ragChunks) return [];
-    var terms = query.toLowerCase().split(/\s+/).filter(function (t) { return t.length > 2; });
-    if (terms.length === 0) return [];
-
-    var scored = [];
-    for (var i = 0; i < state.ragChunks.length; i++) {
-      var chunk = state.ragChunks[i];
-      var text = (chunk.title + ' ' + chunk.content).toLowerCase();
-      var score = 0;
-      for (var t = 0; t < terms.length; t++) {
-        var idx = 0;
-        while ((idx = text.indexOf(terms[t], idx)) !== -1) { score++; idx += terms[t].length; }
-        if (chunk.title && chunk.title.toLowerCase().indexOf(terms[t]) !== -1) score += 3;
-      }
-      if (score > 0) scored.push({ chunk: chunk, score: score });
-    }
-    scored.sort(function (a, b) { return b.score - a.score; });
-    return scored.slice(0, limit).map(function (s) { return s.chunk; });
-  }
-
-  function searchResources(query, limit) {
-    limit = limit || 8;
-    if (!state.ragResources) return [];
-    var terms = query.toLowerCase().split(/\s+/).filter(function (t) { return t.length > 2; });
-    if (terms.length === 0) return [];
-
-    var scored = [];
-    for (var i = 0; i < state.ragResources.length; i++) {
-      var res = state.ragResources[i];
-      var text = ((res.name || '') + ' ' + (res.sector || '') + ' ' + (res.task || '')).toLowerCase();
-      var score = 0;
-      for (var t = 0; t < terms.length; t++) {
-        if (text.indexOf(terms[t]) !== -1) score++;
-      }
-      if (score > 0) scored.push({ resource: res, score: score });
-    }
-    scored.sort(function (a, b) { return b.score - a.score; });
-    return scored.slice(0, limit).map(function (s) { return s.resource; });
-  }
-
-  // ── Classification data ─────────────────────────────────────────
-  function loadClassifications() {
-    if (window.IRCShared && window.IRCShared.fetchClassifications) {
-      IRCShared.fetchClassifications().then(function (data) {
-        if (data && data.length > 0) state.classifications = data;
-      }).catch(function () {});
-    }
-  }
-
-  function buildClassificationSummary() {
-    var cls = state.classifications;
-    if (!cls || cls.length === 0) return '';
-    var stances = {};
-    for (var i = 0; i < cls.length; i++) {
-      var s = (cls[i].stance || 'unknown').toLowerCase();
-      stances[s] = (stances[s] || 0) + 1;
-    }
-    var parts = ['LIVE CLASSIFICATION DATA (' + cls.length + ' records):'];
-    var keys = Object.keys(stances).sort(function (a, b) { return stances[b] - stances[a]; });
-    for (var k = 0; k < keys.length; k++) {
-      parts.push('- ' + keys[k] + ': ' + stances[keys[k]]);
-    }
-    return parts.join('\n');
-  }
-
-  // ── System prompt ───────────────────────────────────────────────
-  function buildSystemPrompt(userQuery) {
-    var ragContext = '';
-    if (state.ragReady && userQuery) {
-      var chunks = searchRAG(userQuery, 8);
-      if (chunks.length > 0) {
-        ragContext += '\n\n## Relevant Tasks & Guidelines (from IRC Emergency Management Guidelines)\n';
-        for (var i = 0; i < chunks.length; i++) {
-          var c = chunks[i];
-          ragContext += '\n### ' + (c.title || c.id) + ' [' + (c.type || '') + ']\n' + c.content + '\n';
-        }
-      }
-      var resources = searchResources(userQuery, 8);
-      if (resources.length > 0) {
-        ragContext += '\n\n## Relevant Resources & Templates\n';
-        for (var r = 0; r < resources.length; r++) {
-          var res = resources[r];
-          ragContext += '- **' + res.name + '** (' + (res.sector || '') + ') \u2014 ' + (res.task || '') + (res.url ? ' [Link](' + res.url + ')' : '') + '\n';
-        }
-      }
-    }
-
-    var classContext = buildClassificationSummary();
-
-    var focusPriority = '';
-    if (SITE.site === 'crf') {
-      focusPriority =
-        '## Your Focus Priority\n' +
-        'You are embedded in the CRF Allocation Calculator. Prioritize questions about:\n' +
-        '- CRF allocation ceilings ($1M Orange, $2M Red), the $47.34 per-client cost\n' +
-        '- CRF request process, response plan requirements (Sections A-G)\n' +
-        '- 14-day deadline for logframe + budget submission\n' +
-        '- 10% scale target, affected population, and allocation methodology\n' +
-        '- Early Action funding ($100K per region earmarked in CRF)\n' +
-        "For detailed classification data charts or trends, suggest the Classification app's Ask Albert.";
-    } else {
-      focusPriority =
-        '## Your Focus Priority\n' +
-        'You are embedded in the Emergency Classification System. Prioritize questions about:\n' +
-        '- Classification data, severity ratings, stance lookups\n' +
-        '- Trends across countries, regions, crisis types\n' +
-        '- Reclassification rules and expiration\n' +
-        '- Complex emergency escalation rules (3 Yellows -> Orange, 2 Oranges -> Red)\n' +
-        "For CRF allocation details, suggest the CRF Calculator's Ask Albert.";
-    }
-
-    return (
-      "You are Albert, the IRC Emergency Response AI Assistant. You have deep knowledge of IRC's Emergency Management Guidelines, the Classification System, CRF funding processes, and the complete emergency response lifecycle.\n\n" +
-      'CORE KNOWLEDGE:\n' +
-      '- Classification stances: White (Outside Mission Scope), Yellow (Monitor & Prepare), Orange (Mobilize), Red (Maximum Response)\n' +
-      '- Severity scale: 0-10. Each classification open 6 weeks (42 days)\n' +
-      '- Complex emergency rules: 3 Yellows -> Orange, 2 Oranges -> Red\n' +
-      '- Response Imperative: respond to all Orange and Red classifications, 10% scale target\n' +
-      '- 7 Response Phases: R1 Emergency Onset, R2 Context Analysis, R3 Strategy Development, R4 Response Planning, R5 Implementation, R6 Learnings, R7 Transition & Handover\n' +
-      '- 13 Functional Sectors: Response Management, Finance, People & Culture, Supply Chain, Safety & Security, Safeguarding, Technical Programs, MEAL, Grants, Partnerships, Integra Launch\n' +
-      '- Emergency Unit Services: classification, escalation, deployment, surge support\n' +
-      '- CRF (Crisis Response Fund): $1M ceiling for Orange, $2M for Red emergencies, $47.34 per-client cost, 14-day deadline for logframe + budget, 10% scale target, Early Action $100K/region\n' +
-      '- CRF Response Plan sections: A (Crisis Context), B (IRC Context), C (Response Strategy), D (10% Scale Target), E (Staffing), F (Partnerships), G (Budget)\n\n' +
-      focusPriority + '\n\n' +
-      '## Guidelines\n' +
-      '- Be direct and actionable. Use markdown formatting.\n' +
-      '- When referencing specific tasks, cite the task ID (e.g., RMIE-001) and sector.\n' +
-      '- When referencing resources, include links if available.\n' +
-      "- If the user asks about topics outside your focus, still answer helpfully but suggest the more relevant app.\n" +
-      '- Keep responses concise but thorough. Use bullet points and headers for clarity.\n' +
-      (ragContext ? '\n\n## CONTEXT FROM IRC KNOWLEDGE BASE\nUse the following retrieved context to inform your answers. Cite specific tasks and resources when relevant.' + ragContext : '') +
-      (classContext ? '\n\n' + classContext : '')
-    );
   }
 
   // ── Chat persistence ────────────────────────────────────────────
@@ -725,7 +497,6 @@
 
   // ── Settings ────────────────────────────────────────────────────
   function openSettings() {
-    els.settingsKeyInput.value = state.apiKey || '';
     els.settingsModelSelect.value = state.model;
     els.settingsOverlay.classList.add('visible');
   }
@@ -735,19 +506,12 @@
   }
 
   function saveSettings() {
-    var newKey = els.settingsKeyInput.value.trim();
     var newModel = els.settingsModelSelect.value;
-    if (newKey) {
-      state.apiKey = newKey;
-      localStorage.setItem('irc_openrouter_api_key', newKey);
-    }
     if (newModel) {
       state.model = newModel;
       localStorage.setItem('irc_openrouter_model', newModel);
-      localStorage.setItem('irc_albert_model', newModel); // legacy compat
     }
     closeSettings();
-    updateInputState();
   }
 
   // ── Utilities ───────────────────────────────────────────────────
@@ -759,9 +523,7 @@
 
   // ── Initialization ──────────────────────────────────────────────
   function init() {
-    // Load saved API key
-    state.apiKey = localStorage.getItem('irc_openrouter_api_key') || localStorage.getItem('irc_openrouter_key') || null;
-    var savedModel = localStorage.getItem('irc_openrouter_model') || localStorage.getItem('irc_albert_model');
+    var savedModel = localStorage.getItem('irc_openrouter_model');
     if (savedModel) state.model = savedModel;
 
     ensureMarked(function () {
@@ -769,17 +531,15 @@
       updateInputState();
       updateHeaderAppearance();
       restoreChatHistory();
-      loadRAGData();
-      loadClassifications();
 
-      // Auto-open if URL has #albert hash (for redirects from ask-albert.html)
+      // Auto-open if URL has #albert hash
       if (window.location.hash === '#albert') {
         openPanel();
       }
     });
   }
 
-  // Auto-initialize on DOM ready (use setTimeout to ensure page scripts run first)
+  // Auto-initialize on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       setTimeout(init, 0);

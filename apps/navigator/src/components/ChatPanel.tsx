@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { streamChat, getApiKey } from '@/lib/chat';
+import { streamChat } from '@/lib/chat';
 import type { ChatMessage } from '@/types';
 import albertAvatar from '@/assets/albert.png';
 
@@ -85,7 +85,7 @@ export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
         const updated = [...prev];
         const last = updated[updated.length - 1];
         if (last.role === 'assistant' && !last.content) {
-          return [...prev.slice(0, -1), { ...last, content: 'Sorry, an error occurred. Please check your API key and try again.' }];
+          return [...prev.slice(0, -1), { ...last, content: 'Sorry, an error occurred. Please try again.' }];
         }
         return updated;
       });
@@ -105,8 +105,6 @@ export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
       sendMessage(input);
     }
   };
-
-  const hasApiKey = !!getApiKey();
 
   return (
     <>
@@ -153,6 +151,16 @@ export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
               </button>
             )}
             <button
+              onClick={onOpenSettings}
+              className="p-1.5 rounded hover:bg-irc-gray-100 text-irc-gray-500"
+              title="Settings"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+            <button
               onClick={onClose}
               className="p-1.5 rounded hover:bg-irc-gray-100 text-irc-gray-500"
             >
@@ -165,19 +173,6 @@ export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {!hasApiKey && (
-            <div className="bg-yellow-50 border border-irc-yellow rounded-lg p-3">
-              <p className="text-sm text-black font-bold">API Key Required</p>
-              <p className="text-xs text-irc-gray-700 mt-1">
-                Set your OpenRouter API key in{' '}
-                <button onClick={onOpenSettings} className="underline font-medium">
-                  Settings
-                </button>{' '}
-                to use Ask Albert. Free models available.
-              </p>
-            </div>
-          )}
-
           {messages.length === 0 && (
             <div className="space-y-2 pt-2">
               <p className="text-xs text-irc-gray-400 uppercase tracking-wide font-medium">Try asking</p>
@@ -185,8 +180,7 @@ export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
                 <button
                   key={i}
                   onClick={() => sendMessage(q)}
-                  disabled={!hasApiKey}
-                  className="block w-full text-left px-3 py-2 rounded-lg border border-irc-gray-200 text-sm text-irc-gray-700 hover:bg-yellow-50 hover:border-irc-yellow transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="block w-full text-left px-3 py-2 rounded-lg border border-irc-gray-200 text-sm text-irc-gray-700 hover:bg-yellow-50 hover:border-irc-yellow transition-colors"
                 >
                   {q}
                 </button>
@@ -243,14 +237,14 @@ export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={hasApiKey ? 'Ask about the response process...' : 'Set API key first...'}
-              disabled={!hasApiKey || isStreaming}
+              placeholder="Ask about the response process..."
+              disabled={isStreaming}
               rows={1}
               className="flex-1 px-3 py-2 border border-irc-gray-200 rounded-lg text-sm resize-none focus:ring-2 focus:ring-irc-yellow focus:border-transparent disabled:bg-irc-gray-50 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
-              disabled={!input.trim() || !hasApiKey || isStreaming}
+              disabled={!input.trim() || isStreaming}
               className="px-3 py-2 bg-irc-yellow text-black rounded-lg text-sm font-medium hover:bg-irc-yellow-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

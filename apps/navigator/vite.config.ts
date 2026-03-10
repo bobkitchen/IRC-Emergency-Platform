@@ -17,8 +17,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           'process-data': ['./src/data/process-data.json'],
-          'search-data': ['./src/data/search-chunks.json'],
-          'orama': ['@orama/orama'],
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
         },
       },
