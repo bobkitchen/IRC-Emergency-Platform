@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ChatPanel from './ChatPanel';
-import SettingsModal from './SettingsModal';
 import { MessageCircle, Settings, X } from 'lucide-react';
 // @ts-ignore — @irc/shared is a workspace dependency (plain JS)
 import { getSiteConfig, getSettingsUrl, IRC_LOGO_DATA_URI } from '@irc/shared';
 import { useClassification } from '@/context/ClassificationContext';
 
-// Settings page URL (environment-aware — works on GH Pages + localhost)
+// Admin page URL (environment-aware — works on GH Pages + localhost)
 const SETTINGS_URL = getSettingsUrl();
 
 /* ── useWindowWidth hook for responsive inline styles ── */
@@ -33,6 +32,7 @@ const SITES = {
   classification: SITE_CONFIG.classification,
   navigator: SITE_CONFIG.navigator,
   crf: SITE_CONFIG.crf,
+  admin: SITE_CONFIG.admin,
 };
 
 // IRC logo from shared package
@@ -143,7 +143,6 @@ const navLinkBase: React.CSSProperties = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [chatOpen, setChatOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const windowWidth = useWindowWidth();
   const { country, stance, clearClassification } = useClassification();
@@ -454,11 +453,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </main>
 
         {/* Chat Panel */}
-        <ChatPanel isOpen={chatOpen} onClose={() => setChatOpen(false)} onOpenSettings={() => setSettingsOpen(true)} />
+        <ChatPanel isOpen={chatOpen} onClose={() => setChatOpen(false)} />
       </div>
-
-      {/* Settings Modal */}
-      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       {/* Footer */}
       <footer className="bg-irc-gray-50 border-t border-irc-gray-200 py-4 mt-auto">

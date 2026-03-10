@@ -3,11 +3,12 @@ import ReactMarkdown from 'react-markdown';
 import { streamChat } from '@/lib/chat';
 import type { ChatMessage } from '@/types';
 import albertAvatar from '@/assets/albert.png';
+// @ts-ignore — @irc/shared is a workspace dependency (plain JS)
+import { getSettingsUrl } from '@irc/shared';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onOpenSettings: () => void;
 }
 
 const EXAMPLE_QUERIES = [
@@ -18,7 +19,7 @@ const EXAMPLE_QUERIES = [
   'What does Supply Chain need to do first?',
 ];
 
-export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
+export default function ChatPanel({ isOpen, onClose }: Props) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -150,16 +151,16 @@ export default function ChatPanel({ isOpen, onClose, onOpenSettings }: Props) {
                 </svg>
               </button>
             )}
-            <button
-              onClick={onOpenSettings}
-              className="p-1.5 rounded hover:bg-irc-gray-100 text-irc-gray-500"
-              title="Settings"
+            <a
+              href={getSettingsUrl() + '#ai'}
+              className="p-1.5 rounded hover:bg-irc-gray-100 text-irc-gray-500 inline-flex"
+              title="AI Settings"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.11-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-            </button>
+            </a>
             <button
               onClick={onClose}
               className="p-1.5 rounded hover:bg-irc-gray-100 text-irc-gray-500"

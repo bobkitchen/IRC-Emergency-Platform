@@ -8,11 +8,12 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build:shared && npm run build:classification && npm run build:navigator && npm run build:crf",
+    "build": "npm run build:shared && npm run build:classification && npm run build:navigator && npm run build:crf && npm run build:admin",
     "build:shared": "npm -w @irc/shared run build",
     "build:classification": "npm -w @irc/classification run build",
     "build:navigator": "npm -w @irc/navigator run build",
     "build:crf": "npm -w @irc/crf-calculator run build",
+    "build:admin": "npm -w @irc/admin run build",
     "dev:navigator": "npm -w @irc/navigator run dev",
     "clean": "rm -rf apps/*/dist packages/*/dist"
   }

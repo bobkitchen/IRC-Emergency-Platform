@@ -14,10 +14,10 @@ function detectEnvironment() {
   return 'file';
 }
 
-/** Get the URL for the shared settings page */
+/** Get the URL for the admin page */
 export function getSettingsUrl() {
   var env = detectEnvironment();
-  return env === 'github' ? '/emergency-classification/settings.html' : 'settings.html';
+  return env === 'github' ? '/irc-admin/' : '/irc-admin/index.html';
 }
 
 /** Build site configuration based on environment */
@@ -57,6 +57,13 @@ export function getSiteConfig() {
         {id: 'navigator', url: 'navigator', label: 'Navigator'},
         {id: 'resources', url: 'resources', label: 'Resources'}
       ]
+    },
+    admin: {
+      label: 'Platform Admin',
+      shortLabel: 'Admin',
+      description: 'Platform administration and configuration',
+      url: env === 'github' ? '/irc-admin/' : '/irc-admin/index.html',
+      pages: []
     }
   };
 }

@@ -34,6 +34,9 @@ jobs:
       - name: Build CRF Calculator app
         run: npm run build:crf
 
+      - name: Build Admin app
+        run: npm run build:admin
+
       # Deploy each app to its respective GitHub Pages repo
       # Classification → emergency-classification repo
       - name: Deploy Classification
@@ -63,3 +66,13 @@ jobs:
           publish_branch: gh-pages
           publish_dir: ./apps/crf-calculator
           exclude_assets: 'package.json,build.js,node_modules,irc-classification'
+
+      # Admin → irc-admin repo
+      - name: Deploy Admin
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          external_repository: bobkitchen/irc-admin
+          publish_branch: gh-pages
+          publish_dir: ./apps/admin
+          exclude_assets: 'package.json,build.js,node_modules'

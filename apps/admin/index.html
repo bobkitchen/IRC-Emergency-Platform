@@ -3,15 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings — IRC Emergency Classification</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="albert-panel.css">
+  <title>Administration — IRC Emergency Platform</title>
+  <link rel="stylesheet" href="design-tokens.css">
   <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family);
+      background: var(--light-gray);
+      color: var(--black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: inherit; }
+
+    /* ── Header (from shared IIFE renderHeader) ── */
+    header {
+      background: var(--black);
+      border-bottom: 4px solid var(--irc-yellow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: var(--header-height);
+      padding: 0 24px;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .logo-container { width: 36px; height: 36px; flex-shrink: 0; }
+    .logo-container svg { width: 100%; height: 100%; display: block; }
+    .header-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      line-height: 1.2;
+    }
+    .header-subtitle {
+      font-size: 0.6875rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--irc-yellow);
+      margin-top: 2px;
+    }
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+    }
+    .header-nav a {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #D1D1D1;
+      transition: all 0.12s ease;
+    }
+    .header-nav a:hover { color: var(--white); background: var(--dark-gray); }
+    .header-nav a.active { color: var(--black); background: var(--irc-yellow); }
+    .settings-gear-btn {
+      display: flex !important;
+      align-items: center;
+      padding: 8px !important;
+      margin-left: 4px;
+    }
+
+    /* Site Switcher */
+    .site-switcher { position: relative; margin-right: 12px; flex-shrink: 0; }
+    .site-switcher-toggle {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border: 1px solid var(--dark-gray); border-radius: 6px;
+      background: transparent; color: #D1D1D1; font-family: inherit;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase; cursor: pointer; transition: all 0.15s ease;
+    }
+    .site-switcher-toggle:hover { border-color: #555; color: var(--white); }
+    .site-switcher-chevron { transition: transform 0.2s ease; }
+    .site-switcher.open .site-switcher-chevron { transform: rotate(180deg); }
+    .site-switcher-dropdown {
+      display: none; position: absolute; top: calc(100% + 8px); left: 0;
+      min-width: 260px; background: var(--white); border: 1px solid var(--gray-e9);
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
+      z-index: 200; overflow: hidden;
+    }
+    .site-switcher.open .site-switcher-dropdown { display: block; }
+    .site-switcher-option {
+      display: block; padding: 12px 16px; text-decoration: none; transition: background 0.12s ease;
+    }
+    .site-switcher-option:hover { background: var(--light-gray); }
+    .site-switcher-option.active { background: var(--irc-yellow-lightest); border-left: 3px solid var(--irc-yellow); }
+    .site-switcher-option-name { display: block; font-size: 0.875rem; font-weight: 700; color: var(--black); line-height: 1.3; }
+    .site-switcher-option-desc { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+
+    /* Mobile header */
+    .mobile-menu-btn {
+      display: none; margin-left: auto; padding: 8px; border-radius: 6px;
+      background: transparent; border: none; color: #D1D1D1; cursor: pointer;
+    }
+    .mobile-menu-btn svg { width: 20px; height: 20px; }
+    .mobile-nav { display: none; padding: 0 24px 12px; }
+    .mobile-nav.open { display: block; }
+    .mobile-nav a {
+      display: block; padding: 8px 14px; border-radius: 6px;
+      font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; text-decoration: none; color: #D1D1D1;
+    }
+    .mobile-nav a:hover { color: var(--white); background: var(--dark-gray); }
+    .mobile-nav a.active { color: var(--black); background: var(--irc-yellow); }
+
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 12px; height: var(--header-height-mobile); gap: 8px; }
+      .header-nav { display: none; }
+      .mobile-menu-btn { display: block; }
+      .logo-container { width: 28px; height: 28px; }
+      .header-title { font-size: 0.875rem; }
+      .header-subtitle { display: none; }
+      .site-switcher { margin-right: 6px; }
+      .site-switcher-toggle { padding: 4px 8px; font-size: 0.625rem; }
+    }
+
     /* ── Settings Tabs ── */
     .settings-section {
       max-width: 960px;
       margin: 0 auto;
       padding: 24px 24px 48px;
+      flex: 1;
     }
 
     .settings-tabs {
@@ -71,7 +204,7 @@
       display: block;
     }
 
-    /* ── AI Config ── */
+    /* ── Cards & Form Elements ── */
     .settings-card {
       background: var(--white);
       border: 1px solid var(--gray-e9);
@@ -79,623 +212,799 @@
       padding: 24px;
       margin-bottom: 16px;
     }
-
     .settings-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .settings-card h3 span {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-left: 8px;
+    }
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .settings-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-e9);
+      border-radius: 8px;
       font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--dark-gray);
-      margin-bottom: 12px;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .settings-input:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      box-shadow: 0 0 0 3px rgba(255, 199, 44, 0.15);
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
-
     .form-group label {
       display: block;
       font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--dark-gray);
+      font-weight: 600;
       margin-bottom: 6px;
+      color: var(--dark-gray);
     }
 
-    .form-group .hint {
+    .inline-fields {
+      display: flex;
+      gap: 16px;
+    }
+    .inline-fields .form-group {
+      flex: 1;
+    }
+
+    @media (max-width: 600px) {
+      .inline-fields {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+
+    /* ── Buttons ── */
+    .btn { padding: 8px 16px; border-radius: 8px; font-size: 0.8125rem; font-weight: 600; font-family: inherit; cursor: pointer; border: none; transition: all 0.15s; }
+    .btn-primary { background: var(--irc-yellow); color: var(--black); }
+    .btn-primary:hover { background: var(--irc-yellow-light); }
+    .btn-secondary { background: var(--light-gray); color: var(--dark-gray); border: 1px solid var(--gray-e9); }
+    .btn-secondary:hover { background: var(--gray-e9); }
+    .btn-sm { padding: 6px 12px; font-size: 0.75rem; }
+    .btn-danger { background: #E52911; color: var(--white); padding: 8px 16px; border-radius: 8px; font-size: 0.8125rem; font-weight: 600; font-family: inherit; cursor: pointer; border: none; }
+    .btn-danger:hover { background: #C62310; }
+    .btn-settings-primary { background: var(--irc-yellow); color: var(--black); padding: 10px 24px; border-radius: 8px; font-size: 0.875rem; font-weight: 700; font-family: inherit; cursor: pointer; border: none; }
+    .btn-settings-primary:hover { background: var(--irc-yellow-light); }
+    .btn-settings-secondary { background: var(--light-gray); color: var(--dark-gray); padding: 10px 24px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; font-family: inherit; cursor: pointer; border: 1px solid var(--gray-e9); }
+    .btn-settings-secondary:hover { background: var(--gray-e9); }
+    .btn-row { display: flex; gap: 8px; }
+
+    /* ── Status dots ── */
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.green { background: #4CAF50; }
+    .status-dot.red { background: #E52911; }
+    .status-dot.gray { background: var(--mid-gray); }
+    .status-dot.yellow { background: var(--irc-yellow); }
+
+    /* ── Dashboard ── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--gray-e9);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .stat-card h4 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .stat-sub {
       font-size: 0.75rem;
       color: var(--muted);
       margin-top: 4px;
     }
-
-    .form-group .hint a {
-      color: var(--irc-yellow);
-      text-decoration: none;
-    }
-
-    .form-group .hint a:hover {
-      text-decoration: underline;
-    }
-
-    .input-with-toggle {
-      position: relative;
-      display: flex;
-    }
-
-    .input-with-toggle input {
-      flex: 1;
-      padding: 10px 42px 10px 14px;
-      border: 1px solid var(--mid-gray);
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-family: inherit;
-      background: var(--white);
-      transition: border-color 0.15s;
-    }
-
-    .input-with-toggle input:focus {
-      outline: none;
-      border-color: var(--irc-yellow);
-      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
-    }
-
-    .eye-toggle {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--muted);
-      padding: 4px;
-    }
-
-    .eye-toggle:hover {
-      color: var(--dark-gray);
-    }
-
-    .settings-select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--mid-gray);
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-family: inherit;
-      background: var(--white);
-      appearance: auto;
-    }
-
-    .settings-select:focus {
-      outline: none;
-      border-color: var(--irc-yellow);
-      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    .btn-settings-primary {
-      padding: 10px 20px;
-      background: var(--irc-yellow);
-      color: var(--black);
-      border: none;
-      border-radius: 8px;
-      font-size: 0.8125rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .btn-settings-primary:hover {
-      background: var(--irc-yellow-light);
-    }
-
-    .btn-settings-secondary {
-      padding: 10px 20px;
-      background: var(--white);
-      color: var(--dark-gray);
-      border: 1px solid var(--mid-gray);
-      border-radius: 8px;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .btn-settings-secondary:hover {
-      background: var(--light-gray);
-    }
-
-    .btn-danger {
-      padding: 10px 20px;
-      background: var(--white);
-      color: #C4421A;
-      border: 1px solid #C4421A;
-      border-radius: 8px;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-danger:hover {
-      background: #FEF0EC;
-    }
-
-    .status-box {
+    .status-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 0.8125rem;
+      padding: 8px 0;
+    }
+    .status-row + .status-row { border-top: 1px solid var(--light-gray); }
+    .status-label { font-size: 0.8125rem; font-weight: 600; }
+    .status-value { font-size: 0.8125rem; color: var(--muted); margin-left: auto; }
+
+    .app-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
       margin-top: 16px;
     }
-
-    .status-box.success {
-      background: #F0FFF4;
-      border: 1px solid #C6F6D5;
-      color: #276749;
-    }
-
-    .status-box.error {
-      background: #FEF0EC;
-      border: 1px solid #FECACA;
-      color: #9B2C2C;
-    }
-
-    .status-box.neutral {
-      background: var(--light-gray);
+    .app-link {
+      display: block;
+      padding: 16px;
+      background: var(--white);
       border: 1px solid var(--gray-e9);
-      color: var(--muted);
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .app-link:hover { border-color: var(--irc-yellow); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .app-link-name { font-size: 0.875rem; font-weight: 700; color: var(--black); }
+    .app-link-desc { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+    .app-link .arrow { color: var(--irc-yellow); font-weight: 700; float: right; }
+
+    /* ── Data Tab ── */
+    .drop-zone {
+      border: 2px dashed var(--gray-e9);
+      border-radius: 10px;
+      padding: 40px 24px;
+      text-align: center;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--irc-yellow);
+      background: var(--irc-yellow-lightest);
+    }
+    .drop-zone p { margin-top: 8px; font-size: 0.875rem; color: var(--muted); }
+    .drop-zone a { color: var(--irc-yellow); font-weight: 600; }
+
+    .mapping-section { margin-top: 16px; }
+    .mapping-info { font-size: 0.8125rem; color: var(--muted); margin-bottom: 12px; }
+    .mapping-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .mapping-item { display: flex; align-items: center; gap: 8px; }
+    .mapping-item label { font-size: 0.75rem; font-weight: 600; min-width: 140px; color: var(--dark-gray); }
+    .mapping-item select {
+      flex: 1; padding: 6px 8px; border: 1px solid var(--gray-e9);
+      border-radius: 6px; font-size: 0.75rem; font-family: inherit;
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .preview-section { margin-top: 16px; }
+    .preview-section h4 { font-size: 0.8125rem; font-weight: 600; margin-bottom: 8px; }
 
-    .status-dot.green { background: #38A169; }
-    .status-dot.red { background: #E53E3E; }
-    .status-dot.gray { background: var(--mid-gray); }
+    .import-actions { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .replace-checkbox { font-size: 0.8125rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .replace-checkbox input { accent-color: var(--irc-yellow); }
 
-    /* ── CRF Defaults ── */
-    .settings-input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--mid-gray);
+    .import-result {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #E8F5E9;
       border-radius: 8px;
       font-size: 0.875rem;
-      font-family: inherit;
+      font-weight: 600;
+      color: #2E7D32;
     }
 
-    .settings-input:focus {
-      outline: none;
-      border-color: var(--irc-yellow);
-      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
+    .data-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
-
-    .inline-fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    @media (max-width: 500px) {
-      .inline-fields {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    details.advanced-section {
-      margin-top: 12px;
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 12px;
       border: 1px solid var(--gray-e9);
       border-radius: 8px;
+      font-size: 0.8125rem;
+      font-family: inherit;
+    }
+    .search-input:focus { outline: none; border-color: var(--irc-yellow); box-shadow: 0 0 0 3px rgba(255,199,44,0.15); }
+    .export-controls { display: flex; gap: 8px; }
+
+    .table-wrapper { overflow-x: auto; }
+    .data-table, .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+    .data-table th, .preview-table th {
+      text-align: left;
+      padding: 8px 10px;
+      background: var(--light-gray);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      white-space: nowrap;
+      border-bottom: 2px solid var(--gray-e9);
+    }
+    .data-table th.sortable { cursor: pointer; }
+    .data-table th.sortable:hover { color: var(--dark-gray); }
+    .data-table td, .preview-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--light-gray);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .data-table tr:hover { background: var(--irc-yellow-lightest); }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+    .pagination-controls { display: flex; gap: 8px; }
+    .pagination .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Advanced / Details ── */
+    .advanced-section {
+      background: var(--white);
+      border: 1px solid var(--gray-e9);
+      border-radius: 10px;
       overflow: hidden;
     }
-
-    details.advanced-section summary {
-      padding: 12px 16px;
-      font-size: 0.8125rem;
+    .advanced-section summary {
+      padding: 14px 20px;
+      font-size: 0.875rem;
       font-weight: 600;
-      color: var(--dark-gray);
       cursor: pointer;
-      background: var(--light-gray);
+      list-style: none;
     }
-
-    details.advanced-section .details-content {
-      padding: 16px;
-    }
-
+    .advanced-section summary::-webkit-details-marker { display: none; }
+    .advanced-section summary::before { content: '\25B6  '; font-size: 0.625rem; }
+    .advanced-section[open] summary::before { content: '\25BC  '; }
+    .details-content { padding: 0 20px 16px; }
     .threshold-textarea {
       width: 100%;
-      min-height: 100px;
-      padding: 10px 14px;
-      border: 1px solid var(--mid-gray);
+      min-height: 120px;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-e9);
       border-radius: 8px;
-      font-size: 0.8125rem;
-      font-family: 'DM Sans', monospace;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.75rem;
       resize: vertical;
+      margin-top: 8px;
     }
 
-    .threshold-textarea:focus {
-      outline: none;
-      border-color: var(--irc-yellow);
-      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
-    }
-
-    /* ── About ── */
+    /* ── About tab ── */
     .about-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 16px;
     }
-
-    @media (max-width: 600px) {
-      .about-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
     .about-stat {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 12px 16px;
-      background: var(--light-gray);
-      border-radius: 8px;
     }
-
     .about-stat .stat-label {
       font-size: 0.75rem;
       color: var(--muted);
-      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
-
     .about-stat .stat-value {
-      font-size: 0.875rem;
+      font-size: 1rem;
       font-weight: 700;
-      color: var(--dark-gray);
     }
 
     .link-list a {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 0;
+      display: block;
+      padding: 12px 0;
       text-decoration: none;
-      color: var(--dark-gray);
-      font-size: 0.8125rem;
-      font-weight: 500;
-      border-bottom: 1px solid var(--gray-e9);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--black);
+      border-bottom: 1px solid var(--light-gray);
       transition: color 0.15s;
     }
+    .link-list a:last-child { border-bottom: none; }
+    .link-list a:hover { color: var(--irc-yellow); }
+    .link-list .arrow { color: var(--irc-yellow); margin-left: 8px; }
 
-    .link-list a:last-child {
-      border-bottom: none;
+    /* ── Knowledge Base ── */
+    .placeholder-banner {
+      padding: 16px 20px;
+      background: var(--irc-yellow-lightest);
+      border: 1px solid var(--irc-yellow);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      margin-top: 16px;
+    }
+    .placeholder-banner strong { font-weight: 700; }
+
+    /* ── AI Tab ── */
+    .info-banner {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+    .info-banner.success {
+      background: #E8F5E9;
+      color: #2E7D32;
     }
 
-    .link-list a:hover {
-      color: var(--black);
+    .model-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-e9);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      background: var(--white);
     }
+    .model-select:focus { outline: none; border-color: var(--irc-yellow); box-shadow: 0 0 0 3px rgba(255,199,44,0.15); }
 
-    .link-list a .arrow {
-      margin-left: auto;
-      color: var(--mid-gray);
-    }
-
-    /* ── Toast notification ── */
+    /* ── Toast ── */
     .toast {
       position: fixed;
       bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--black);
-      color: var(--white);
+      right: 24px;
       padding: 12px 24px;
+      background: var(--black);
+      color: var(--irc-yellow);
       border-radius: 8px;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 600;
-      z-index: 1000;
-      transition: transform 0.3s ease;
-      pointer-events: none;
+      z-index: 500;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.visible {
+      transform: translateY(0);
+      opacity: 1;
     }
 
-    .toast.visible {
-      transform: translateX(-50%) translateY(0);
+    /* ── Footer ── */
+    footer {
+      background: var(--light-gray);
+      border-top: 1px solid var(--gray-e9);
+      padding: 16px 24px;
+      margin-top: auto;
+    }
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-brand svg { width: 20px; height: 20px; opacity: 0.6; }
+
+    @media (max-width: 600px) {
+      .settings-section { padding: 16px 12px 32px; }
+      .settings-card { padding: 16px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Header (rendered by JS) -->
   <div id="header-mount"></div>
-  <main>
-    <div id="nav-mount"></div>
 
-    <section class="settings-section">
-      <div class="settings-tabs">
-        <button class="settings-tab active" data-tab="ai">
-          <span class="tab-label-full">AI Configuration</span>
-          <span class="tab-label-short">AI</span>
-        </button>
-        <button class="settings-tab" data-tab="data">
-          <span class="tab-label-full">Classification Data</span>
-          <span class="tab-label-short">Data</span>
-        </button>
-        <button class="settings-tab" data-tab="crf">
-          <span class="tab-label-full">CRF Defaults</span>
-          <span class="tab-label-short">CRF</span>
-        </button>
-        <button class="settings-tab" data-tab="about">
-          <span class="tab-label-full">About</span>
-          <span class="tab-label-short">About</span>
-        </button>
+  <!-- Tabs & Content -->
+  <div class="settings-section">
+    <div class="settings-tabs">
+      <button class="settings-tab active" data-tab="dashboard">
+        <span class="tab-label-full">Dashboard</span>
+        <span class="tab-label-short">Home</span>
+      </button>
+      <button class="settings-tab" data-tab="data">
+        <span class="tab-label-full">Classification Data</span>
+        <span class="tab-label-short">Data</span>
+      </button>
+      <button class="settings-tab" data-tab="kb">
+        <span class="tab-label-full">Knowledge Base</span>
+        <span class="tab-label-short">KB</span>
+      </button>
+      <button class="settings-tab" data-tab="crf">
+        <span class="tab-label-full">CRF Configuration</span>
+        <span class="tab-label-short">CRF</span>
+      </button>
+      <button class="settings-tab" data-tab="ai">
+        <span class="tab-label-full">AI Model</span>
+        <span class="tab-label-short">AI</span>
+      </button>
+      <button class="settings-tab" data-tab="about">
+        <span class="tab-label-full">About</span>
+        <span class="tab-label-short">About</span>
+      </button>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- Tab 1: Dashboard -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="tab-panel active" id="panel-dashboard">
+      <div class="settings-card">
+        <h3>System Status</h3>
+        <div class="status-row">
+          <span class="status-dot gray" id="dashSupabaseDot"></span>
+          <span class="status-label">Supabase Database</span>
+          <span class="status-value" id="dashSupabaseStatus">Checking...</span>
+        </div>
+        <div class="status-row">
+          <span class="status-dot gray" id="dashEdgeSearchDot"></span>
+          <span class="status-label">Edge Function: Search</span>
+          <span class="status-value" id="dashEdgeSearchStatus">Checking...</span>
+        </div>
+        <div class="status-row">
+          <span class="status-dot gray" id="dashEdgeChatDot"></span>
+          <span class="status-label">Edge Function: Chat</span>
+          <span class="status-value" id="dashEdgeChatStatus">Checking...</span>
+        </div>
       </div>
 
-      <!-- ═══════════════════════════════════════════
-           Tab 1: AI Configuration
-           ═══════════════════════════════════════════ -->
-      <div class="tab-panel active" id="panel-ai">
-        <div class="settings-card">
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <h4>Classifications</h4>
+          <div class="stat-value" id="dashTotalRecords">--</div>
+          <div class="stat-sub" id="dashRecordsSub">Loading...</div>
+        </div>
+        <div class="stat-card">
+          <h4>Active</h4>
+          <div class="stat-value" id="dashActiveRecords">--</div>
+          <div class="stat-sub">Not yet expired</div>
+        </div>
+        <div class="stat-card">
+          <h4>Knowledge Base</h4>
+          <div class="stat-value" id="dashRagChunks">--</div>
+          <div class="stat-sub" id="dashRagSub">RAG chunks</div>
+        </div>
+      </div>
+
+      <div class="settings-card" style="margin-top:16px;">
+        <h3>Quick Links</h3>
+        <div class="app-links" id="dashAppLinks"></div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- Tab 2: Classification Data -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-data">
+      <div class="settings-card">
+        <h3>Import Data</h3>
+        <div class="drop-zone" id="dropZone">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D1D1D1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Drop a CSV or Excel file here, or <a href="#" id="browseLink">click to browse</a></p>
+          <p class="hint">Supported formats: .csv, .xlsx, .xls, .json</p>
+          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" style="display:none;">
+        </div>
+
+        <div id="mappingSection" class="mapping-section" style="display:none;">
+          <h3>Column Mapping</h3>
+          <p class="mapping-info" id="mappingInfoText">Detected columns: <span id="detectedColumnsCount"></span></p>
+          <div class="mapping-grid" id="mappingGrid"></div>
+          <div class="preview-section">
+            <h4>Preview (first 5 rows)</h4>
+            <div class="table-wrapper">
+              <table class="preview-table">
+                <thead id="previewHead"></thead>
+                <tbody id="previewBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="import-actions">
+            <label class="replace-checkbox">
+              <input type="checkbox" id="replaceAllCheckbox"> Replace all existing records
+            </label>
+            <div class="btn-row">
+              <button id="importBtn" class="btn btn-primary">Import</button>
+              <button id="cancelImport" class="btn btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="importResult" class="import-result" style="display:none;">
+          <p id="importSummaryText"></p>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Browse Records <span id="totalRecordsCount"></span></h3>
+        <div class="data-controls">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search records...">
+          <div class="export-controls">
+            <button id="exportCsvBtn" class="btn btn-secondary btn-sm">Export CSV</button>
+            <button id="exportJsonBtn" class="btn btn-secondary btn-sm">Export JSON</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-field="date">Date</th>
+                <th class="sortable" data-field="classificationId">ID</th>
+                <th class="sortable" data-field="emergencyName">Emergency</th>
+                <th class="sortable" data-field="country">Country</th>
+                <th class="sortable" data-field="region">Region</th>
+                <th class="sortable" data-field="type">Type</th>
+                <th class="sortable" data-field="severity">Severity</th>
+                <th class="sortable" data-field="stance">Stance</th>
+                <th class="sortable" data-field="processingSpeed">Speed</th>
+                <th class="sortable" data-field="reclassificationNumber">Reclass</th>
+              </tr>
+            </thead>
+            <tbody id="dataTableBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <p id="paginationInfo">Showing 0-0 of 0</p>
+          <div class="pagination-controls">
+            <button id="prevPageBtn" class="btn btn-secondary btn-sm">Previous</button>
+            <button id="nextPageBtn" class="btn btn-secondary btn-sm">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;text-align:right;">
+        <button class="btn-danger" id="deleteAllBtn">Delete All Records</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- Tab 3: Knowledge Base -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-kb">
+      <div class="settings-card">
+        <h3>RAG Knowledge Base</h3>
+        <div class="about-grid">
+          <div class="about-stat">
+            <div>
+              <div class="stat-label">Total Chunks</div>
+              <div class="stat-value" id="kbChunkCount">--</div>
+            </div>
+          </div>
+          <div class="about-stat">
+            <div>
+              <div class="stat-label">Resources</div>
+              <div class="stat-value" id="kbResourceCount">--</div>
+            </div>
+          </div>
+        </div>
+        <p class="hint" style="margin-top:16px;">
+          The knowledge base powers Albert's contextual answers across all IRC apps.
+          Documents are embedded and stored as vector chunks in Supabase.
+        </p>
+      </div>
+
+      <div class="settings-card">
+        <h3>Actions</h3>
+        <button class="btn btn-secondary" disabled style="opacity:0.5;cursor:not-allowed;">
+          Re-run Ingestion
+        </button>
+        <span class="hint" style="margin-left:8px;">Coming soon</span>
+        <div style="margin-top:16px;">
+          <button class="btn btn-secondary" disabled style="opacity:0.5;cursor:not-allowed;">
+            Upload Document
+          </button>
+          <span class="hint" style="margin-left:8px;">Coming soon — PDF/DOCX upload with auto-embedding</span>
+        </div>
+      </div>
+
+      <div class="placeholder-banner">
+        <strong>Coming Soon:</strong> Document upload and re-ingestion controls will be added here.
+        For now, the knowledge base is managed via the Supabase ingestion Edge Function.
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- Tab 4: CRF Configuration -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-crf">
+      <div class="settings-card">
+        <h3>Funding Parameters</h3>
+        <div class="inline-fields">
           <div class="form-group">
-            <label for="apiKeyInput">OpenRouter API Key</label>
-            <div class="input-with-toggle">
-              <input type="password" id="apiKeyInput" placeholder="sk-or-v1-..." autocomplete="off">
-              <button class="eye-toggle" id="toggleApiKey" type="button" title="Show/hide key">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
+            <label for="crfPerClient">Per-Client Cost (6-month)</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--muted);font-weight:600;">$</span>
+              <input type="number" id="crfPerClient" class="settings-input" step="0.01" min="0" placeholder="47.34">
             </div>
-            <p class="hint">Your API key is stored locally in your browser, never sent to our servers. Get a free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></p>
           </div>
-
           <div class="form-group">
-            <label for="modelSelect">AI Model</label>
-            <select id="modelSelect" class="settings-select">
-              <option value="google/gemini-2.5-flash">Google Gemini 2.5 Flash</option>
-            </select>
-            <p class="hint" id="modelHint">Standard tier — Fast responses, good for most questions</p>
+            <label for="crfDefaultCoverage">Default Coverage (%)</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="number" id="crfDefaultCoverage" class="settings-input" step="1" min="1" max="100" placeholder="10">
+              <span style="color:var(--muted);font-weight:600;">%</span>
+            </div>
           </div>
-
-          <div class="btn-row">
-            <button class="btn-settings-primary" id="saveAiBtn">Save Settings</button>
-            <button class="btn-settings-secondary" id="testKeyBtn">Test Key</button>
+        </div>
+        <div class="inline-fields" style="margin-top:8px;">
+          <div class="form-group">
+            <label for="crfCeilingOrange">Orange Ceiling</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--muted);font-weight:600;">$</span>
+              <input type="number" id="crfCeilingOrange" class="settings-input" step="1000" min="0" placeholder="1,000,000">
+            </div>
           </div>
-
-          <div id="aiStatus" class="status-box neutral" style="display:none;">
-            <span class="status-dot gray" id="aiStatusDot"></span>
-            <span id="aiStatusText">Not tested yet</span>
+          <div class="form-group">
+            <label for="crfCeilingRed">Red Ceiling</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--muted);font-weight:600;">$</span>
+              <input type="number" id="crfCeilingRed" class="settings-input" step="1000" min="0" placeholder="2,000,000">
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ═══════════════════════════════════════════
-           Tab 2: Classification Data
-           ═══════════════════════════════════════════ -->
-      <div class="tab-panel" id="panel-data">
-        <div class="settings-card">
-          <h3>Import Data</h3>
-          <div class="drop-zone" id="dropZone">
-            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 5v14M5 12l7-7 7 7" />
-            </svg>
-            <p>Drop a CSV or Excel file here, or <a href="#" id="browseLink">click to browse</a></p>
-            <p class="hint">Supported formats: .csv, .xlsx, .xls, .json</p>
-            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" style="display: none;">
-          </div>
-
-          <div id="mappingSection" class="mapping-section" style="display: none;">
-            <h3>Column Mapping</h3>
-            <p class="mapping-info" id="mappingInfoText">Detected columns: <span id="detectedColumnsCount"></span></p>
-            <div class="mapping-grid" id="mappingGrid"></div>
-            <div class="preview-section">
-              <h4>Preview (first 5 rows)</h4>
-              <div class="table-wrapper">
-                <table class="preview-table">
-                  <thead id="previewHead"></thead>
-                  <tbody id="previewBody"></tbody>
-                </table>
-              </div>
-            </div>
-            <div class="import-actions">
-              <label class="replace-checkbox">
-                <input type="checkbox" id="replaceAllCheckbox"> Replace all existing records
-              </label>
-              <div class="btn-row">
-                <button id="importBtn" class="btn btn-primary">Import</button>
-                <button id="cancelImport" class="btn btn-secondary">Cancel</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="importResult" class="import-result" style="display:none;">
-            <p id="importSummaryText"></p>
-          </div>
+      <details class="advanced-section">
+        <summary>Advanced: Affected Population Thresholds</summary>
+        <div class="details-content">
+          <p class="hint">JSON array of [threshold, severity] pairs. Used by the CRF Calculator to determine severity from affected population.</p>
+          <textarea id="crfAffectedThresholds" class="threshold-textarea" spellcheck="false"></textarea>
         </div>
+      </details>
 
-        <div class="settings-card">
-          <h3>Browse Records <span id="totalRecordsCount" style="font-weight:400;color:var(--muted);font-size:0.8125rem;"></span></h3>
-          <div class="data-controls">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search records...">
-            <div class="export-controls">
-              <button id="exportCsvBtn" class="btn btn-secondary btn-sm">Export CSV</button>
-              <button id="exportJsonBtn" class="btn btn-secondary btn-sm">Export JSON</button>
-            </div>
-          </div>
-
-          <div class="table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th class="sortable" data-field="date">Date</th>
-                  <th class="sortable" data-field="classificationId">ID</th>
-                  <th class="sortable" data-field="emergencyName">Emergency</th>
-                  <th class="sortable" data-field="country">Country</th>
-                  <th class="sortable" data-field="region">Region</th>
-                  <th class="sortable" data-field="type">Type</th>
-                  <th class="sortable" data-field="severity">Severity</th>
-                  <th class="sortable" data-field="stance">Stance</th>
-                  <th class="sortable" data-field="processingSpeed">Speed</th>
-                  <th class="sortable" data-field="reclassificationNumber">Reclass</th>
-                </tr>
-              </thead>
-              <tbody id="dataTableBody"></tbody>
-            </table>
-          </div>
-
-          <div class="pagination">
-            <p id="paginationInfo">Showing 0-0 of 0</p>
-            <div class="pagination-controls">
-              <button id="prevPageBtn" class="btn btn-secondary">Previous</button>
-              <button id="nextPageBtn" class="btn btn-secondary">Next</button>
-            </div>
-          </div>
+      <details class="advanced-section" style="margin-top:8px;">
+        <summary>Advanced: Proportion Thresholds</summary>
+        <div class="details-content">
+          <p class="hint">JSON array of [threshold, severity] pairs. Proportion = affected / country population.</p>
+          <textarea id="crfProportionThresholds" class="threshold-textarea" spellcheck="false"></textarea>
         </div>
+      </details>
 
-        <div style="margin-top:16px;text-align:right;">
-          <button class="btn-danger" id="deleteAllBtn">Delete All Records</button>
+      <div class="btn-row" style="margin-top:20px;">
+        <button class="btn-settings-primary" id="saveCrfBtn">Save Changes</button>
+        <button class="btn-settings-secondary" id="resetCrfBtn">Reset to Defaults</button>
+      </div>
+      <p class="hint" style="margin-top:12px;">Changes take effect next time you open the CRF Calculator.</p>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- Tab 5: AI Model -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-ai">
+      <div class="settings-card">
+        <div class="info-banner success" style="margin-bottom:16px;">
+          Albert is powered by Supabase Edge Functions — no API key needed. Queries are routed through a secure server-side proxy.
+        </div>
+        <div class="form-group">
+          <label for="modelSelect">AI Model</label>
+          <select id="modelSelect" class="model-select">
+            <optgroup label="Standard — Great balance of quality and cost">
+              <option value="google/gemini-2.5-flash">Gemini 2.5 Flash</option>
+            </optgroup>
+          </select>
+          <p class="hint" style="margin-top:8px;">This model is used by Albert across all IRC apps.</p>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn-settings-primary" id="saveAiBtn">Save Model</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- Tab 6: About -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-about">
+      <div class="settings-card">
+        <h3>System Status</h3>
+        <div class="about-grid">
+          <div class="about-stat">
+            <span class="status-dot gray" id="aboutSupabaseDot"></span>
+            <div>
+              <div class="stat-label">Supabase</div>
+              <div class="stat-value" id="aboutSupabaseStatus">Checking...</div>
+            </div>
+          </div>
+          <div class="about-stat">
+            <span class="status-dot gray" id="aboutEdgeDot"></span>
+            <div>
+              <div class="stat-label">Edge Functions</div>
+              <div class="stat-value" id="aboutEdgeStatus">Checking...</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- ═══════════════════════════════════════════
-           Tab 3: CRF Defaults
-           ═══════════════════════════════════════════ -->
-      <div class="tab-panel" id="panel-crf">
-        <div class="settings-card">
-          <h3>Funding Parameters</h3>
-          <div class="inline-fields">
-            <div class="form-group">
-              <label for="crfPerClient">Per-Client Cost (6-month)</label>
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="color:var(--muted);font-weight:600;">$</span>
-                <input type="number" id="crfPerClient" class="settings-input" step="0.01" min="0" placeholder="47.34">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="crfDefaultCoverage">Default Coverage (%)</label>
-              <div style="display:flex;align-items:center;gap:6px;">
-                <input type="number" id="crfDefaultCoverage" class="settings-input" step="1" min="1" max="100" placeholder="10">
-                <span style="color:var(--muted);font-weight:600;">%</span>
-              </div>
+      <div class="settings-card">
+        <h3>Classification Records</h3>
+        <div class="about-grid">
+          <div class="about-stat">
+            <div>
+              <div class="stat-label">Total</div>
+              <div class="stat-value" id="aboutTotal">--</div>
             </div>
           </div>
-          <div class="inline-fields" style="margin-top:8px;">
-            <div class="form-group">
-              <label for="crfCeilingOrange">Orange Ceiling</label>
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="color:var(--muted);font-weight:600;">$</span>
-                <input type="number" id="crfCeilingOrange" class="settings-input" step="1000" min="0" placeholder="1,000,000">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="crfCeilingRed">Red Ceiling</label>
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="color:var(--muted);font-weight:600;">$</span>
-                <input type="number" id="crfCeilingRed" class="settings-input" step="1000" min="0" placeholder="2,000,000">
-              </div>
+          <div class="about-stat">
+            <div>
+              <div class="stat-label">Active</div>
+              <div class="stat-value" id="aboutActive">--</div>
             </div>
           </div>
-        </div>
-
-        <details class="advanced-section">
-          <summary>Advanced: Affected Population Thresholds</summary>
-          <div class="details-content">
-            <p class="hint" style="margin-bottom:8px;">JSON array of [threshold, severity] pairs. Used by the CRF Calculator to determine severity from affected population.</p>
-            <textarea id="crfAffectedThresholds" class="threshold-textarea" spellcheck="false"></textarea>
-          </div>
-        </details>
-
-        <details class="advanced-section" style="margin-top:8px;">
-          <summary>Advanced: Proportion Thresholds</summary>
-          <div class="details-content">
-            <p class="hint" style="margin-bottom:8px;">JSON array of [threshold, severity] pairs. Proportion = affected / country population.</p>
-            <textarea id="crfProportionThresholds" class="threshold-textarea" spellcheck="false"></textarea>
-          </div>
-        </details>
-
-        <div class="btn-row" style="margin-top:20px;">
-          <button class="btn-settings-primary" id="saveCrfBtn">Save Changes</button>
-          <button class="btn-settings-secondary" id="resetCrfBtn">Reset to Defaults</button>
-        </div>
-        <p class="hint" style="margin-top:12px;">Changes take effect next time you open the CRF Calculator.</p>
-      </div>
-
-      <!-- ═══════════════════════════════════════════
-           Tab 4: About / System Info
-           ═══════════════════════════════════════════ -->
-      <div class="tab-panel" id="panel-about">
-        <div class="settings-card">
-          <h3>System Status</h3>
-          <div class="about-grid">
-            <div class="about-stat">
-              <span class="status-dot" id="aboutSupabaseDot"></span>
-              <div>
-                <div class="stat-label">Supabase</div>
-                <div class="stat-value" id="aboutSupabaseStatus">Checking...</div>
-              </div>
-            </div>
-            <div class="about-stat">
-              <span class="status-dot" id="aboutApiDot"></span>
-              <div>
-                <div class="stat-label">OpenRouter</div>
-                <div class="stat-value" id="aboutApiStatus">Checking...</div>
-              </div>
+          <div class="about-stat">
+            <div>
+              <div class="stat-label">Expired</div>
+              <div class="stat-value" id="aboutExpired">--</div>
             </div>
           </div>
-        </div>
-
-        <div class="settings-card">
-          <h3>Classification Records</h3>
-          <div class="about-grid">
-            <div class="about-stat">
-              <div>
-                <div class="stat-label">Total</div>
-                <div class="stat-value" id="aboutTotal">—</div>
-              </div>
+          <div class="about-stat">
+            <div>
+              <div class="stat-label">Local Storage</div>
+              <div class="stat-value" id="aboutStorage">--</div>
             </div>
-            <div class="about-stat">
-              <div>
-                <div class="stat-label">Active</div>
-                <div class="stat-value" id="aboutActive">—</div>
-              </div>
-            </div>
-            <div class="about-stat">
-              <div>
-                <div class="stat-label">Expired</div>
-                <div class="stat-value" id="aboutExpired">—</div>
-              </div>
-            </div>
-            <div class="about-stat">
-              <div>
-                <div class="stat-label">Local Storage</div>
-                <div class="stat-value" id="aboutStorage">—</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="settings-card">
-          <h3>IRC Emergency Tools</h3>
-          <div class="link-list">
-            <a href="https://github.com/bobkitchen/emergency-classification" target="_blank">
-              Emergency Classification System <span class="arrow">&rarr;</span>
-            </a>
-            <a href="https://github.com/bobkitchen/emergency-response-navigator" target="_blank">
-              Emergency Response Navigator <span class="arrow">&rarr;</span>
-            </a>
-            <a href="https://github.com/bobkitchen/crf-calculator" target="_blank">
-              CRF Allocation Calculator <span class="arrow">&rarr;</span>
-            </a>
           </div>
         </div>
       </div>
-    </section>
-  </main>
 
-  <div id="footer-mount"></div>
+      <div class="settings-card">
+        <h3>IRC Emergency Tools</h3>
+        <div class="link-list">
+          <a href="https://github.com/bobkitchen/emergency-classification" target="_blank" rel="noopener">
+            Emergency Classification System <span class="arrow">&rarr;</span>
+          </a>
+          <a href="https://github.com/bobkitchen/emergency-response-navigator" target="_blank" rel="noopener">
+            Emergency Response Navigator <span class="arrow">&rarr;</span>
+          </a>
+          <a href="https://github.com/bobkitchen/crf-calculator" target="_blank" rel="noopener">
+            CRF Allocation Calculator <span class="arrow">&rarr;</span>
+          </a>
+          <a href="https://github.com/bobkitchen/irc-admin" target="_blank" rel="noopener">
+            Platform Administration <span class="arrow">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg viewBox="0 0 217 216.99" xmlns="http://www.w3.org/2000/svg"><rect fill="#FDC62F" width="217" height="216.99"/><path fill="#00040C" d="M26.6,26.6h163.81v63.15h-55.22l55.22,55.22v45.44h-45.44l-55.22-55.21v55.21H26.6V26.6Z"/></svg>
+        <span>IRC Emergency Platform</span>
+      </div>
+      <span>&copy; International Rescue Committee. For internal use only.</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
   <script src="irc-shared.iife.js"></script>
   <script src="supabase.js"></script>
   <script src="shared.js"></script>
@@ -705,36 +1014,43 @@
   (function() {
     'use strict';
 
+    var S = window.IRCShared || {};
+    var SUPABASE_URL = S.SUPABASE_URL || 'https://qykjjfbdvwqxqmsgiebs.supabase.co';
+    var SUPABASE_HEADERS = S.HEADERS || {};
+
     // ══════════════════════════════════════════════
-    // localStorage Key Migration
+    // localStorage Key Migration (from old settings)
     // ══════════════════════════════════════════════
     function migrateSettings() {
       if (localStorage.getItem('irc_settings_migrated_v1')) return;
-
-      // Migrate Navigator's API key
       var ernKey = localStorage.getItem('ern-api-key');
       if (ernKey && !localStorage.getItem('irc_openrouter_api_key')) {
         localStorage.setItem('irc_openrouter_api_key', ernKey);
       }
-
-      // Migrate ask-albert's API key
       var albertKey = localStorage.getItem('irc_openrouter_key');
       if (albertKey && !localStorage.getItem('irc_openrouter_api_key')) {
         localStorage.setItem('irc_openrouter_api_key', albertKey);
       }
-
-      // Migrate model preferences
       var ernModel = localStorage.getItem('ern-model');
       var albertModel = localStorage.getItem('irc_albert_model');
       if (!localStorage.getItem('irc_openrouter_model')) {
         if (ernModel) localStorage.setItem('irc_openrouter_model', ernModel);
         else if (albertModel) localStorage.setItem('irc_openrouter_model', albertModel);
       }
-
       localStorage.setItem('irc_settings_migrated_v1', '1');
     }
-
     migrateSettings();
+
+    // ══════════════════════════════════════════════
+    // Header Rendering
+    // ══════════════════════════════════════════════
+    document.getElementById('header-mount').innerHTML = IRC.renderHeader('admin', 'admin');
+
+    // Close site-switcher on outside click
+    document.addEventListener('click', function(e) {
+      var sw = document.querySelector('.site-switcher');
+      if (sw && !sw.contains(e.target)) sw.classList.remove('open');
+    });
 
     // ══════════════════════════════════════════════
     // Tab Switching
@@ -752,7 +1068,9 @@
         var id = this.getAttribute('data-tab');
         activateTab(id);
         history.replaceState(null, '', '#' + id);
+        if (id === 'dashboard') refreshDashboard();
         if (id === 'about') refreshAboutTab();
+        if (id === 'kb') refreshKBTab();
       });
     });
 
@@ -773,86 +1091,94 @@
     }
 
     // ══════════════════════════════════════════════
-    // Tab 1: AI Configuration
+    // Dashboard
     // ══════════════════════════════════════════════
-    var apiKeyInput = document.getElementById('apiKeyInput');
-    var modelSelect = document.getElementById('modelSelect');
-    var toggleBtn = document.getElementById('toggleApiKey');
+    function checkEndpoint(url, dotId, textId) {
+      var dot = document.getElementById(dotId);
+      var text = document.getElementById(textId);
+      fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"query":"ping"}' })
+        .then(function(res) {
+          if (res.ok || res.status === 400) {
+            dot.className = 'status-dot green';
+            text.textContent = 'Online';
+          } else {
+            dot.className = 'status-dot red';
+            text.textContent = 'Error (' + res.status + ')';
+          }
+        })
+        .catch(function() {
+          dot.className = 'status-dot red';
+          text.textContent = 'Unreachable';
+        });
+    }
 
-    // Load saved values
-    var savedKey = localStorage.getItem('irc_openrouter_api_key') || '';
-    apiKeyInput.value = savedKey;
-    var savedModel = localStorage.getItem('irc_openrouter_model') || 'google/gemini-2.5-flash';
-    modelSelect.value = savedModel;
+    function refreshDashboard() {
+      // Supabase connectivity
+      fetch(SUPABASE_URL + '/rest/v1/classifications?select=id&limit=1', { headers: SUPABASE_HEADERS })
+        .then(function(res) {
+          var dot = document.getElementById('dashSupabaseDot');
+          var text = document.getElementById('dashSupabaseStatus');
+          if (res.ok) {
+            dot.className = 'status-dot green';
+            text.textContent = 'Connected';
+          } else {
+            dot.className = 'status-dot red';
+            text.textContent = 'Error (' + res.status + ')';
+          }
+        })
+        .catch(function() {
+          document.getElementById('dashSupabaseDot').className = 'status-dot red';
+          document.getElementById('dashSupabaseStatus').textContent = 'Unreachable';
+        });
 
-    // Eye toggle
-    toggleBtn.addEventListener('click', function() {
-      var isPassword = apiKeyInput.type === 'password';
-      apiKeyInput.type = isPassword ? 'text' : 'password';
-      this.title = isPassword ? 'Hide key' : 'Show key';
-    });
+      // Edge Functions
+      checkEndpoint(SUPABASE_URL + '/functions/v1/search', 'dashEdgeSearchDot', 'dashEdgeSearchStatus');
+      checkEndpoint(SUPABASE_URL + '/functions/v1/chat', 'dashEdgeChatDot', 'dashEdgeChatStatus');
 
-    // Save
-    document.getElementById('saveAiBtn').addEventListener('click', function() {
-      var key = apiKeyInput.value.trim();
-      var model = modelSelect.value;
-      if (key) {
-        localStorage.setItem('irc_openrouter_api_key', key);
-        // Also write legacy keys for backward compatibility
-        localStorage.setItem('ern-api-key', key);
-        localStorage.setItem('irc_openrouter_key', key);
-      } else {
-        localStorage.removeItem('irc_openrouter_api_key');
-        localStorage.removeItem('ern-api-key');
-        localStorage.removeItem('irc_openrouter_key');
-      }
-      localStorage.setItem('irc_openrouter_model', model);
-      localStorage.setItem('ern-model', model);
-      localStorage.setItem('irc_albert_model', model);
-      showToast('AI settings saved');
-    });
-
-    // Test key
-    document.getElementById('testKeyBtn').addEventListener('click', function() {
-      var key = apiKeyInput.value.trim();
-      var statusBox = document.getElementById('aiStatus');
-      var statusDot = document.getElementById('aiStatusDot');
-      var statusText = document.getElementById('aiStatusText');
-
-      if (!key) {
-        statusBox.style.display = 'flex';
-        statusBox.className = 'status-box error';
-        statusDot.className = 'status-dot red';
-        statusText.textContent = 'No API key entered';
-        return;
-      }
-
-      statusBox.style.display = 'flex';
-      statusBox.className = 'status-box neutral';
-      statusDot.className = 'status-dot gray';
-      statusText.textContent = 'Testing...';
-
-      fetch('https://openrouter.ai/api/v1/models', {
-        headers: { 'Authorization': 'Bearer ' + key }
-      }).then(function(res) {
-        if (res.ok) {
-          statusBox.className = 'status-box success';
-          statusDot.className = 'status-dot green';
-          statusText.textContent = 'Connected — API key valid · Model: ' + modelSelect.value.split('/').pop();
-        } else {
-          statusBox.className = 'status-box error';
-          statusDot.className = 'status-dot red';
-          statusText.textContent = 'Invalid API key (HTTP ' + res.status + ')';
-        }
-      }).catch(function(err) {
-        statusBox.className = 'status-box error';
-        statusDot.className = 'status-dot red';
-        statusText.textContent = 'Connection failed: ' + err.message;
+      // Record counts
+      var records = IRC.getClassifications();
+      var now = new Date();
+      var active = 0, expired = 0;
+      records.forEach(function(r) {
+        if (r.expirationDate && new Date(r.expirationDate) < now) expired++;
+        else active++;
       });
-    });
+      document.getElementById('dashTotalRecords').textContent = records.length;
+      document.getElementById('dashActiveRecords').textContent = active;
+      document.getElementById('dashRecordsSub').textContent = active + ' active, ' + expired + ' expired';
+
+      // RAG chunk count
+      fetch(SUPABASE_URL + '/rest/v1/rag_chunks?select=id&limit=1', {
+        headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
+      }).then(function(res) {
+        var range = res.headers.get('content-range');
+        if (range) {
+          var total = range.split('/')[1];
+          document.getElementById('dashRagChunks').textContent = total || '--';
+          document.getElementById('dashRagSub').textContent = 'RAG chunks in Supabase';
+        } else {
+          document.getElementById('dashRagChunks').textContent = '--';
+        }
+      }).catch(function() {
+        document.getElementById('dashRagChunks').textContent = '--';
+        document.getElementById('dashRagSub').textContent = 'Could not fetch';
+      });
+
+      // App links
+      var config = S.getSiteConfig();
+      var linksHtml = '';
+      for (var key in config) {
+        var site = config[key];
+        linksHtml += '<a class="app-link" href="' + site.url + '">' +
+          '<span class="app-link-name">' + site.label + ' <span class="arrow">&rarr;</span></span>' +
+          '<span class="app-link-desc">' + site.description + '</span>' +
+        '</a>';
+      }
+      document.getElementById('dashAppLinks').innerHTML = linksHtml;
+    }
 
     // ══════════════════════════════════════════════
-    // Tab 2: Classification Data (migrated from data.html)
+    // Classification Data Tab (ported from settings.html)
     // ══════════════════════════════════════════════
     var DATA = {
       currentFile: null,
@@ -943,18 +1269,14 @@
           e.preventDefault();
           dropZone.classList.remove('dragover');
           var files = e.dataTransfer.files;
-          if (files.length > 0) {
-            self.handleFileSelect(files[0]);
-          }
+          if (files.length > 0) self.handleFileSelect(files[0]);
         });
       },
 
       setupFileInput: function() {
         var self = this;
         document.getElementById('fileInput').addEventListener('change', function() {
-          if (this.files.length > 0) {
-            self.handleFileSelect(this.files[0]);
-          }
+          if (this.files.length > 0) self.handleFileSelect(this.files[0]);
         });
       },
 
@@ -1044,14 +1366,9 @@
               row.forEach(function(cell) {
                 if (!cell) return;
                 var lower = cell.toString().toLowerCase();
-                knownKeywords.forEach(function(kw) {
-                  if (lower.includes(kw)) score++;
-                });
+                knownKeywords.forEach(function(kw) { if (lower.includes(kw)) score++; });
               });
-              if (score > bestScore) {
-                bestScore = score;
-                bestHeaderIdx = ri;
-              }
+              if (score > bestScore) { bestScore = score; bestHeaderIdx = ri; }
             }
 
             var headerRow = rawData[bestHeaderIdx] || [];
@@ -1115,13 +1432,8 @@
                    e.country === record.country &&
                    e.date === record.date;
           });
-
-          if (!isDuplicate) {
-            existing.push(record);
-            imported++;
-          } else {
-            skipped++;
-          }
+          if (!isDuplicate) { existing.push(record); imported++; }
+          else { skipped++; }
         });
 
         IRC.saveClassifications(existing);
@@ -1168,9 +1480,7 @@
             }
           }
 
-          if (assignedField) {
-            self.columnMapping[assignedField] = header;
-          }
+          if (assignedField) self.columnMapping[assignedField] = header;
         });
 
         this.renderMappingUI(headers);
@@ -1183,13 +1493,8 @@
         document.getElementById('mappingSection').style.display = 'block';
         document.getElementById('importResult').style.display = 'none';
 
-        document.getElementById('importBtn').onclick = function() {
-          self.performImport();
-        };
-
-        document.getElementById('cancelImport').onclick = function() {
-          self.resetImportUI();
-        };
+        document.getElementById('importBtn').onclick = function() { self.performImport(); };
+        document.getElementById('cancelImport').onclick = function() { self.resetImportUI(); };
       },
 
       renderMappingUI: function(headers) {
@@ -1211,7 +1516,7 @@
         var fieldLabels = {
           classificationId: 'Classification ID', country: 'Country', region: 'IRC Region',
           date: 'Date Notification Sent', expirationDate: 'Expiration Date',
-          stance: 'Stance', severity: 'Severity (0–10)', emergencyName: 'Emergency Note / Details',
+          stance: 'Stance', severity: 'Severity (0-10)', emergencyName: 'Emergency Note / Details',
           type: 'Emergency Type', processingSpeed: 'Processing Speed',
           reclassificationNumber: 'Reclassification #', totalAffected: 'Total Affected Population',
           notes: 'Notes', linkToSpreadsheet: 'Link to Spreadsheet',
@@ -1245,9 +1550,7 @@
             var option = document.createElement('option');
             option.value = header;
             option.textContent = header;
-            if (self.columnMapping[field] === header) {
-              option.selected = true;
-            }
+            if (self.columnMapping[field] === header) option.selected = true;
             select.appendChild(option);
           });
 
@@ -1332,12 +1635,8 @@
 
         var dupeIndex = {};
         existing.forEach(function(e) {
-          if (e.classificationId) {
-            dupeIndex['id:' + e.classificationId + ':' + (e.reclassificationNumber || 1)] = true;
-          }
-          if (e.country && e.date) {
-            dupeIndex['cd:' + e.country + ':' + e.date + ':' + (e.emergencyName || '')] = true;
-          }
+          if (e.classificationId) dupeIndex['id:' + e.classificationId + ':' + (e.reclassificationNumber || 1)] = true;
+          if (e.country && e.date) dupeIndex['cd:' + e.country + ':' + e.date + ':' + (e.emergencyName || '')] = true;
         });
 
         this.currentFile.forEach(function(row) {
@@ -1351,18 +1650,13 @@
             var classId = self.columnMapping.classificationId ? (row[self.columnMapping.classificationId] || '').toString().trim() : '';
 
             if (Object.keys(self.classnameMap).length > 0 && classId && self.classnameMap[classId]) {
-              if (!rawEmergency || rawEmergency.length > 150) {
-                rawEmergency = self.classnameMap[classId];
-              }
+              if (!rawEmergency || rawEmergency.length > 150) rawEmergency = self.classnameMap[classId];
             }
-            if (rawEmergency && rawEmergency.length > 200) {
-              rawEmergency = rawEmergency.substring(0, 197) + '...';
-            }
+            if (rawEmergency && rawEmergency.length > 200) rawEmergency = rawEmergency.substring(0, 197) + '...';
 
             var parsedDate = self.parseDate(rawDate);
             var rawSeverity = self.columnMapping.severity ? row[self.columnMapping.severity] : '';
-            var severity = (rawSeverity !== '' && rawSeverity !== null && rawSeverity !== undefined)
-              ? parseInt(rawSeverity, 10) : null;
+            var severity = (rawSeverity !== '' && rawSeverity !== null && rawSeverity !== undefined) ? parseInt(rawSeverity, 10) : null;
             if (isNaN(severity)) severity = null;
 
             var rawStance = self.columnMapping.stance ? (row[self.columnMapping.stance] || '').toString().trim() : '';
@@ -1375,22 +1669,15 @@
             else if (rawSpeed.includes('standard') || rawSpeed === '5') processingSpeed = 'standard';
 
             var rawReclass = self.columnMapping.reclassificationNumber ? row[self.columnMapping.reclassificationNumber] : '';
-            var reclassNum = (rawReclass !== '' && rawReclass !== null && rawReclass !== undefined)
-              ? parseInt(rawReclass, 10) : 1;
+            var reclassNum = (rawReclass !== '' && rawReclass !== null && rawReclass !== undefined) ? parseInt(rawReclass, 10) : 1;
             if (isNaN(reclassNum) || reclassNum < 1) reclassNum = 1;
 
             var expDate = self.columnMapping.expirationDate ? self.parseDate(row[self.columnMapping.expirationDate]) : '';
-            if (!expDate && parsedDate) {
-              expDate = IRC.calculateExpirationDate(parsedDate);
-            }
+            if (!expDate && parsedDate) expDate = IRC.calculateExpirationDate(parsedDate);
 
             var isDuplicate = false;
-            if (classId) {
-              isDuplicate = !!dupeIndex['id:' + classId + ':' + reclassNum];
-            }
-            if (!isDuplicate && rawCountry && parsedDate) {
-              isDuplicate = !!dupeIndex['cd:' + rawCountry + ':' + parsedDate + ':' + rawEmergency];
-            }
+            if (classId) isDuplicate = !!dupeIndex['id:' + classId + ':' + reclassNum];
+            if (!isDuplicate && rawCountry && parsedDate) isDuplicate = !!dupeIndex['cd:' + rawCountry + ':' + parsedDate + ':' + rawEmergency];
 
             function getStr(field) {
               return self.columnMapping[field] ? (row[self.columnMapping[field]] || '').toString().trim() : '';
@@ -1478,7 +1765,6 @@
         var summary = 'Imported ' + imported + ' records';
         if (skipped > 0) summary += ', skipped ' + skipped + ' duplicates';
         if (errors > 0) summary += ', ' + errors + ' errors';
-
         document.getElementById('importSummaryText').textContent = summary;
         document.getElementById('importResult').style.display = 'block';
         document.getElementById('mappingSection').style.display = 'none';
@@ -1587,12 +1873,8 @@
         headers.forEach(function(header) {
           header.addEventListener('click', function() {
             var field = this.getAttribute('data-field');
-            if (self.sortField === field) {
-              self.sortAsc = !self.sortAsc;
-            } else {
-              self.sortField = field;
-              self.sortAsc = true;
-            }
+            if (self.sortField === field) { self.sortAsc = !self.sortAsc; }
+            else { self.sortField = field; self.sortAsc = true; }
             self.currentPage = 1;
             self.refreshDataTable();
           });
@@ -1663,10 +1945,6 @@
         } else {
           pageData.forEach(function(record) {
             var tr = document.createElement('tr');
-            tr.style.cursor = 'pointer';
-            tr.addEventListener('click', function() {
-              window.location.href = 'classify.html?view=' + record.id;
-            });
 
             var stanceLabel = (record.stance || '').charAt(0).toUpperCase() + (record.stance || '').slice(1);
             var typeLabel = IRC.TYPE_LABELS ? (IRC.TYPE_LABELS[record.type] || record.type || '—') : (record.type || '—');
@@ -1722,7 +2000,36 @@
     };
 
     // ══════════════════════════════════════════════
-    // Tab 3: CRF Defaults
+    // Knowledge Base Tab
+    // ══════════════════════════════════════════════
+    function refreshKBTab() {
+      // Chunk count
+      fetch(SUPABASE_URL + '/rest/v1/rag_chunks?select=id&limit=1', {
+        headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
+      }).then(function(res) {
+        var range = res.headers.get('content-range');
+        if (range) {
+          var total = range.split('/')[1];
+          document.getElementById('kbChunkCount').textContent = total || '0';
+        }
+      }).catch(function() {
+        document.getElementById('kbChunkCount').textContent = '—';
+      });
+
+      // Resource count (distinct source_url or similar)
+      fetch(SUPABASE_URL + '/rest/v1/rag_chunks?select=source_url&limit=1000', {
+        headers: SUPABASE_HEADERS
+      }).then(function(res) { return res.json(); }).then(function(rows) {
+        var urls = {};
+        rows.forEach(function(r) { if (r.source_url) urls[r.source_url] = true; });
+        document.getElementById('kbResourceCount').textContent = Object.keys(urls).length;
+      }).catch(function() {
+        document.getElementById('kbResourceCount').textContent = '—';
+      });
+    }
+
+    // ══════════════════════════════════════════════
+    // CRF Configuration Tab
     // ══════════════════════════════════════════════
     var CRF_DEFAULTS = {
       perClientCost: 47.34,
@@ -1760,7 +2067,6 @@
       localStorage.setItem('irc_crf_ceiling_red', document.getElementById('crfCeilingRed').value);
       localStorage.setItem('irc_crf_default_coverage', document.getElementById('crfDefaultCoverage').value);
 
-      // Validate threshold JSON
       try {
         var affected = JSON.parse(document.getElementById('crfAffectedThresholds').value);
         if (Array.isArray(affected)) localStorage.setItem('irc_crf_affected_thresholds', JSON.stringify(affected));
@@ -1793,15 +2099,29 @@
     });
 
     // ══════════════════════════════════════════════
-    // Tab 4: About / System Info
+    // AI Model Tab
+    // ══════════════════════════════════════════════
+    var modelSelect = document.getElementById('modelSelect');
+    var savedModel = localStorage.getItem('irc_openrouter_model') || 'google/gemini-2.5-flash';
+    modelSelect.value = savedModel;
+
+    document.getElementById('saveAiBtn').addEventListener('click', function() {
+      var model = modelSelect.value;
+      localStorage.setItem('irc_openrouter_model', model);
+      localStorage.setItem('ern-model', model);
+      localStorage.setItem('irc_albert_model', model);
+      showToast('AI model saved');
+    });
+
+    // ══════════════════════════════════════════════
+    // About Tab
     // ══════════════════════════════════════════════
     function refreshAboutTab() {
       // Supabase check
       var supabaseDot = document.getElementById('aboutSupabaseDot');
       var supabaseText = document.getElementById('aboutSupabaseStatus');
-      var S = window.IRCShared || {};
-      fetch(S.SUPABASE_URL + '/rest/v1/' + S.TABLE + '?select=id&limit=1', {
-        headers: S.HEADERS
+      fetch(SUPABASE_URL + '/rest/v1/classifications?select=id&limit=1', {
+        headers: SUPABASE_HEADERS
       }).then(function(res) {
         if (res.ok) {
           supabaseDot.className = 'status-dot green';
@@ -1815,29 +2135,33 @@
         supabaseText.textContent = 'Unreachable';
       });
 
-      // OpenRouter check
-      var apiDot = document.getElementById('aboutApiDot');
-      var apiText = document.getElementById('aboutApiStatus');
-      var apiKey = localStorage.getItem('irc_openrouter_api_key');
-      if (apiKey) {
-        apiDot.className = 'status-dot green';
-        apiText.textContent = 'Key configured';
-      } else {
-        apiDot.className = 'status-dot gray';
-        apiText.textContent = 'No key set';
-      }
+      // Edge Function check
+      var edgeDot = document.getElementById('aboutEdgeDot');
+      var edgeText = document.getElementById('aboutEdgeStatus');
+      fetch(SUPABASE_URL + '/functions/v1/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{"query":"ping"}'
+      }).then(function(res) {
+        if (res.ok || res.status === 400) {
+          edgeDot.className = 'status-dot green';
+          edgeText.textContent = 'Online';
+        } else {
+          edgeDot.className = 'status-dot red';
+          edgeText.textContent = 'Error (' + res.status + ')';
+        }
+      }).catch(function() {
+        edgeDot.className = 'status-dot red';
+        edgeText.textContent = 'Unreachable';
+      });
 
       // Record counts
       var records = IRC.getClassifications();
       var now = new Date();
-      var active = 0;
-      var expired = 0;
+      var active = 0, expired = 0;
       records.forEach(function(r) {
-        if (r.expirationDate && new Date(r.expirationDate) < now) {
-          expired++;
-        } else {
-          active++;
-        }
+        if (r.expirationDate && new Date(r.expirationDate) < now) expired++;
+        else active++;
       });
       document.getElementById('aboutTotal').textContent = records.length;
       document.getElementById('aboutActive').textContent = active;
@@ -1849,7 +2173,7 @@
       for (var i = 0; i < localStorage.length; i++) {
         var key = localStorage.key(i);
         if (key && key.startsWith('irc_')) {
-          totalBytes += (localStorage.getItem(key) || '').length * 2; // UTF-16
+          totalBytes += (localStorage.getItem(key) || '').length * 2;
           keyCount++;
         }
       }
@@ -1858,19 +2182,14 @@
     }
 
     // ══════════════════════════════════════════════
-    // Page init
+    // Page Init
     // ══════════════════════════════════════════════
-    document.getElementById('header-mount').innerHTML = IRC.renderHeader('settings');
-    document.getElementById('nav-mount').innerHTML = IRC.renderNav ? IRC.renderNav() : '';
-    document.getElementById('footer-mount').innerHTML = IRC.renderFooter();
-
     DATA.init();
-
-    // Refresh about tab if it's active on load
+    refreshDashboard();
     if (hash === 'about') refreshAboutTab();
+    if (hash === 'kb') refreshKBTab();
 
   })();
   </script>
-  <script src="albert-panel.js"></script>
 </body>
 </html>

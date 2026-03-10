@@ -90,7 +90,8 @@ export function renderHeader(activePage, currentSite) {
   var titles = {
     classification: { title: 'Emergency Classification', subtitle: 'a Global Crisis Analysis project' },
     navigator: { title: 'Emergency Response Navigator', subtitle: 'An Emergency Unit Project' },
-    crf: { title: 'CRF Allocation Calculator', subtitle: 'Crisis Response Fund' }
+    crf: { title: 'CRF Allocation Calculator', subtitle: 'Crisis Response Fund' },
+    admin: { title: 'IRC Emergency Platform', subtitle: 'Administration' }
   };
   var t = titles[currentSite] || titles.classification;
 
