@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { processData } from '@/lib/data';
 import searchChunksData from '@/data/search-chunks.json';
 import SectorIcon from '@/components/SectorIcon';
+import CountrySearch from '@/components/CountrySearch';
 import { Compass, Library, MessageCircle } from 'lucide-react';
 
 export default function Home() {
@@ -10,18 +11,6 @@ export default function Home() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      {/* Hero */}
-      <div className="text-center mb-16 sm:mb-20">
-        <h1 className="text-3xl sm:text-5xl font-bold text-black mb-4 tracking-irc-tight">
-          Emergency Response Navigator
-        </h1>
-        <span className="block h-1 w-20 bg-irc-yellow mx-auto mt-4" />
-        <p className="text-lg text-irc-gray-500 max-w-2xl mx-auto leading-relaxed mt-6">
-          Navigate the response process, find resources, and get AI guidance.
-          Built on IRC's Emergency Management Guidelines v2.0 and the Emergency Roadmap.
-        </p>
-      </div>
-
       {/* Quick Start — bold card trio */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-14">
         {/* Process Navigator — white accent card */}
@@ -73,53 +62,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Classification Quick Start */}
-      <div className="card p-5 mb-10">
-        <h2 className="font-bold text-black mb-3 tracking-irc-tight">Start by Classification</h2>
-        <p className="text-sm text-irc-gray-500 mb-4">
-          Select your emergency classification to see the relevant tasks:
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Link
-            to="/navigator?classification=yellow"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg border-2 border-irc-yellow bg-yellow-50 hover:bg-yellow-100 transition-colors"
-          >
-            <div className="w-10 h-10 rounded-full bg-irc-yellow flex items-center justify-center text-black font-bold text-sm shrink-0">
-              Y
-            </div>
-            <div>
-              <p className="font-bold text-black">Yellow</p>
-              <p className="text-xs text-irc-gray-500">Country program leads and is capable of responding</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/navigator?classification=orange"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg border-2 border-orange-300 bg-orange-50 hover:bg-orange-100 transition-colors"
-          >
-            <div className="w-10 h-10 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold text-sm shrink-0">
-              O
-            </div>
-            <div>
-              <p className="font-bold text-black">Orange</p>
-              <p className="text-xs text-irc-gray-500">Additional assistance needed to ensure proportional response</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/navigator?classification=red"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg border-2 border-irc-crisis-red bg-red-50 hover:bg-red-100 transition-colors"
-          >
-            <div className="w-10 h-10 rounded-full bg-irc-crisis-red flex items-center justify-center text-white font-bold text-sm shrink-0">
-              R
-            </div>
-            <div>
-              <p className="font-bold text-irc-crisis-red">Red</p>
-              <p className="text-xs text-irc-gray-500">All hands on deck — maximum organizational response</p>
-            </div>
-          </Link>
-        </div>
-      </div>
+      {/* Country Search + Classification Picker */}
+      <CountrySearch />
 
       {/* Response Phases Overview — 2-col grid, compact */}
       <div className="card p-5 mb-10">

@@ -2,9 +2,10 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ChatPanel from './ChatPanel';
 import SettingsModal from './SettingsModal';
-import { MessageCircle, Settings } from 'lucide-react';
+import { MessageCircle, Settings, X } from 'lucide-react';
 // @ts-ignore — @irc/shared is a workspace dependency (plain JS)
 import { getSiteConfig, getSettingsUrl, IRC_LOGO_DATA_URI } from '@irc/shared';
+import { useClassification } from '@/context/ClassificationContext';
 
 // Settings page URL (environment-aware — works on GH Pages + localhost)
 const SETTINGS_URL = getSettingsUrl();
@@ -145,6 +146,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const windowWidth = useWindowWidth();
+  const { country, stance, clearClassification } = useClassification();
 
   const isMobile = windowWidth <= 768;
   const isNarrow = windowWidth <= 400;
@@ -219,6 +221,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div style={subtitleStyle}>An Emergency Unit Project</div>
             </div>
           </Link>
+
+          {/* Classification Context Pill */}
+          {country && stance && (
+            <button
+              onClick={clearClassification}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 10px',
+                borderRadius: '9999px',
+                background: '#383838',
+                color: '#FFF',
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                border: 'none',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+              title="Clear country context"
+            >
+              <span style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: stance === 'red' ? '#D32F2F' : stance === 'orange' ? '#FB8C00' : '#FFC72C',
+              }} />
+              {!isNarrow && <span>{country.length > 20 ? country.slice(0, 18) + '…' : country}</span>}
+              <span style={{ textTransform: 'capitalize' }}>{!isNarrow ? `· ${stance}` : stance}</span>
+              <X style={{ width: '10px', height: '10px', opacity: 0.6 }} />
+            </button>
+          )}
 
           {/* Desktop Nav — hidden on mobile */}
           {!isMobile && (

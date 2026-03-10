@@ -6,13 +6,20 @@ import type { Filters, Classification, OfficeType, Priority } from '@/types';
 import PhaseTimeline from '@/components/PhaseTimeline';
 import FilterBar from '@/components/FilterBar';
 import TaskCard from '@/components/TaskCard';
+import { useClassification } from '@/context/ClassificationContext';
+import { X } from 'lucide-react';
 
 export default function Navigator() {
   const { sectorId } = useParams<{ sectorId?: string }>();
   const [searchParams] = useSearchParams();
+  const { country, stance, clearClassification } = useClassification();
+
+  // Determine initial classification: URL param takes precedence, then context stance
+  const urlClassification = searchParams.get('classification') as Classification | null;
+  const initialClassification = urlClassification || (stance as Classification) || 'all';
 
   const [filters, setFilters] = useState<Filters>({
-    classification: (searchParams.get('classification') as Classification) || 'all',
+    classification: initialClassification,
     officeType: 'all' as OfficeType | 'all',
     phase: searchParams.get('phase') || 'all',
     priority: 'all' as Priority | 'all',
@@ -31,6 +38,16 @@ export default function Navigator() {
       }));
     }
   }, [searchParams]);
+
+  // Sync context stance to filters when no URL override
+  useEffect(() => {
+    if (!urlClassification && stance) {
+      setFilters(prev => ({
+        ...prev,
+        classification: stance as Classification,
+      }));
+    }
+  }, [stance, urlClassification]);
 
   const activeSector = sectorId
     ? processData.sectors.find(s => s.id === sectorId)
@@ -152,6 +169,25 @@ export default function Navigator() {
           onPhaseClick={handlePhaseClick}
         />
       </div>
+
+      {/* Context Banner */}
+      {country && stance && (
+        <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-irc-gray-50 border border-irc-gray-200 text-sm">
+          <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+            stance === 'red' ? 'bg-irc-crisis-red' : stance === 'orange' ? 'bg-orange-400' : 'bg-irc-yellow'
+          }`} />
+          <span className="text-irc-gray-700">
+            Filtering for <strong>{country}</strong> — {stance.charAt(0).toUpperCase() + stance.slice(1)} classification
+          </span>
+          <button
+            onClick={clearClassification}
+            className="ml-auto text-irc-gray-400 hover:text-black transition-colors"
+            aria-label="Clear country filter"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Filter Bar */}
       <div className="mb-4">
