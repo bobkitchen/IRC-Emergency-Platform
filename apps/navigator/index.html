@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/emergency-navigator/irc-logo-icon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/emergency-response-navigator/irc-logo-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="IRC Emergency Response Navigator — navigate the response process, find resources, get AI guidance" />
     <title>Emergency Response Navigator</title>
@@ -16,7 +16,7 @@
         var p = sp.get('/');
         if (p) {
           sessionStorage.setItem('redirect', p + window.location.hash);
-          window.history.replaceState(null, '', '/' + p + window.location.hash);
+          window.history.replaceState(null, '', '/emergency-response-navigator/' + p + window.location.hash);
         }
       })();
     </script>

@@ -74,21 +74,27 @@ export const DEFAULT_MODEL = 'google/gemini-2.5-flash';
 // --- Settings helpers ---
 
 export function getApiKey(): string | null {
-  return localStorage.getItem('ern-api-key') || import.meta.env.VITE_OPENROUTER_KEY || null;
+  return localStorage.getItem('irc_openrouter_api_key')
+    || localStorage.getItem('ern-api-key')
+    || import.meta.env.VITE_OPENROUTER_KEY
+    || null;
 }
 
 export function setApiKey(key: string) {
-  localStorage.setItem('ern-api-key', key);
+  localStorage.setItem('irc_openrouter_api_key', key);
+  localStorage.removeItem('ern-api-key');
 }
 
 export function getModel(): string {
-  const stored = localStorage.getItem('ern-model');
+  const stored = localStorage.getItem('irc_openrouter_model')
+    || localStorage.getItem('ern-model');
   if (stored && MODELS.some(m => m.id === stored)) return stored;
   return DEFAULT_MODEL;
 }
 
 export function setModel(model: string) {
-  localStorage.setItem('ern-model', model);
+  localStorage.setItem('irc_openrouter_model', model);
+  localStorage.removeItem('ern-model');
 }
 
 // --- Resource search ---
