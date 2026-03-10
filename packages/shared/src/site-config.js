@@ -14,6 +14,12 @@ function detectEnvironment() {
   return 'file';
 }
 
+/** Get the URL for the shared settings page */
+export function getSettingsUrl() {
+  var env = detectEnvironment();
+  return env === 'github' ? '/emergency-classification/settings.html' : 'settings.html';
+}
+
 /** Build site configuration based on environment */
 export function getSiteConfig() {
   var env = detectEnvironment();
@@ -35,7 +41,7 @@ export function getSiteConfig() {
       label: 'CRF Calculator',
       shortLabel: 'CRF',
       description: 'Crisis Response Fund allocation calculator',
-      url: env === 'github' ? '/crf-calculator/' : 'allocation-calculator.html',
+      url: env === 'github' ? '/crf-calculator/allocation-calculator.html' : 'allocation-calculator.html',
       pages: [
         {id: 'calculator', url: 'allocation-calculator.html', label: 'Calculator'},
         {id: 'ask-albert', url: 'ask-albert.html', label: 'Ask Albert'}

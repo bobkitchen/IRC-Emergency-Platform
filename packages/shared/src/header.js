@@ -6,13 +6,16 @@
  * as a reference for the Navigator's React header component.
  */
 
-import { getSiteConfig } from './site-config.js';
+import { getSiteConfig, getSettingsUrl } from './site-config.js';
 
 // IRC logo SVG inline
 const IRC_LOGO_SVG = '<svg viewBox="0 0 217 216.99" xmlns="http://www.w3.org/2000/svg"><rect fill="#FDC62F" width="217" height="216.99"/><path fill="#00040C" d="M26.6,26.6h163.81v63.15h-55.22l55.22,55.22v45.44h-45.44l-55.22-55.21v55.21H26.6V26.6Z"/></svg>';
 
 // Chat icon SVG (matches Navigator's lucide MessageCircle)
 const CHAT_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>';
+
+// Gear icon SVG for settings link
+const GEAR_ICON_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
 
 // Logo as data URI (for React/img tag usage)
 export const IRC_LOGO_DATA_URI = 'data:image/svg+xml,' + encodeURIComponent('<svg viewBox="0 0 217 216.99" xmlns="http://www.w3.org/2000/svg"><rect fill="#FDC62F" width="217" height="216.99"/><path fill="#00040C" d="M26.6,26.6h163.81v63.15h-55.22l55.22,55.22v45.44h-45.44l-55.22-55.21v55.21H26.6V26.6Z"/></svg>');
@@ -59,6 +62,7 @@ export function renderHeader(activePage, currentSite) {
       navHtml += '<a href="' + page.url + '" class="' + (isActive ? 'active' : '') + '">' + page.label + '</a>';
     }
   });
+  navHtml += '<a href="' + getSettingsUrl() + '" class="settings-gear-btn' + (activePage === 'settings' ? ' active' : '') + '" title="Settings">' + GEAR_ICON_SVG + '</a>';
   navHtml += '</nav>';
 
   // Mobile nav
@@ -71,6 +75,7 @@ export function renderHeader(activePage, currentSite) {
       mobileNavHtml += '<a href="' + page.url + '" class="' + (isActive ? 'active' : '') + '">' + page.label + '</a>';
     }
   });
+  mobileNavHtml += '<a href="' + getSettingsUrl() + '" class="settings-gear-btn' + (activePage === 'settings' ? ' active' : '') + '" title="Settings">' + GEAR_ICON_SVG + ' Settings</a>';
   mobileNavHtml += '</nav>';
 
   // Hamburger

@@ -180,6 +180,46 @@ header {
   color: var(--black);
 }
 
+/* Settings gear icon — in both desktop and mobile nav */
+.settings-gear-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--mid-gray);
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+  margin-left: 4px;
+}
+
+.settings-gear-btn:hover {
+  color: var(--white);
+  background: var(--dark-gray);
+}
+
+.settings-gear-btn.active {
+  color: var(--irc-yellow);
+}
+
+.settings-gear-btn svg {
+  flex-shrink: 0;
+}
+
+.mobile-nav .settings-gear-btn {
+  color: var(--mid-gray);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+}
+
+.mobile-nav .settings-gear-btn:hover {
+  color: var(--white);
+  background: var(--dark-gray);
+}
+
 /* ── Site Switcher ── */
 .site-switcher {
   position: relative;

@@ -25,7 +25,7 @@ export {
 } from './utils.js';
 
 // Site configuration
-export { getSiteConfig, STORAGE_KEYS } from './site-config.js';
+export { getSiteConfig, getSettingsUrl, STORAGE_KEYS } from './site-config.js';
 
 // Header rendering
 export { renderHeader, renderFooter, initSiteSwitcher, IRC_LOGO_DATA_URI } from './header.js';

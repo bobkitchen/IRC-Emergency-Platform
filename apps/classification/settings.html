@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — IRC Emergency Classification</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Settings Tabs ── */
+    .settings-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 24px 48px;
+    }
+
+    .settings-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--gray-e9);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .settings-tab {
+      padding: 12px 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -2px;
+    }
+
+    .settings-tab:hover {
+      color: var(--dark-gray);
+    }
+
+    .settings-tab.active {
+      color: var(--black);
+      border-bottom-color: var(--irc-yellow);
+    }
+
+    .settings-tab .tab-label-short {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .settings-tab {
+        padding: 10px 14px;
+        font-size: 0.8125rem;
+      }
+      .settings-tab .tab-label-full {
+        display: none;
+      }
+      .settings-tab .tab-label-short {
+        display: inline;
+      }
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ── AI Config ── */
+    .settings-card {
+      background: var(--white);
+      border: 1px solid var(--gray-e9);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .settings-card h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dark-gray);
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--dark-gray);
+      margin-bottom: 6px;
+    }
+
+    .form-group .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .form-group .hint a {
+      color: var(--irc-yellow);
+      text-decoration: none;
+    }
+
+    .form-group .hint a:hover {
+      text-decoration: underline;
+    }
+
+    .input-with-toggle {
+      position: relative;
+      display: flex;
+    }
+
+    .input-with-toggle input {
+      flex: 1;
+      padding: 10px 42px 10px 14px;
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      background: var(--white);
+      transition: border-color 0.15s;
+    }
+
+    .input-with-toggle input:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
+    }
+
+    .eye-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 4px;
+    }
+
+    .eye-toggle:hover {
+      color: var(--dark-gray);
+    }
+
+    .settings-select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      background: var(--white);
+      appearance: auto;
+    }
+
+    .settings-select:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-settings-primary {
+      padding: 10px 20px;
+      background: var(--irc-yellow);
+      color: var(--black);
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-settings-primary:hover {
+      background: var(--irc-yellow-light);
+    }
+
+    .btn-settings-secondary {
+      padding: 10px 20px;
+      background: var(--white);
+      color: var(--dark-gray);
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-settings-secondary:hover {
+      background: var(--light-gray);
+    }
+
+    .btn-danger {
+      padding: 10px 20px;
+      background: var(--white);
+      color: #C4421A;
+      border: 1px solid #C4421A;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-danger:hover {
+      background: #FEF0EC;
+    }
+
+    .status-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      margin-top: 16px;
+    }
+
+    .status-box.success {
+      background: #F0FFF4;
+      border: 1px solid #C6F6D5;
+      color: #276749;
+    }
+
+    .status-box.error {
+      background: #FEF0EC;
+      border: 1px solid #FECACA;
+      color: #9B2C2C;
+    }
+
+    .status-box.neutral {
+      background: var(--light-gray);
+      border: 1px solid var(--gray-e9);
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-dot.green { background: #38A169; }
+    .status-dot.red { background: #E53E3E; }
+    .status-dot.gray { background: var(--mid-gray); }
+
+    /* ── CRF Defaults ── */
+    .settings-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: inherit;
+    }
+
+    .settings-input:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
+    }
+
+    .inline-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 500px) {
+      .inline-fields {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    details.advanced-section {
+      margin-top: 12px;
+      border: 1px solid var(--gray-e9);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    details.advanced-section summary {
+      padding: 12px 16px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--dark-gray);
+      cursor: pointer;
+      background: var(--light-gray);
+    }
+
+    details.advanced-section .details-content {
+      padding: 16px;
+    }
+
+    .threshold-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px 14px;
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-family: 'DM Sans', monospace;
+      resize: vertical;
+    }
+
+    .threshold-textarea:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .about-stat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--light-gray);
+      border-radius: 8px;
+    }
+
+    .about-stat .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .about-stat .stat-value {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--dark-gray);
+    }
+
+    .link-list a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+      text-decoration: none;
+      color: var(--dark-gray);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-bottom: 1px solid var(--gray-e9);
+      transition: color 0.15s;
+    }
+
+    .link-list a:last-child {
+      border-bottom: none;
+    }
+
+    .link-list a:hover {
+      color: var(--black);
+    }
+
+    .link-list a .arrow {
+      margin-left: auto;
+      color: var(--mid-gray);
+    }
+
+    /* ── Toast notification ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--black);
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="header-mount"></div>
+  <main>
+    <div id="nav-mount"></div>
+
+    <section class="settings-section">
+      <div class="settings-tabs">
+        <button class="settings-tab active" data-tab="ai">
+          <span class="tab-label-full">AI Configuration</span>
+          <span class="tab-label-short">AI</span>
+        </button>
+        <button class="settings-tab" data-tab="data">
+          <span class="tab-label-full">Classification Data</span>
+          <span class="tab-label-short">Data</span>
+        </button>
+        <button class="settings-tab" data-tab="crf">
+          <span class="tab-label-full">CRF Defaults</span>
+          <span class="tab-label-short">CRF</span>
+        </button>
+        <button class="settings-tab" data-tab="about">
+          <span class="tab-label-full">About</span>
+          <span class="tab-label-short">About</span>
+        </button>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           Tab 1: AI Configuration
+           ═══════════════════════════════════════════ -->
+      <div class="tab-panel active" id="panel-ai">
+        <div class="settings-card">
+          <div class="form-group">
+            <label for="apiKeyInput">OpenRouter API Key</label>
+            <div class="input-with-toggle">
+              <input type="password" id="apiKeyInput" placeholder="sk-or-v1-..." autocomplete="off">
+              <button class="eye-toggle" id="toggleApiKey" type="button" title="Show/hide key">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <p class="hint">Your API key is stored locally in your browser, never sent to our servers. Get a free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></p>
+          </div>
+
+          <div class="form-group">
+            <label for="modelSelect">AI Model</label>
+            <select id="modelSelect" class="settings-select">
+              <option value="google/gemini-2.5-flash">Google Gemini 2.5 Flash</option>
+            </select>
+            <p class="hint" id="modelHint">Standard tier — Fast responses, good for most questions</p>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-settings-primary" id="saveAiBtn">Save Settings</button>
+            <button class="btn-settings-secondary" id="testKeyBtn">Test Key</button>
+          </div>
+
+          <div id="aiStatus" class="status-box neutral" style="display:none;">
+            <span class="status-dot gray" id="aiStatusDot"></span>
+            <span id="aiStatusText">Not tested yet</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           Tab 2: Classification Data
+           ═══════════════════════════════════════════ -->
+      <div class="tab-panel" id="panel-data">
+        <div class="settings-card">
+          <h3>Import Data</h3>
+          <div class="drop-zone" id="dropZone">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12l7-7 7 7" />
+            </svg>
+            <p>Drop a CSV or Excel file here, or <a href="#" id="browseLink">click to browse</a></p>
+            <p class="hint">Supported formats: .csv, .xlsx, .xls, .json</p>
+            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" style="display: none;">
+          </div>
+
+          <div id="mappingSection" class="mapping-section" style="display: none;">
+            <h3>Column Mapping</h3>
+            <p class="mapping-info" id="mappingInfoText">Detected columns: <span id="detectedColumnsCount"></span></p>
+            <div class="mapping-grid" id="mappingGrid"></div>
+            <div class="preview-section">
+              <h4>Preview (first 5 rows)</h4>
+              <div class="table-wrapper">
+                <table class="preview-table">
+                  <thead id="previewHead"></thead>
+                  <tbody id="previewBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="import-actions">
+              <label class="replace-checkbox">
+                <input type="checkbox" id="replaceAllCheckbox"> Replace all existing records
+              </label>
+              <div class="btn-row">
+                <button id="importBtn" class="btn btn-primary">Import</button>
+                <button id="cancelImport" class="btn btn-secondary">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="importResult" class="import-result" style="display:none;">
+            <p id="importSummaryText"></p>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>Browse Records <span id="totalRecordsCount" style="font-weight:400;color:var(--muted);font-size:0.8125rem;"></span></h3>
+          <div class="data-controls">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search records...">
+            <div class="export-controls">
+              <button id="exportCsvBtn" class="btn btn-secondary btn-sm">Export CSV</button>
+              <button id="exportJsonBtn" class="btn btn-secondary btn-sm">Export JSON</button>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-field="date">Date</th>
+                  <th class="sortable" data-field="classificationId">ID</th>
+                  <th class="sortable" data-field="emergencyName">Emergency</th>
+                  <th class="sortable" data-field="country">Country</th>
+                  <th class="sortable" data-field="region">Region</th>
+                  <th class="sortable" data-field="type">Type</th>
+                  <th class="sortable" data-field="severity">Severity</th>
+                  <th class="sortable" data-field="stance">Stance</th>
+                  <th class="sortable" data-field="processingSpeed">Speed</th>
+                  <th class="sortable" data-field="reclassificationNumber">Reclass</th>
+                </tr>
+              </thead>
+              <tbody id="dataTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <p id="paginationInfo">Showing 0-0 of 0</p>
+            <div class="pagination-controls">
+              <button id="prevPageBtn" class="btn btn-secondary">Previous</button>
+              <button id="nextPageBtn" class="btn btn-secondary">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;text-align:right;">
+          <button class="btn-danger" id="deleteAllBtn">Delete All Records</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           Tab 3: CRF Defaults
+           ═══════════════════════════════════════════ -->
+      <div class="tab-panel" id="panel-crf">
+        <div class="settings-card">
+          <h3>Funding Parameters</h3>
+          <div class="inline-fields">
+            <div class="form-group">
+              <label for="crfPerClient">Per-Client Cost (6-month)</label>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="color:var(--muted);font-weight:600;">$</span>
+                <input type="number" id="crfPerClient" class="settings-input" step="0.01" min="0" placeholder="47.34">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="crfDefaultCoverage">Default Coverage (%)</label>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <input type="number" id="crfDefaultCoverage" class="settings-input" step="1" min="1" max="100" placeholder="10">
+                <span style="color:var(--muted);font-weight:600;">%</span>
+              </div>
+            </div>
+          </div>
+          <div class="inline-fields" style="margin-top:8px;">
+            <div class="form-group">
+              <label for="crfCeilingOrange">Orange Ceiling</label>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="color:var(--muted);font-weight:600;">$</span>
+                <input type="number" id="crfCeilingOrange" class="settings-input" step="1000" min="0" placeholder="1,000,000">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="crfCeilingRed">Red Ceiling</label>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="color:var(--muted);font-weight:600;">$</span>
+                <input type="number" id="crfCeilingRed" class="settings-input" step="1000" min="0" placeholder="2,000,000">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <details class="advanced-section">
+          <summary>Advanced: Affected Population Thresholds</summary>
+          <div class="details-content">
+            <p class="hint" style="margin-bottom:8px;">JSON array of [threshold, severity] pairs. Used by the CRF Calculator to determine severity from affected population.</p>
+            <textarea id="crfAffectedThresholds" class="threshold-textarea" spellcheck="false"></textarea>
+          </div>
+        </details>
+
+        <details class="advanced-section" style="margin-top:8px;">
+          <summary>Advanced: Proportion Thresholds</summary>
+          <div class="details-content">
+            <p class="hint" style="margin-bottom:8px;">JSON array of [threshold, severity] pairs. Proportion = affected / country population.</p>
+            <textarea id="crfProportionThresholds" class="threshold-textarea" spellcheck="false"></textarea>
+          </div>
+        </details>
+
+        <div class="btn-row" style="margin-top:20px;">
+          <button class="btn-settings-primary" id="saveCrfBtn">Save Changes</button>
+          <button class="btn-settings-secondary" id="resetCrfBtn">Reset to Defaults</button>
+        </div>
+        <p class="hint" style="margin-top:12px;">Changes take effect next time you open the CRF Calculator.</p>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           Tab 4: About / System Info
+           ═══════════════════════════════════════════ -->
+      <div class="tab-panel" id="panel-about">
+        <div class="settings-card">
+          <h3>System Status</h3>
+          <div class="about-grid">
+            <div class="about-stat">
+              <span class="status-dot" id="aboutSupabaseDot"></span>
+              <div>
+                <div class="stat-label">Supabase</div>
+                <div class="stat-value" id="aboutSupabaseStatus">Checking...</div>
+              </div>
+            </div>
+            <div class="about-stat">
+              <span class="status-dot" id="aboutApiDot"></span>
+              <div>
+                <div class="stat-label">OpenRouter</div>
+                <div class="stat-value" id="aboutApiStatus">Checking...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>Classification Records</h3>
+          <div class="about-grid">
+            <div class="about-stat">
+              <div>
+                <div class="stat-label">Total</div>
+                <div class="stat-value" id="aboutTotal">—</div>
+              </div>
+            </div>
+            <div class="about-stat">
+              <div>
+                <div class="stat-label">Active</div>
+                <div class="stat-value" id="aboutActive">—</div>
+              </div>
+            </div>
+            <div class="about-stat">
+              <div>
+                <div class="stat-label">Expired</div>
+                <div class="stat-value" id="aboutExpired">—</div>
+              </div>
+            </div>
+            <div class="about-stat">
+              <div>
+                <div class="stat-label">Local Storage</div>
+                <div class="stat-value" id="aboutStorage">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>IRC Emergency Tools</h3>
+          <div class="link-list">
+            <a href="https://github.com/bobkitchen/emergency-classification" target="_blank">
+              Emergency Classification System <span class="arrow">&rarr;</span>
+            </a>
+            <a href="https://github.com/bobkitchen/emergency-response-navigator" target="_blank">
+              Emergency Response Navigator <span class="arrow">&rarr;</span>
+            </a>
+            <a href="https://github.com/bobkitchen/crf-calculator" target="_blank">
+              CRF Allocation Calculator <span class="arrow">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-mount"></div>
+  <div class="toast" id="toast"></div>
+
+  <script src="irc-shared.iife.js"></script>
+  <script src="supabase.js"></script>
+  <script src="shared.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+  (function() {
+    'use strict';
+
+    // ══════════════════════════════════════════════
+    // localStorage Key Migration
+    // ══════════════════════════════════════════════
+    function migrateSettings() {
+      if (localStorage.getItem('irc_settings_migrated_v1')) return;
+
+      // Migrate Navigator's API key
+      var ernKey = localStorage.getItem('ern-api-key');
+      if (ernKey && !localStorage.getItem('irc_openrouter_api_key')) {
+        localStorage.setItem('irc_openrouter_api_key', ernKey);
+      }
+
+      // Migrate ask-albert's API key
+      var albertKey = localStorage.getItem('irc_openrouter_key');
+      if (albertKey && !localStorage.getItem('irc_openrouter_api_key')) {
+        localStorage.setItem('irc_openrouter_api_key', albertKey);
+      }
+
+      // Migrate model preferences
+      var ernModel = localStorage.getItem('ern-model');
+      var albertModel = localStorage.getItem('irc_albert_model');
+      if (!localStorage.getItem('irc_openrouter_model')) {
+        if (ernModel) localStorage.setItem('irc_openrouter_model', ernModel);
+        else if (albertModel) localStorage.setItem('irc_openrouter_model', albertModel);
+      }
+
+      localStorage.setItem('irc_settings_migrated_v1', '1');
+    }
+
+    migrateSettings();
+
+    // ══════════════════════════════════════════════
+    // Tab Switching
+    // ══════════════════════════════════════════════
+    var tabs = document.querySelectorAll('.settings-tab');
+    var panels = document.querySelectorAll('.tab-panel');
+
+    function activateTab(tabId) {
+      tabs.forEach(function(t) { t.classList.toggle('active', t.getAttribute('data-tab') === tabId); });
+      panels.forEach(function(p) { p.classList.toggle('active', p.id === 'panel-' + tabId); });
+    }
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var id = this.getAttribute('data-tab');
+        activateTab(id);
+        history.replaceState(null, '', '#' + id);
+        if (id === 'about') refreshAboutTab();
+      });
+    });
+
+    // Deep link via hash
+    var hash = location.hash.replace('#', '');
+    if (hash && document.getElementById('panel-' + hash)) {
+      activateTab(hash);
+    }
+
+    // ══════════════════════════════════════════════
+    // Toast helper
+    // ══════════════════════════════════════════════
+    function showToast(msg) {
+      var el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('visible');
+      setTimeout(function() { el.classList.remove('visible'); }, 2500);
+    }
+
+    // ══════════════════════════════════════════════
+    // Tab 1: AI Configuration
+    // ══════════════════════════════════════════════
+    var apiKeyInput = document.getElementById('apiKeyInput');
+    var modelSelect = document.getElementById('modelSelect');
+    var toggleBtn = document.getElementById('toggleApiKey');
+
+    // Load saved values
+    var savedKey = localStorage.getItem('irc_openrouter_api_key') || '';
+    apiKeyInput.value = savedKey;
+    var savedModel = localStorage.getItem('irc_openrouter_model') || 'google/gemini-2.5-flash';
+    modelSelect.value = savedModel;
+
+    // Eye toggle
+    toggleBtn.addEventListener('click', function() {
+      var isPassword = apiKeyInput.type === 'password';
+      apiKeyInput.type = isPassword ? 'text' : 'password';
+      this.title = isPassword ? 'Hide key' : 'Show key';
+    });
+
+    // Save
+    document.getElementById('saveAiBtn').addEventListener('click', function() {
+      var key = apiKeyInput.value.trim();
+      var model = modelSelect.value;
+      if (key) {
+        localStorage.setItem('irc_openrouter_api_key', key);
+        // Also write legacy keys for backward compatibility
+        localStorage.setItem('ern-api-key', key);
+        localStorage.setItem('irc_openrouter_key', key);
+      } else {
+        localStorage.removeItem('irc_openrouter_api_key');
+        localStorage.removeItem('ern-api-key');
+        localStorage.removeItem('irc_openrouter_key');
+      }
+      localStorage.setItem('irc_openrouter_model', model);
+      localStorage.setItem('ern-model', model);
+      localStorage.setItem('irc_albert_model', model);
+      showToast('AI settings saved');
+    });
+
+    // Test key
+    document.getElementById('testKeyBtn').addEventListener('click', function() {
+      var key = apiKeyInput.value.trim();
+      var statusBox = document.getElementById('aiStatus');
+      var statusDot = document.getElementById('aiStatusDot');
+      var statusText = document.getElementById('aiStatusText');
+
+      if (!key) {
+        statusBox.style.display = 'flex';
+        statusBox.className = 'status-box error';
+        statusDot.className = 'status-dot red';
+        statusText.textContent = 'No API key entered';
+        return;
+      }
+
+      statusBox.style.display = 'flex';
+      statusBox.className = 'status-box neutral';
+      statusDot.className = 'status-dot gray';
+      statusText.textContent = 'Testing...';
+
+      fetch('https://openrouter.ai/api/v1/models', {
+        headers: { 'Authorization': 'Bearer ' + key }
+      }).then(function(res) {
+        if (res.ok) {
+          statusBox.className = 'status-box success';
+          statusDot.className = 'status-dot green';
+          statusText.textContent = 'Connected — API key valid · Model: ' + modelSelect.value.split('/').pop();
+        } else {
+          statusBox.className = 'status-box error';
+          statusDot.className = 'status-dot red';
+          statusText.textContent = 'Invalid API key (HTTP ' + res.status + ')';
+        }
+      }).catch(function(err) {
+        statusBox.className = 'status-box error';
+        statusDot.className = 'status-dot red';
+        statusText.textContent = 'Connection failed: ' + err.message;
+      });
+    });
+
+    // ══════════════════════════════════════════════
+    // Tab 2: Classification Data (migrated from data.html)
+    // ══════════════════════════════════════════════
+    var DATA = {
+      currentFile: null,
+      mappedData: null,
+      columnMapping: {},
+      fileHeaders: [],
+      isJsonBackup: false,
+      currentPage: 1,
+      pageSize: 25,
+      allFilteredData: [],
+      sortField: 'date',
+      sortAsc: false,
+
+      columnHeuristics: {
+        classificationId: ['classification id', 'classification_id', 'class id', 'class_id', 'classid'],
+        country: ['country', 'nation'],
+        region: ['region', 'irc region', 'irc_region'],
+        date: ['date', 'date notification sent', 'notif_sent', 'notification date', 'notification sent', 'date request received', 'date received', 'incident date', 'start date'],
+        expirationDate: ['expiration date', 'expiration', 'expiry', 'end date', 'expires'],
+        stance: ['stance'],
+        severity: ['severity', 'sev'],
+        emergencyName: ['emergency note', 'emergency details', 'emergency_details', 'emergency note/details', 'emergency name', 'emergency'],
+        type: ['emergency type', 'type', 'category', 'classification type'],
+        processingSpeed: ['processing speed', 'processing', 'urgency'],
+        reclassificationNumber: ['reclassification count', 'reclassification number', 'reclassification #', 'reclass #', 'reclass count'],
+        totalAffected: ['total affected', 'affected population', 'total_affected', 'people affected', 'affected'],
+        linkToSpreadsheet: ['link to spreadsheet', 'spreadsheet link', 'box link', 'link'],
+        ipc4Used: ['ipc 4+ food insecurity used', 'ipc4', 'ipc 4', 'ipc4_used'],
+        hazardType: ['type of natural hazard', 'hazard type', 'natural hazard type', 'hazard_type'],
+        sapTracking: ['sap tracking', 'sap', 'sap_tracking'],
+        uniqueId: ['unique id', 'unique_id', 'uid'],
+        notes: ['notes', 'additional notes', 'comments'],
+        dateRequestReceived: ['date request received', 'request received', 'date_request_received'],
+        dateSentForEntry: ['date sent for entry', 'sent for entry', 'date_sent_for_entry'],
+        dateReviewed: ['date reviewed', 'reviewed date', 'date_reviewed'],
+        dateApproved: ['date approved', 'approved date', 'date_approved'],
+        dateExpirationNoticeSent: ['date expiration notice sent', 'expiration notice sent'],
+        whoEngagesCp: ['who engages cp', 'who engages', 'engages cp'],
+        entryBy: ['entry by', 'entered by', 'entry_by'],
+        reviewedBy: ['reviewed by', 'reviewer', 'reviewed_by'],
+        approvedBy: ['approved by', 'approver', 'approved_by'],
+        notifSentBy: ['notif sent by', 'notification sent by', 'notif_sent_by'],
+        raisedWithCpRegion: ['raised with cp', 'raised with cp/region', 'raised_with_cp_region'],
+        codeNumber: ['code#', 'code number', 'code_number']
+      },
+
+      classnameMap: {},
+
+      init: function() {
+        this.setupDropZone();
+        this.setupFileInput();
+        this.setupExport();
+        this.setupSearch();
+        this.setupSort();
+        this.setupPagination();
+        this.refreshDataTable();
+
+        var self = this;
+        IRC.db.migrateFromLocalStorage().then(function() {
+          return IRC.db.load();
+        }).then(function() {
+          self.refreshDataTable();
+        });
+      },
+
+      setupDropZone: function() {
+        var self = this;
+        var dropZone = document.getElementById('dropZone');
+        var browseLink = document.getElementById('browseLink');
+        var fileInput = document.getElementById('fileInput');
+
+        browseLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          fileInput.click();
+        });
+
+        dropZone.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', function(e) {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+          var files = e.dataTransfer.files;
+          if (files.length > 0) {
+            self.handleFileSelect(files[0]);
+          }
+        });
+      },
+
+      setupFileInput: function() {
+        var self = this;
+        document.getElementById('fileInput').addEventListener('change', function() {
+          if (this.files.length > 0) {
+            self.handleFileSelect(this.files[0]);
+          }
+        });
+      },
+
+      handleFileSelect: function(file) {
+        var self = this;
+        var ext = file.name.split('.').pop().toLowerCase();
+
+        if (ext === 'json') {
+          this.handleJsonBackup(file);
+        } else if (ext === 'csv') {
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+              self.showColumnMapping(results.data, results.meta.fields, file.name);
+            },
+            error: function(error) {
+              alert('Error parsing CSV: ' + error.message);
+            }
+          });
+        } else if (ext === 'xlsx' || ext === 'xls') {
+          this.handleExcelFile(file);
+        } else {
+          alert('Unsupported file format. Please use CSV, Excel, or JSON.');
+        }
+      },
+
+      handleExcelFile: function(file) {
+        var self = this;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            var workbook = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+
+            self.classnameMap = {};
+            workbook.SheetNames.forEach(function(name) {
+              var lower = name.toLowerCase();
+              if (lower === 'classname' || lower === 'class name' || lower === 'names') {
+                var rows = XLSX.utils.sheet_to_json(workbook.Sheets[name], { raw: false });
+                rows.forEach(function(r) {
+                  var id = r['ClassID'] || r['Class ID'] || r['classid'] || r['Classification ID'] || '';
+                  var nm = r['Name'] || r['Emergency Name'] || r['name'] || '';
+                  if (id && nm) self.classnameMap[id.toString().trim()] = nm.toString().trim();
+                });
+              }
+            });
+
+            var skipSheets = ['drop down', 'dropdown', 'formulas', 'formula', 'classname', 'class name', 'names', 'unissued', 'reference', 'lookup'];
+            var dataSheet = null;
+            var dataSheetName = '';
+            workbook.SheetNames.forEach(function(name) {
+              if (dataSheet) return;
+              var lower = name.toLowerCase();
+              if (lower === 'tracker' || lower === 'classifications' || lower === 'data') {
+                dataSheet = workbook.Sheets[name];
+                dataSheetName = name;
+              }
+            });
+            if (!dataSheet) {
+              workbook.SheetNames.forEach(function(name) {
+                if (dataSheet) return;
+                var lower = name.toLowerCase();
+                var isSkip = skipSheets.some(function(s) { return lower === s || lower.includes(s); });
+                if (!isSkip) {
+                  dataSheet = workbook.Sheets[name];
+                  dataSheetName = name;
+                }
+              });
+            }
+            if (!dataSheet) {
+              dataSheetName = workbook.SheetNames[0];
+              dataSheet = workbook.Sheets[dataSheetName];
+            }
+
+            var rawData = XLSX.utils.sheet_to_json(dataSheet, { raw: false, dateNF: 'yyyy-mm-dd', header: 1 });
+            var bestHeaderIdx = 0;
+            var bestScore = 0;
+            var knownKeywords = [
+              'country', 'stance', 'severity', 'region', 'type', 'emergency', 'classification',
+              'class id', 'expiration', 'date', 'notification', 'notif', 'reclassification'
+            ];
+            var scanLimit = Math.min(10, rawData.length);
+            for (var ri = 0; ri < scanLimit; ri++) {
+              var row = rawData[ri];
+              if (!row || !Array.isArray(row)) continue;
+              var score = 0;
+              row.forEach(function(cell) {
+                if (!cell) return;
+                var lower = cell.toString().toLowerCase();
+                knownKeywords.forEach(function(kw) {
+                  if (lower.includes(kw)) score++;
+                });
+              });
+              if (score > bestScore) {
+                bestScore = score;
+                bestHeaderIdx = ri;
+              }
+            }
+
+            var headerRow = rawData[bestHeaderIdx] || [];
+            var cleanHeaders = headerRow.map(function(h, i) {
+              return h ? h.toString().trim() : 'Column_' + i;
+            });
+
+            var data = [];
+            for (var di = bestHeaderIdx + 1; di < rawData.length; di++) {
+              var dRow = rawData[di];
+              if (!dRow) continue;
+              var obj = {};
+              var hasValue = false;
+              cleanHeaders.forEach(function(h, ci) {
+                var val = (dRow[ci] !== undefined && dRow[ci] !== null) ? dRow[ci].toString().trim() : '';
+                obj[h] = val;
+                if (val) hasValue = true;
+              });
+              if (hasValue) data.push(obj);
+            }
+
+            var info = 'Sheet: ' + dataSheetName;
+            if (bestHeaderIdx > 0) info += ' (headers found on row ' + (bestHeaderIdx + 1) + ')';
+            if (Object.keys(self.classnameMap).length > 0) info += ', ' + Object.keys(self.classnameMap).length + ' emergency names loaded';
+
+            self.showColumnMapping(data, cleanHeaders, file.name, info);
+          } catch (error) {
+            alert('Error parsing Excel file: ' + error.message);
+          }
+        };
+        reader.onerror = function() { alert('Error reading file'); };
+        reader.readAsArrayBuffer(file);
+      },
+
+      handleJsonBackup: function(file) {
+        var self = this;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            var backup = JSON.parse(e.target.result);
+            if (backup.version && backup.data && Array.isArray(backup.data)) {
+              self.restoreFromBackup(backup);
+            } else {
+              alert('Invalid backup format');
+            }
+          } catch (error) {
+            alert('Error reading JSON file: ' + error.message);
+          }
+        };
+        reader.readAsText(file);
+      },
+
+      restoreFromBackup: function(backup) {
+        var existing = IRC.getClassifications();
+        var imported = 0;
+        var skipped = 0;
+
+        backup.data.forEach(function(record) {
+          var isDuplicate = existing.some(function(e) {
+            return e.emergencyName === record.emergencyName &&
+                   e.country === record.country &&
+                   e.date === record.date;
+          });
+
+          if (!isDuplicate) {
+            existing.push(record);
+            imported++;
+          } else {
+            skipped++;
+          }
+        });
+
+        IRC.saveClassifications(existing);
+        var self2 = this;
+        IRC.db.importBatch(existing, true).then(function() {
+          self2.showImportSummary(imported, skipped, 0);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        }).catch(function() {
+          self2.showImportSummary(imported, skipped, 0);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        });
+      },
+
+      showColumnMapping: function(data, headers, filename, sheetInfo) {
+        var self = this;
+        this.currentFile = data;
+        this.fileHeaders = headers;
+        this.columnMapping = {};
+
+        headers.forEach(function(header) {
+          var lowerHeader = header.toLowerCase().trim();
+          var assignedField = null;
+
+          for (var field in self.columnHeuristics) {
+            if (self.columnMapping[field]) continue;
+            if (assignedField) break;
+            self.columnHeuristics[field].forEach(function(hint) {
+              if (assignedField) return;
+              if (lowerHeader === hint) { assignedField = field; return; }
+              if (lowerHeader.includes(hint)) { assignedField = field; return; }
+            });
+          }
+
+          if (!assignedField && lowerHeader.length >= 4) {
+            for (var field2 in self.columnHeuristics) {
+              if (self.columnMapping[field2]) continue;
+              if (assignedField) break;
+              self.columnHeuristics[field2].forEach(function(hint) {
+                if (assignedField) return;
+                if (hint.includes(lowerHeader)) { assignedField = field2; return; }
+              });
+            }
+          }
+
+          if (assignedField) {
+            self.columnMapping[assignedField] = header;
+          }
+        });
+
+        this.renderMappingUI(headers);
+        this.renderPreview(data);
+
+        var infoText = 'Detected columns: ' + headers.length;
+        if (sheetInfo) infoText += ' — ' + sheetInfo;
+        document.getElementById('mappingInfoText').textContent = infoText;
+
+        document.getElementById('mappingSection').style.display = 'block';
+        document.getElementById('importResult').style.display = 'none';
+
+        document.getElementById('importBtn').onclick = function() {
+          self.performImport();
+        };
+
+        document.getElementById('cancelImport').onclick = function() {
+          self.resetImportUI();
+        };
+      },
+
+      renderMappingUI: function(headers) {
+        var self = this;
+        var fields = [
+          'classificationId', 'country', 'region', 'date', 'expirationDate',
+          'stance', 'severity', 'emergencyName', 'type',
+          'processingSpeed', 'reclassificationNumber',
+          'totalAffected', 'notes', 'linkToSpreadsheet',
+          'ipc4Used', 'hazardType', 'sapTracking', 'uniqueId', 'codeNumber',
+          'dateRequestReceived', 'dateSentForEntry', 'dateReviewed', 'dateApproved',
+          'dateExpirationNoticeSent',
+          'whoEngagesCp', 'entryBy', 'reviewedBy', 'approvedBy', 'notifSentBy',
+          'raisedWithCpRegion'
+        ];
+        var grid = document.getElementById('mappingGrid');
+        grid.innerHTML = '';
+
+        var fieldLabels = {
+          classificationId: 'Classification ID', country: 'Country', region: 'IRC Region',
+          date: 'Date Notification Sent', expirationDate: 'Expiration Date',
+          stance: 'Stance', severity: 'Severity (0–10)', emergencyName: 'Emergency Note / Details',
+          type: 'Emergency Type', processingSpeed: 'Processing Speed',
+          reclassificationNumber: 'Reclassification #', totalAffected: 'Total Affected Population',
+          notes: 'Notes', linkToSpreadsheet: 'Link to Spreadsheet',
+          ipc4Used: 'IPC 4+ Food Insecurity Used?', hazardType: 'Type of Natural Hazard',
+          sapTracking: 'SAP Tracking', uniqueId: 'Unique ID', codeNumber: 'Code #',
+          dateRequestReceived: 'Date Request Received', dateSentForEntry: 'Date Sent for Entry',
+          dateReviewed: 'Date Reviewed', dateApproved: 'Date Approved',
+          dateExpirationNoticeSent: 'Date Expiration Notice Sent',
+          whoEngagesCp: 'Who Engages CP', entryBy: 'Entry By',
+          reviewedBy: 'Reviewed By', approvedBy: 'Approved By',
+          notifSentBy: 'Notif Sent By', raisedWithCpRegion: 'Raised with CP/Region'
+        };
+
+        fields.forEach(function(field) {
+          var div = document.createElement('div');
+          div.className = 'mapping-item';
+
+          var label = document.createElement('label');
+          label.textContent = fieldLabels[field];
+
+          var select = document.createElement('select');
+          select.id = 'map_' + field;
+          select.setAttribute('data-field', field);
+
+          var skipOption = document.createElement('option');
+          skipOption.value = '';
+          skipOption.textContent = '— skip —';
+          select.appendChild(skipOption);
+
+          headers.forEach(function(header) {
+            var option = document.createElement('option');
+            option.value = header;
+            option.textContent = header;
+            if (self.columnMapping[field] === header) {
+              option.selected = true;
+            }
+            select.appendChild(option);
+          });
+
+          select.addEventListener('change', function() {
+            self.columnMapping[field] = this.value || '';
+            self.renderPreview(self.currentFile);
+          });
+
+          div.appendChild(label);
+          div.appendChild(select);
+          grid.appendChild(div);
+        });
+      },
+
+      renderPreview: function(data) {
+        var rows = data.slice(0, 5);
+        var previewFields = [
+          { key: 'classificationId', label: 'ID' },
+          { key: 'country', label: 'Country' },
+          { key: 'region', label: 'Region' },
+          { key: 'date', label: 'Date' },
+          { key: 'stance', label: 'Stance' },
+          { key: 'severity', label: 'Sev.' },
+          { key: 'emergencyName', label: 'Emergency' },
+          { key: 'type', label: 'Type' }
+        ];
+
+        var thead = document.getElementById('previewHead');
+        var tbody = document.getElementById('previewBody');
+        thead.innerHTML = '';
+        tbody.innerHTML = '';
+
+        var headerRow = document.createElement('tr');
+        previewFields.forEach(function(f) {
+          var th = document.createElement('th');
+          th.textContent = f.label;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        rows.forEach(function(row) {
+          var tr = document.createElement('tr');
+          previewFields.forEach(function(f) {
+            var td = document.createElement('td');
+            var sourceCol = DATA.columnMapping[f.key];
+            var value = sourceCol ? row[sourceCol] : '';
+            td.textContent = value || '—';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      },
+
+      parseDate: function(val) {
+        if (!val) return '';
+        var str = val.toString().trim();
+        if (!str) return '';
+        if (str.length < 4 || /^[^0-9a-zA-Z]/.test(str)) return '';
+        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+        var d = new Date(str);
+        if (!isNaN(d.getTime()) && d.getFullYear() > 1900 && d.getFullYear() < 2100) {
+          var yyyy = d.getFullYear();
+          var mm = String(d.getMonth() + 1).padStart(2, '0');
+          var dd = String(d.getDate()).padStart(2, '0');
+          return yyyy + '-' + mm + '-' + dd;
+        }
+        return '';
+      },
+
+      performImport: function() {
+        var self = this;
+        var replaceAll = document.getElementById('replaceAllCheckbox').checked;
+        var existing = replaceAll ? [] : IRC.getClassifications();
+        var imported = 0;
+        var skipped = 0;
+        var errors = 0;
+
+        if (replaceAll) {
+          localStorage.removeItem('irc_classifications');
+          localStorage.removeItem('irc_data_repair_v2');
+        }
+
+        var dupeIndex = {};
+        existing.forEach(function(e) {
+          if (e.classificationId) {
+            dupeIndex['id:' + e.classificationId + ':' + (e.reclassificationNumber || 1)] = true;
+          }
+          if (e.country && e.date) {
+            dupeIndex['cd:' + e.country + ':' + e.date + ':' + (e.emergencyName || '')] = true;
+          }
+        });
+
+        this.currentFile.forEach(function(row) {
+          try {
+            var rawCountry = self.columnMapping.country ? (row[self.columnMapping.country] || '').toString().trim() : '';
+            var rawDate = self.columnMapping.date ? row[self.columnMapping.date] : '';
+            var rawEmergency = self.columnMapping.emergencyName ? (row[self.columnMapping.emergencyName] || '').toString().trim() : '';
+
+            if (!rawCountry && !rawEmergency) return;
+
+            var classId = self.columnMapping.classificationId ? (row[self.columnMapping.classificationId] || '').toString().trim() : '';
+
+            if (Object.keys(self.classnameMap).length > 0 && classId && self.classnameMap[classId]) {
+              if (!rawEmergency || rawEmergency.length > 150) {
+                rawEmergency = self.classnameMap[classId];
+              }
+            }
+            if (rawEmergency && rawEmergency.length > 200) {
+              rawEmergency = rawEmergency.substring(0, 197) + '...';
+            }
+
+            var parsedDate = self.parseDate(rawDate);
+            var rawSeverity = self.columnMapping.severity ? row[self.columnMapping.severity] : '';
+            var severity = (rawSeverity !== '' && rawSeverity !== null && rawSeverity !== undefined)
+              ? parseInt(rawSeverity, 10) : null;
+            if (isNaN(severity)) severity = null;
+
+            var rawStance = self.columnMapping.stance ? (row[self.columnMapping.stance] || '').toString().trim() : '';
+            var rawType = self.columnMapping.type ? (row[self.columnMapping.type] || '').toString().trim() : '';
+
+            var rawSpeed = self.columnMapping.processingSpeed ? (row[self.columnMapping.processingSpeed] || '').toString().trim().toLowerCase() : '';
+            var processingSpeed = '';
+            if (rawSpeed.includes('immediate') || rawSpeed.includes('12')) processingSpeed = 'immediate';
+            else if (rawSpeed.includes('rapid') || rawSpeed === '2') processingSpeed = 'rapid';
+            else if (rawSpeed.includes('standard') || rawSpeed === '5') processingSpeed = 'standard';
+
+            var rawReclass = self.columnMapping.reclassificationNumber ? row[self.columnMapping.reclassificationNumber] : '';
+            var reclassNum = (rawReclass !== '' && rawReclass !== null && rawReclass !== undefined)
+              ? parseInt(rawReclass, 10) : 1;
+            if (isNaN(reclassNum) || reclassNum < 1) reclassNum = 1;
+
+            var expDate = self.columnMapping.expirationDate ? self.parseDate(row[self.columnMapping.expirationDate]) : '';
+            if (!expDate && parsedDate) {
+              expDate = IRC.calculateExpirationDate(parsedDate);
+            }
+
+            var isDuplicate = false;
+            if (classId) {
+              isDuplicate = !!dupeIndex['id:' + classId + ':' + reclassNum];
+            }
+            if (!isDuplicate && rawCountry && parsedDate) {
+              isDuplicate = !!dupeIndex['cd:' + rawCountry + ':' + parsedDate + ':' + rawEmergency];
+            }
+
+            function getStr(field) {
+              return self.columnMapping[field] ? (row[self.columnMapping[field]] || '').toString().trim() : '';
+            }
+            function getDate(field) {
+              return self.columnMapping[field] ? self.parseDate(row[self.columnMapping[field]]) : '';
+            }
+
+            var rawAffected = self.columnMapping.totalAffected ? row[self.columnMapping.totalAffected] : '';
+            var totalAffected = null;
+            if (rawAffected !== '' && rawAffected !== null && rawAffected !== undefined) {
+              totalAffected = parseFloat(rawAffected);
+              if (isNaN(totalAffected)) totalAffected = null;
+            }
+
+            var rawIpc4 = getStr('ipc4Used').toLowerCase();
+            var ipc4Used = rawIpc4 === 'yes' || rawIpc4 === 'true' || rawIpc4 === '1' ? true : (rawIpc4 ? false : null);
+
+            var record = {
+              id: IRC.uuid(),
+              classificationId: classId,
+              country: IRC.normalizeCountry(rawCountry),
+              region: self.columnMapping.region ? (row[self.columnMapping.region] || '').toString().trim() : '',
+              date: parsedDate,
+              expirationDate: expDate,
+              stance: IRC.normalizeStance(rawStance),
+              severity: severity,
+              emergencyName: rawEmergency,
+              type: IRC.normalizeType(rawType),
+              processingSpeed: processingSpeed,
+              reclassificationNumber: reclassNum,
+              previousSeverity: null,
+              totalAffected: totalAffected,
+              linkToSpreadsheet: getStr('linkToSpreadsheet'),
+              ipc4Used: ipc4Used,
+              hazardType: getStr('hazardType'),
+              sapTracking: getStr('sapTracking'),
+              uniqueId: getStr('uniqueId'),
+              notes: getStr('notes'),
+              dateRequestReceived: getDate('dateRequestReceived'),
+              dateSentForEntry: getDate('dateSentForEntry'),
+              dateReviewed: getDate('dateReviewed'),
+              dateApproved: getDate('dateApproved'),
+              dateExpirationNoticeSent: getDate('dateExpirationNoticeSent'),
+              whoEngagesCp: getStr('whoEngagesCp'),
+              entryBy: getStr('entryBy'),
+              reviewedBy: getStr('reviewedBy'),
+              approvedBy: getStr('approvedBy'),
+              notifSentBy: getStr('notifSentBy'),
+              raisedWithCpRegion: getStr('raisedWithCpRegion'),
+              codeNumber: getStr('codeNumber'),
+              createdAt: new Date().toISOString()
+            };
+
+            if (!isDuplicate && record.country) {
+              existing.push(record);
+              if (classId) dupeIndex['id:' + classId + ':' + reclassNum] = true;
+              if (rawCountry && parsedDate) dupeIndex['cd:' + rawCountry + ':' + parsedDate + ':' + rawEmergency] = true;
+              imported++;
+            } else if (isDuplicate) {
+              skipped++;
+            } else {
+              errors++;
+            }
+          } catch (error) {
+            errors++;
+          }
+        });
+
+        IRC.saveClassifications(existing);
+        var self2 = this;
+        var replaceAll2 = replaceAll;
+        IRC.db.importBatch(existing, replaceAll2).then(function() {
+          self2.showImportSummary(imported, skipped, errors);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        }).catch(function() {
+          self2.showImportSummary(imported, skipped, errors);
+          self2.resetImportUI();
+          self2.refreshDataTable();
+        });
+      },
+
+      showImportSummary: function(imported, skipped, errors) {
+        var summary = 'Imported ' + imported + ' records';
+        if (skipped > 0) summary += ', skipped ' + skipped + ' duplicates';
+        if (errors > 0) summary += ', ' + errors + ' errors';
+
+        document.getElementById('importSummaryText').textContent = summary;
+        document.getElementById('importResult').style.display = 'block';
+        document.getElementById('mappingSection').style.display = 'none';
+      },
+
+      resetImportUI: function() {
+        this.currentFile = null;
+        this.columnMapping = {};
+        this.fileHeaders = [];
+        document.getElementById('fileInput').value = '';
+        document.getElementById('mappingSection').style.display = 'none';
+        document.getElementById('importResult').style.display = 'none';
+      },
+
+      setupExport: function() {
+        var self = this;
+        document.getElementById('exportCsvBtn').addEventListener('click', function() { self.exportAsCSV(); });
+        document.getElementById('exportJsonBtn').addEventListener('click', function() { self.exportAsJSON(); });
+        document.getElementById('deleteAllBtn').addEventListener('click', function() { self.deleteAllRecords(); });
+      },
+
+      deleteAllRecords: function() {
+        var records = IRC.getClassifications();
+        if (!records.length) { alert('No records to delete.'); return; }
+        var confirmed = confirm('Are you sure you want to delete ALL ' + records.length + ' records? This cannot be undone.');
+        if (!confirmed) return;
+        var doubleConfirm = confirm('This will permanently remove all classification data. Proceed?');
+        if (!doubleConfirm) return;
+
+        localStorage.removeItem('irc_classifications');
+        localStorage.removeItem('irc_data_repair_v2');
+
+        var self = this;
+        IRC.db.clearAll().then(function() {
+          self.refreshDataTable();
+          showToast('All records deleted');
+        }).catch(function() {
+          self.refreshDataTable();
+          showToast('Local records deleted. Supabase sync may have failed.');
+        });
+      },
+
+      exportAsCSV: function() {
+        var records = IRC.getClassifications();
+        var headers = [
+          'classificationId', 'country', 'region', 'date', 'expirationDate',
+          'stance', 'severity', 'emergencyName', 'type',
+          'processingSpeed', 'reclassificationNumber', 'previousSeverity', 'createdAt'
+        ];
+        var headerLabels = [
+          'Classification ID', 'Country', 'IRC Region', 'Date Notification Sent',
+          'Expiration Date', 'Stance', 'Severity', 'Emergency Note/Details',
+          'Emergency Type', 'Processing Speed', 'Reclassification #',
+          'Previous Severity', 'Created At'
+        ];
+        var csv = headerLabels.join(',') + '\n';
+
+        records.forEach(function(record) {
+          var row = headers.map(function(h) {
+            var value = record[h];
+            if (value === null || value === undefined) value = '';
+            value = value.toString();
+            if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+              value = '"' + value.replace(/"/g, '""') + '"';
+            }
+            return value;
+          });
+          csv += row.join(',') + '\n';
+        });
+
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.setAttribute('href', URL.createObjectURL(blob));
+        link.setAttribute('download', 'irc_classifications_export.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      },
+
+      exportAsJSON: function() {
+        var records = IRC.getClassifications();
+        var backup = { version: '2.0', exportDate: new Date().toISOString(), data: records };
+        var json = JSON.stringify(backup, null, 2);
+        var blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.setAttribute('href', URL.createObjectURL(blob));
+        link.setAttribute('download', 'irc_classifications_backup.json');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      },
+
+      setupSearch: function() {
+        var self = this;
+        document.getElementById('searchInput').addEventListener('input', function() {
+          self.currentPage = 1;
+          self.refreshDataTable();
+        });
+      },
+
+      setupSort: function() {
+        var self = this;
+        var headers = document.querySelectorAll('.data-table th.sortable');
+        headers.forEach(function(header) {
+          header.addEventListener('click', function() {
+            var field = this.getAttribute('data-field');
+            if (self.sortField === field) {
+              self.sortAsc = !self.sortAsc;
+            } else {
+              self.sortField = field;
+              self.sortAsc = true;
+            }
+            self.currentPage = 1;
+            self.refreshDataTable();
+          });
+        });
+      },
+
+      setupPagination: function() {
+        var self = this;
+        document.getElementById('prevPageBtn').addEventListener('click', function() {
+          if (self.currentPage > 1) { self.currentPage--; self.refreshDataTable(); }
+        });
+        document.getElementById('nextPageBtn').addEventListener('click', function() {
+          var maxPage = Math.ceil(self.allFilteredData.length / self.pageSize);
+          if (self.currentPage < maxPage) { self.currentPage++; self.refreshDataTable(); }
+        });
+      },
+
+      refreshDataTable: function() {
+        var self = this;
+        var records = IRC.getClassifications();
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+        this.allFilteredData = records.filter(function(r) {
+          var groupedRegion = IRC.getGroupedRegion ? (IRC.getGroupedRegion(r.region) || '') : '';
+          return (r.emergencyName || '').toLowerCase().includes(searchTerm) ||
+                 (r.country || '').toLowerCase().includes(searchTerm) ||
+                 (r.region || '').toLowerCase().includes(searchTerm) ||
+                 groupedRegion.toLowerCase().includes(searchTerm) ||
+                 (r.classificationId || '').toLowerCase().includes(searchTerm) ||
+                 (r.type || '').toLowerCase().includes(searchTerm);
+        });
+
+        this.allFilteredData.sort(function(a, b) {
+          var aVal = a[self.sortField] || '';
+          var bVal = b[self.sortField] || '';
+          if (self.sortField === 'date') {
+            aVal = new Date(aVal).getTime() || 0;
+            bVal = new Date(bVal).getTime() || 0;
+          }
+          if (self.sortField === 'severity') {
+            aVal = parseFloat(aVal) || 0;
+            bVal = parseFloat(bVal) || 0;
+          }
+          if (aVal < bVal) return self.sortAsc ? -1 : 1;
+          if (aVal > bVal) return self.sortAsc ? 1 : -1;
+          return 0;
+        });
+
+        var start = (this.currentPage - 1) * this.pageSize;
+        var end = start + this.pageSize;
+        var pageData = this.allFilteredData.slice(start, end);
+
+        var tbody = document.getElementById('dataTableBody');
+        tbody.innerHTML = '';
+
+        if (pageData.length === 0) {
+          var tr = document.createElement('tr');
+          var td = document.createElement('td');
+          td.colSpan = 10;
+          td.style.textAlign = 'center';
+          td.style.padding = '32px 16px';
+          td.style.color = '#999';
+          td.textContent = records.length === 0
+            ? 'No classifications yet. Import data above to get started.'
+            : 'No records match your search.';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        } else {
+          pageData.forEach(function(record) {
+            var tr = document.createElement('tr');
+            tr.style.cursor = 'pointer';
+            tr.addEventListener('click', function() {
+              window.location.href = 'classify.html?view=' + record.id;
+            });
+
+            var stanceLabel = (record.stance || '').charAt(0).toUpperCase() + (record.stance || '').slice(1);
+            var typeLabel = IRC.TYPE_LABELS ? (IRC.TYPE_LABELS[record.type] || record.type || '—') : (record.type || '—');
+            var speedLabel = record.processingSpeed
+              ? (IRC.PROCESSING_SPEEDS && IRC.PROCESSING_SPEEDS[record.processingSpeed] ? IRC.PROCESSING_SPEEDS[record.processingSpeed].label : record.processingSpeed)
+              : '—';
+            var reclassLabel = record.reclassificationNumber ? '#' + record.reclassificationNumber : '—';
+
+            var stanceExtra = '';
+            if (record.expirationDate && IRC.isExpired(record.expirationDate)) {
+              stanceExtra = ' <span style="font-size:0.7em;color:#E52911;font-weight:600;">EXP</span>';
+            }
+
+            var cells = [
+              record.date ? IRC.formatDate(record.date) : '—',
+              record.classificationId || '—',
+              record.emergencyName || '—',
+              record.country || '—',
+              record.region || '—',
+              typeLabel,
+              record.severity !== null && record.severity !== undefined ? record.severity : '—',
+              stanceLabel,
+              speedLabel,
+              reclassLabel
+            ];
+
+            cells.forEach(function(cell, idx) {
+              var td = document.createElement('td');
+              if (idx === 7) {
+                td.className = 'stance-cell';
+                var color = IRC.STANCE_COLORS ? (IRC.STANCE_COLORS[(record.stance || '').toLowerCase()] || '#E9E9E9') : '#E9E9E9';
+                td.innerHTML = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + color + ';margin-right:6px;vertical-align:middle;"></span>' + cell + stanceExtra;
+              } else {
+                td.textContent = cell;
+              }
+              tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+          });
+        }
+
+        document.getElementById('totalRecordsCount').textContent = records.length ? '(' + records.length + ')' : '';
+
+        var total = this.allFilteredData.length;
+        var showStart = total > 0 ? start + 1 : 0;
+        var showEnd = Math.min(end, total);
+        document.getElementById('paginationInfo').textContent = 'Showing ' + showStart + '–' + showEnd + ' of ' + total;
+
+        document.getElementById('prevPageBtn').disabled = this.currentPage === 1;
+        document.getElementById('nextPageBtn').disabled = this.currentPage >= Math.ceil(total / this.pageSize);
+      }
+    };
+
+    // ══════════════════════════════════════════════
+    // Tab 3: CRF Defaults
+    // ══════════════════════════════════════════════
+    var CRF_DEFAULTS = {
+      perClientCost: 47.34,
+      ceilingOrange: 1000000,
+      ceilingRed: 2000000,
+      defaultCoverage: 10,
+      affectedThresholds: [[500,1],[23000,2],[88000,3],[160000,4],[330000,5],[550000,6],[1000000,7],[1800000,8],[2500000,9],[4000000,10]],
+      proportionThresholds: [[0.0002,1],[0.0009,2],[0.001,3],[0.0021,4],[0.008,5],[0.0131,6],[0.03,7],[0.078,8],[0.14,9],[0.2,10]]
+    };
+
+    function loadCrfValues() {
+      document.getElementById('crfPerClient').value =
+        localStorage.getItem('irc_crf_per_client_cost') || CRF_DEFAULTS.perClientCost;
+      document.getElementById('crfCeilingOrange').value =
+        localStorage.getItem('irc_crf_ceiling_orange') || CRF_DEFAULTS.ceilingOrange;
+      document.getElementById('crfCeilingRed').value =
+        localStorage.getItem('irc_crf_ceiling_red') || CRF_DEFAULTS.ceilingRed;
+      document.getElementById('crfDefaultCoverage').value =
+        localStorage.getItem('irc_crf_default_coverage') || CRF_DEFAULTS.defaultCoverage;
+
+      var affectedStr = localStorage.getItem('irc_crf_affected_thresholds');
+      document.getElementById('crfAffectedThresholds').value =
+        affectedStr || JSON.stringify(CRF_DEFAULTS.affectedThresholds, null, 2);
+
+      var proportionStr = localStorage.getItem('irc_crf_proportion_thresholds');
+      document.getElementById('crfProportionThresholds').value =
+        proportionStr || JSON.stringify(CRF_DEFAULTS.proportionThresholds, null, 2);
+    }
+
+    loadCrfValues();
+
+    document.getElementById('saveCrfBtn').addEventListener('click', function() {
+      localStorage.setItem('irc_crf_per_client_cost', document.getElementById('crfPerClient').value);
+      localStorage.setItem('irc_crf_ceiling_orange', document.getElementById('crfCeilingOrange').value);
+      localStorage.setItem('irc_crf_ceiling_red', document.getElementById('crfCeilingRed').value);
+      localStorage.setItem('irc_crf_default_coverage', document.getElementById('crfDefaultCoverage').value);
+
+      // Validate threshold JSON
+      try {
+        var affected = JSON.parse(document.getElementById('crfAffectedThresholds').value);
+        if (Array.isArray(affected)) localStorage.setItem('irc_crf_affected_thresholds', JSON.stringify(affected));
+      } catch (e) {
+        alert('Invalid JSON in Affected Population Thresholds. Changes to thresholds were not saved.');
+        return;
+      }
+
+      try {
+        var proportion = JSON.parse(document.getElementById('crfProportionThresholds').value);
+        if (Array.isArray(proportion)) localStorage.setItem('irc_crf_proportion_thresholds', JSON.stringify(proportion));
+      } catch (e) {
+        alert('Invalid JSON in Proportion Thresholds. Changes to thresholds were not saved.');
+        return;
+      }
+
+      showToast('CRF defaults saved');
+    });
+
+    document.getElementById('resetCrfBtn').addEventListener('click', function() {
+      if (!confirm('Reset all CRF settings to factory defaults?')) return;
+      localStorage.removeItem('irc_crf_per_client_cost');
+      localStorage.removeItem('irc_crf_ceiling_orange');
+      localStorage.removeItem('irc_crf_ceiling_red');
+      localStorage.removeItem('irc_crf_default_coverage');
+      localStorage.removeItem('irc_crf_affected_thresholds');
+      localStorage.removeItem('irc_crf_proportion_thresholds');
+      loadCrfValues();
+      showToast('CRF defaults reset');
+    });
+
+    // ══════════════════════════════════════════════
+    // Tab 4: About / System Info
+    // ══════════════════════════════════════════════
+    function refreshAboutTab() {
+      // Supabase check
+      var supabaseDot = document.getElementById('aboutSupabaseDot');
+      var supabaseText = document.getElementById('aboutSupabaseStatus');
+      var S = window.IRCShared || {};
+      fetch(S.SUPABASE_URL + '/rest/v1/' + S.TABLE + '?select=id&limit=1', {
+        headers: S.HEADERS
+      }).then(function(res) {
+        if (res.ok) {
+          supabaseDot.className = 'status-dot green';
+          supabaseText.textContent = 'Connected';
+        } else {
+          supabaseDot.className = 'status-dot red';
+          supabaseText.textContent = 'Error (' + res.status + ')';
+        }
+      }).catch(function() {
+        supabaseDot.className = 'status-dot red';
+        supabaseText.textContent = 'Unreachable';
+      });
+
+      // OpenRouter check
+      var apiDot = document.getElementById('aboutApiDot');
+      var apiText = document.getElementById('aboutApiStatus');
+      var apiKey = localStorage.getItem('irc_openrouter_api_key');
+      if (apiKey) {
+        apiDot.className = 'status-dot green';
+        apiText.textContent = 'Key configured';
+      } else {
+        apiDot.className = 'status-dot gray';
+        apiText.textContent = 'No key set';
+      }
+
+      // Record counts
+      var records = IRC.getClassifications();
+      var now = new Date();
+      var active = 0;
+      var expired = 0;
+      records.forEach(function(r) {
+        if (r.expirationDate && new Date(r.expirationDate) < now) {
+          expired++;
+        } else {
+          active++;
+        }
+      });
+      document.getElementById('aboutTotal').textContent = records.length;
+      document.getElementById('aboutActive').textContent = active;
+      document.getElementById('aboutExpired').textContent = expired;
+
+      // Storage usage
+      var totalBytes = 0;
+      var keyCount = 0;
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.startsWith('irc_')) {
+          totalBytes += (localStorage.getItem(key) || '').length * 2; // UTF-16
+          keyCount++;
+        }
+      }
+      var kb = Math.round(totalBytes / 1024);
+      document.getElementById('aboutStorage').textContent = kb + ' KB across ' + keyCount + ' keys';
+    }
+
+    // ══════════════════════════════════════════════
+    // Page init
+    // ══════════════════════════════════════════════
+    document.getElementById('header-mount').innerHTML = IRC.renderHeader('settings');
+    document.getElementById('nav-mount').innerHTML = IRC.renderNav ? IRC.renderNav() : '';
+    document.getElementById('footer-mount').innerHTML = IRC.renderFooter();
+
+    DATA.init();
+
+    // Refresh about tab if it's active on load
+    if (hash === 'about') refreshAboutTab();
+
+  })();
+  </script>
+</body>
+</html>
