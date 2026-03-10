@@ -971,7 +971,9 @@ function build() {
 build();
 
 // Copy search-chunks.json and resource-index.json to public/ so they're
-// served as static assets at known URLs (used by Ask Albert across all sites)
+// served as static assets at known URLs (used by Ask Albert across all sites).
+// Only copy if the generated file has real content (>100 bytes) to avoid
+// overwriting a pre-committed file with empty output when CSV sources are absent.
 const PUBLIC_DIR = path.join(APP_DIR, 'public');
 fs.mkdirSync(PUBLIC_DIR, { recursive: true });
 
@@ -980,7 +982,12 @@ for (const file of filesToCopy) {
   const src = path.join(OUT_DIR, file);
   const dest = path.join(PUBLIC_DIR, file);
   if (fs.existsSync(src)) {
-    fs.copyFileSync(src, dest);
-    console.log(`📋 Copied ${file} → public/`);
+    const stat = fs.statSync(src);
+    if (stat.size > 100) {
+      fs.copyFileSync(src, dest);
+      console.log(`📋 Copied ${file} → public/ (${(stat.size / 1024).toFixed(0)}KB)`);
+    } else {
+      console.log(`⚠️  Skipping ${file} → public/ (generated file is empty/tiny, keeping existing)`);
+    }
   }
 }
