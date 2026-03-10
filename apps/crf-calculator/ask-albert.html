@@ -713,8 +713,8 @@
         showApiKeySetup();
       }
 
-      // Load model preference
-      var savedModel = localStorage.getItem('irc_albert_model');
+      // Load model preference (unified key first, legacy fallback)
+      var savedModel = localStorage.getItem('irc_openrouter_model') || localStorage.getItem('irc_albert_model');
       if (savedModel) albertState.model = savedModel;
 
       setupEventListeners();
@@ -975,7 +975,13 @@
       } catch (error) {
         loadingEl.remove();
         var errorMsgId = 'msg-' + Date.now() + '-error';
-        var errorMsg = 'Sorry, I encountered an error: ' + error.message;
+        var errorDetail = (error && error.message) ? error.message : String(error);
+        var errorMsg;
+        if (errorDetail === 'Type error' || errorDetail === 'Failed to fetch') {
+          errorMsg = 'Unable to reach the AI service. This usually means:\n- Your API key may be invalid or expired\n- OpenRouter may be temporarily unavailable\n- A browser extension may be blocking the request\n\nPlease check your API key in Settings and try again.';
+        } else {
+          errorMsg = 'Sorry, I encountered an error: ' + errorDetail;
+        }
         albertState.messages.push({ id: errorMsgId, role: 'albert', content: errorMsg });
         renderMessage(errorMsgId, 'albert', errorMsg);
         scrollChatToBottom();

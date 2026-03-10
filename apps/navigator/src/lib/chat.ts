@@ -219,8 +219,9 @@ export async function* streamChat(
     }
   }
 
+  const meta = processData.metadata as Record<string, unknown>;
   const systemMessage = SYSTEM_PROMPT + contextText +
-    `\n\n## Response Data Summary\nThis navigator contains ${processData.metadata.totalTasks} tasks across ${processData.metadata.totalSectors} sectors, with ${processData.metadata.totalSubtasks} subtasks. The knowledge base includes ${processData.metadata.totalDownloadedDocs} indexed documents (${processData.metadata.totalResources} resources, ${processData.metadata.totalResourcesWithUrls} with direct links). The AI search draws from ${processData.metadata.totalSearchChunks.toLocaleString()} knowledge chunks.`;
+    `\n\n## Response Data Summary\nThis navigator contains ${meta.totalTasks || 0} tasks across ${meta.totalSectors || 0} sectors, with ${meta.totalSubtasks || 0} subtasks. The knowledge base includes ${meta.totalDownloadedDocs || 0} indexed documents (${meta.totalResources || 0} resources, ${meta.totalResourcesWithUrls || 0} with direct links). The AI search draws from ${(meta.totalSearchChunks as number || 0).toLocaleString()} knowledge chunks.`;
 
   const model = getModel();
 
