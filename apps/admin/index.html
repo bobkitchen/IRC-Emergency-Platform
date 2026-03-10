@@ -1147,8 +1147,8 @@
       document.getElementById('dashActiveRecords').textContent = active;
       document.getElementById('dashRecordsSub').textContent = active + ' active, ' + expired + ' expired';
 
-      // RAG chunk count
-      fetch(SUPABASE_URL + '/rest/v1/rag_chunks?select=id&limit=1', {
+      // RAG chunk count (table: ern_chunks)
+      fetch(SUPABASE_URL + '/rest/v1/ern_chunks?select=id&limit=1', {
         headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
       }).then(function(res) {
         var range = res.headers.get('content-range');
@@ -2003,8 +2003,8 @@
     // Knowledge Base Tab
     // ══════════════════════════════════════════════
     function refreshKBTab() {
-      // Chunk count
-      fetch(SUPABASE_URL + '/rest/v1/rag_chunks?select=id&limit=1', {
+      // Chunk count (table: ern_chunks)
+      fetch(SUPABASE_URL + '/rest/v1/ern_chunks?select=id&limit=1', {
         headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
       }).then(function(res) {
         var range = res.headers.get('content-range');
@@ -2016,13 +2016,15 @@
         document.getElementById('kbChunkCount').textContent = '—';
       });
 
-      // Resource count (distinct source_url or similar)
-      fetch(SUPABASE_URL + '/rest/v1/rag_chunks?select=source_url&limit=1000', {
-        headers: SUPABASE_HEADERS
-      }).then(function(res) { return res.json(); }).then(function(rows) {
-        var urls = {};
-        rows.forEach(function(r) { if (r.source_url) urls[r.source_url] = true; });
-        document.getElementById('kbResourceCount').textContent = Object.keys(urls).length;
+      // Resource count (table: ern_resources)
+      fetch(SUPABASE_URL + '/rest/v1/ern_resources?select=id&limit=1', {
+        headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
+      }).then(function(res) {
+        var range = res.headers.get('content-range');
+        if (range) {
+          var total = range.split('/')[1];
+          document.getElementById('kbResourceCount').textContent = total || '0';
+        }
       }).catch(function() {
         document.getElementById('kbResourceCount').textContent = '—';
       });
