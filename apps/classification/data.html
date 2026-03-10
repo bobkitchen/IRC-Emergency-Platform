@@ -6,8 +6,9 @@
   <title>Data — IRC Emergency Classification</title>
   <link rel="stylesheet" href="styles.css">
   <script>
-    // Redirect to unified settings page — Data tab
-    window.location.replace('settings.html#data');
+    // Redirect to admin page — Data tab
+    var isGH = window.location.hostname === 'bobkitchen.github.io';
+    window.location.replace(isGH ? '/irc-admin/#data' : '/irc-admin/index.html#data');
   </script>
 </head>
 <body>

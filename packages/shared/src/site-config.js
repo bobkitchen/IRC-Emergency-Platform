@@ -33,8 +33,7 @@ export function getSiteConfig() {
       pages: [
         {id: 'dashboard', url: 'index.html', label: 'Dashboard'},
         {id: 'classify', url: 'classify.html', label: 'Classify'},
-        {id: 'ask-albert', url: 'ask-albert.html', label: 'Ask Albert'},
-        {id: 'data', url: 'data.html', label: 'Data'}
+        {id: 'ask-albert', url: 'ask-albert.html', label: 'Ask Albert'}
       ]
     },
     crf: {
