@@ -866,7 +866,16 @@
         'Republic of Korea': 'South Korea',
         'Dem. Rep. Korea': 'North Korea',
         'Timor-Leste': 'East Timor',
-        'Lao PDR': 'Laos'
+        'Lao PDR': 'Laos',
+        // Classification data uses formal names — map geojson short names
+        'Iran': 'Iran (Islamic Republic of)',
+        'Syria': 'Syrian Arab Republic',
+        'Palestine': 'State of Palestine',
+        'Moldova': 'Moldova (Republic of)',
+        'Venezuela': 'Venezuela (Bolivarian Republic of)',
+        'Vietnam': 'Viet Nam',
+        'Tanzania': 'United Republic of Tanzania',
+        'Democratic Republic of the Congo': 'Democratic Republic of the Congo'
       };
 
       // Reverse: classification names → geojson names
@@ -878,8 +887,9 @@
         var byCountry = {};
         latest.forEach(function(c) {
           if (!c.country) return;
-          // Only show active (non-expired) classifications on the map
+          // Only show active (non-expired), non-white classifications on the map
           if (IRC.isExpired(c.expirationDate)) return;
+          if ((c.stance || '').toLowerCase() === 'white') return;
           var name = IRC.normalizeCountry(c.country);
           if (!byCountry[name]) byCountry[name] = [];
           byCountry[name].push(c);
@@ -907,11 +917,15 @@
         // Try alias mapping
         var aliasName = GEO_TO_CLASS[geoName];
         if (aliasName && byCountry[aliasName]) return byCountry[aliasName];
-        // Try case-insensitive partial match
+        // Try case-insensitive exact match, then substring match
         var lowerGeo = geoName.toLowerCase();
         var keys = Object.keys(byCountry);
         for (var i = 0; i < keys.length; i++) {
           if (keys[i].toLowerCase() === lowerGeo) return byCountry[keys[i]];
+        }
+        // Substring: "Iran" matches "Iran (Islamic Republic of)"
+        for (var j = 0; j < keys.length; j++) {
+          if (keys[j].toLowerCase().indexOf(lowerGeo) === 0) return byCountry[keys[j]];
         }
         return null;
       }
