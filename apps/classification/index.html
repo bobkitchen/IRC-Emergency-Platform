@@ -119,6 +119,15 @@
               </div>
             </div>
 
+            <div class="toolbar-group">
+              <div class="toolbar-label">Status:</div>
+              <div class="status-pills">
+                <button class="status-pill active" data-status="active">Active</button>
+                <button class="status-pill" data-status="all">All</button>
+                <button class="status-pill" data-status="expired">Expired</button>
+              </div>
+            </div>
+
             <div class="toolbar-group toolbar-sort">
               <label for="sort-select">Sort:</label>
               <select id="sort-select" class="toolbar-select">
@@ -293,6 +302,32 @@
       cursor: pointer;
     }
 
+    /* ── Status Filter Pills ── */
+    .status-pills {
+      display: flex;
+      gap: 6px;
+    }
+    .status-pill {
+      padding: 5px 12px;
+      border: 2px solid var(--gray-e9, #E9E9E9);
+      border-radius: 8px;
+      background: transparent;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--mid-gray, #666);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .status-pill:hover:not(.active) {
+      border-color: var(--dark-gray, #333);
+      color: var(--dark-gray, #333);
+    }
+    .status-pill.active {
+      background: var(--neutral-900, #1a1a2e);
+      border-color: var(--neutral-900, #1a1a2e);
+      color: #fff;
+    }
+
     /* ── Map Section ── */
     .map-section {
       margin-bottom: 24px;
@@ -437,6 +472,9 @@
     // Time period filter state
     var timePeriod = 'all';
 
+    // Status filter state: 'active' (default), 'expired', 'all'
+    var statusFilter = 'active';
+
     // Deduplicate classifications by classification_id, keeping only the latest
     // reclassification (highest reclassificationNumber) per group
     function getLatestPerClassification(list) {
@@ -555,8 +593,11 @@
       var deduplicated = getLatestPerClassification(classifications);
       var reclassCounts = getReclassCounts();
 
-      // Apply stance, type, country filters on deduplicated set
+      // Apply status, stance, type, country filters on deduplicated set
       var filtered = deduplicated.filter(function(c) {
+        // Status filter (active/expired/all)
+        if (statusFilter === 'active' && IRC.isExpired(c.expirationDate)) return false;
+        if (statusFilter === 'expired' && !IRC.isExpired(c.expirationDate)) return false;
         var stanceMatch = stanceFilter === 'all' || c.stance === stanceFilter || (stanceFilter === 'expiring' && IRC.daysUntilExpiration(c.expirationDate) !== null && IRC.daysUntilExpiration(c.expirationDate) >= 0 && IRC.daysUntilExpiration(c.expirationDate) <= 7);
         var typeMatch = typeFilter === 'all' || c.type === typeFilter;
         var countryMatch = countryFilter === 'all' || c.country === countryFilter;
@@ -740,6 +781,16 @@
     // Initial render
     renderRecent();
 
+    // Event handlers for status pills
+    document.querySelectorAll('.status-pill').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.status-pill').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        statusFilter = this.getAttribute('data-status');
+        renderRecent();
+      });
+    });
+
     // Event handlers for stance pills
     document.querySelectorAll('.stance-pill').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -884,12 +935,30 @@
 
       function getCountryClassifications() {
         var latest = getLatestPerClassification(classifications);
+        // Read current filters (same ones the card list uses)
+        var stanceFilter = document.querySelector('.stance-pill.active').getAttribute('data-stance');
+        var typeFilter = document.querySelector('.type-filter-btn.active').getAttribute('data-type');
+
         var byCountry = {};
         latest.forEach(function(c) {
           if (!c.country) return;
-          // Only show active (non-expired), non-white classifications on the map
-          if (IRC.isExpired(c.expirationDate)) return;
+          // Apply status filter (active/expired/all) — same as card list
+          if (statusFilter === 'active' && IRC.isExpired(c.expirationDate)) return;
+          if (statusFilter === 'expired' && !IRC.isExpired(c.expirationDate)) return;
+          // Apply stance filter
+          if (stanceFilter !== 'all') {
+            if (stanceFilter === 'expiring') {
+              var days = IRC.daysUntilExpiration(c.expirationDate);
+              if (days === null || days < 0 || days > 7) return;
+            } else if (c.stance !== stanceFilter) return;
+          }
+          // Apply type filter
+          if (typeFilter !== 'all' && c.type !== typeFilter) return;
+          // Apply country filter
+          if (countryFilter !== 'all' && c.country !== countryFilter) return;
+          // Skip white stance on map (invisible anyway)
           if ((c.stance || '').toLowerCase() === 'white') return;
+
           var name = IRC.normalizeCountry(c.country);
           if (!byCountry[name]) byCountry[name] = [];
           byCountry[name].push(c);
@@ -1039,10 +1108,15 @@
         }).addTo(map);
       }
 
-      // Re-render map when classifications refresh
+      // Re-render map when classifications refresh or filters change
       var origUpdateSummary = updateSummaryCards;
       updateSummaryCards = function() {
         origUpdateSummary();
+        if (map && geoData) renderMapLayer();
+      };
+      var origRenderRecent = renderRecent;
+      renderRecent = function() {
+        origRenderRecent();
         if (map && geoData) renderMapLayer();
       };
 
