@@ -230,11 +230,72 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { messages, site = 'navigator', model = 'google/gemini-2.5-flash' } = body;
+    const { messages, site = 'navigator', model = 'google/gemini-2.5-flash', mapBuilder = false } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: 'Missing "messages" array' }), {
         status: 400,
+        headers: { ...corsHeaders(req), 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ── Map Builder mode: structured output, no RAG, no streaming ──
+    if (mapBuilder) {
+      const mapSchema = {
+        type: 'object' as const,
+        properties: {
+          timePeriod: { type: 'string', enum: ['all', 'fy', '12m'] },
+          selectedTypes: { type: 'array', items: { type: 'string', enum: ['conflict', 'outbreak', 'food', 'hazard', 'complex'] } },
+          selectedStances: { type: 'array', items: { type: 'string', enum: ['red', 'orange', 'yellow', 'white'] } },
+          regionFilter: { type: 'string', enum: ['all', 'asia', 'east africa', 'latam', 'mena', 'rai', 'west and central africa'] },
+          displayMode: { type: 'string', enum: ['stance', 'severity'] },
+          statusFilter: { type: 'string', enum: ['active', 'all'] },
+          continent: { type: 'string', enum: ['africa', 'asia', 'europe', 'americas', 'middleeast', ''] },
+          excludeContinent: { type: 'string', enum: ['africa', 'asia', 'europe', 'americas', 'middleeast', ''] },
+          countries: { type: 'array', items: { type: 'string' } },
+          excludeCountries: { type: 'array', items: { type: 'string' } },
+          title: { type: 'string' },
+        },
+        required: ['timePeriod', 'selectedTypes', 'selectedStances', 'regionFilter', 'displayMode', 'statusFilter', 'title'],
+        additionalProperties: false,
+      };
+
+      const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+          'HTTP-Referer': 'https://bobkitchen.github.io',
+          'X-Title': 'IRC Map Builder',
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 512,
+          messages: messages.map((m: any) => ({ role: m.role, content: m.content })),
+          response_format: {
+            type: 'json_schema',
+            json_schema: {
+              name: 'map_filter_config',
+              strict: true,
+              schema: mapSchema,
+            },
+          },
+        }),
+      });
+
+      if (!orRes.ok) {
+        const errText = await orRes.text();
+        console.error('OpenRouter map builder error:', orRes.status, errText);
+        return new Response(JSON.stringify({ error: `AI service error (${orRes.status})` }), {
+          status: 502,
+          headers: { ...corsHeaders(req), 'Content-Type': 'application/json' },
+        });
+      }
+
+      const orData = await orRes.json();
+      const content = orData.choices?.[0]?.message?.content || '{}';
+      return new Response(JSON.stringify({ config: content }), {
+        status: 200,
         headers: { ...corsHeaders(req), 'Content-Type': 'application/json' },
       });
     }

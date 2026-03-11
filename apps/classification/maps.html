@@ -1599,7 +1599,20 @@
     });
 
     // ── AI Map Builder ──
+    // Uses the Edge Function's mapBuilder mode with OpenRouter structured outputs
+    // (JSON Schema enforcement) for guaranteed valid JSON. Exclusion logic (e.g.
+    // "outside of Africa") is handled deterministically in JS, not by the LLM.
     var AI_SUPABASE_URL = 'https://qykjjfbdvwqxqmsgiebs.supabase.co/functions/v1';
+
+    // Collect all known country names from classification data for exclusion logic
+    function getAllClassifiedCountries() {
+      var latest = getLatestPerClassification(classifications);
+      var countries = {};
+      latest.forEach(function(c) {
+        if (c.country) countries[IRC.normalizeCountry(c.country)] = true;
+      });
+      return Object.keys(countries);
+    }
 
     document.getElementById('ai-builder-go').addEventListener('click', function() {
       var input = document.getElementById('ai-builder-input');
@@ -1613,25 +1626,34 @@
       status.textContent = 'Interpreting your request...';
       status.className = 'ai-builder-status';
 
-      // Build system prompt that constrains output to filter JSON
-      var systemPrompt = 'You are a map configuration assistant for the IRC Emergency Classification system. ' +
-        'The user will describe a map they want to see. You must return ONLY a JSON object (no markdown, no explanation) with these fields:\n' +
+      // System prompt — the JSON schema is enforced server-side via response_format.
+      // This prompt focuses on SEMANTIC guidance: when to use include vs exclude.
+      var systemPrompt = 'You are a map configuration assistant for the IRC Emergency Classification system.\n' +
+        'The user will describe a map they want. Return a JSON object with these fields:\n\n' +
+        'REQUIRED fields:\n' +
         '- timePeriod: "all" | "fy" | "12m"\n' +
-        '- selectedTypes: array of zero or more of ["conflict","outbreak","food","hazard","complex"] (empty = all types)\n' +
-        '- selectedStances: array of zero or more of ["red","orange","yellow","white"] (empty = all stances)\n' +
-        '- regionFilter: "all" | "asia" | "east africa" | "latam" | "mena" | "rai" | "west and central africa" (this is an IRC organizational region for map zoom only)\n' +
+        '- selectedTypes: array from ["conflict","outbreak","food","hazard","complex"] (empty = all)\n' +
+        '- selectedStances: array from ["red","orange","yellow","white"] (empty = all)\n' +
+        '- regionFilter: "all" | "asia" | "east africa" | "latam" | "mena" | "rai" | "west and central africa"\n' +
         '- displayMode: "stance" | "severity"\n' +
         '- statusFilter: "active" | "all"\n' +
-        '- continent: (OPTIONAL) to filter by geographic continent, use one of: "africa" | "asia" | "europe" | "americas" | "middleeast". This FILTERS the data to only show countries on that continent. Use this when the user mentions a continent or large geographic area.\n' +
-        '- countries: (OPTIONAL) array of specific country names to include. Use this for requests about specific countries.\n' +
-        '- title: a short descriptive title for this map\n\n' +
-        'IMPORTANT: regionFilter only controls map zoom (IRC organizational regions). To actually FILTER data to a geographic area like "Africa" or "Europe", you MUST use the "continent" field. For example, "Africa" requires continent:"africa" — do NOT just set regionFilter.\n\n' +
-        'Current fiscal year: ' + fyLabel + ' (Oct ' + (currentFY - 1) + ' – Sep ' + currentFY + ').\n' +
+        '- title: descriptive title for this map\n\n' +
+        'OPTIONAL geographic filter fields (use AT MOST ONE of these four):\n' +
+        '- continent: INCLUDE only countries in this continent ("africa"|"asia"|"europe"|"americas"|"middleeast")\n' +
+        '- excludeContinent: EXCLUDE countries in this continent — use for "outside of X", "not in X", "everywhere except X"\n' +
+        '- countries: array of specific country names to INCLUDE\n' +
+        '- excludeCountries: array of specific country names to EXCLUDE\n\n' +
+        'CRITICAL RULES:\n' +
+        '1. regionFilter only controls map ZOOM, not data filtering. To filter geographically, use continent/excludeContinent/countries/excludeCountries.\n' +
+        '2. For NEGATION queries like "outside of Africa", "not in Asia", "everywhere except Europe" → use excludeContinent, NOT continent.\n' +
+        '3. For INCLUSION queries like "in Africa", "African emergencies" → use continent.\n' +
+        '4. Leave geographic fields as empty string "" or empty array [] when not needed.\n\n' +
+        'Current fiscal year: ' + fyLabel + ' (Oct ' + (currentFY - 1) + ' – Sep ' + currentFY + ').\n\n' +
         'Examples:\n' +
-        '"Show red conflicts" → {"timePeriod":"all","selectedTypes":["conflict"],"selectedStances":["red"],"regionFilter":"all","displayMode":"stance","statusFilter":"active","title":"Active Red Conflict Classifications"}\n' +
-        '"All classifications in Africa last 12 months" → {"timePeriod":"12m","selectedTypes":[],"selectedStances":[],"regionFilter":"all","displayMode":"stance","statusFilter":"active","continent":"africa","title":"African Classifications — Last 12 Months"}\n' +
-        '"Severity heatmap of East Africa" → {"timePeriod":"all","selectedTypes":[],"selectedStances":[],"regionFilter":"east africa","displayMode":"severity","statusFilter":"active","continent":"africa","title":"East Africa Severity Heatmap"}\n' +
-        'Return ONLY the JSON object.';
+        '"Red conflicts" → {"timePeriod":"all","selectedTypes":["conflict"],"selectedStances":["red"],"regionFilter":"all","displayMode":"stance","statusFilter":"active","continent":"","excludeContinent":"","countries":[],"excludeCountries":[],"title":"Active Red Conflict Classifications"}\n' +
+        '"All classifications in Africa last 12 months" → {"timePeriod":"12m","selectedTypes":[],"selectedStances":[],"regionFilter":"all","displayMode":"stance","statusFilter":"active","continent":"africa","excludeContinent":"","countries":[],"excludeCountries":[],"title":"African Classifications — Last 12 Months"}\n' +
+        '"Everything outside of Africa" → {"timePeriod":"all","selectedTypes":[],"selectedStances":[],"regionFilter":"all","displayMode":"stance","statusFilter":"active","continent":"","excludeContinent":"africa","countries":[],"excludeCountries":[],"title":"Non-African Classifications"}\n' +
+        '"Severity heatmap excluding Middle East" → {"timePeriod":"all","selectedTypes":[],"selectedStances":[],"regionFilter":"all","displayMode":"severity","statusFilter":"active","continent":"","excludeContinent":"middleeast","countries":[],"excludeCountries":[],"title":"Global Severity Heatmap (excl. Middle East)"}';
 
       fetch(AI_SUPABASE_URL + '/chat', {
         method: 'POST',
@@ -1642,41 +1664,15 @@
             { role: 'user', content: text }
           ],
           site: 'classification',
-          stream: false
+          mapBuilder: true
         })
       }).then(function(res) {
         if (!res.ok) throw new Error('Service error (' + res.status + ')');
-        // Handle both streaming SSE and plain JSON responses
-        var contentType = res.headers.get('content-type') || '';
-        if (contentType.indexOf('text/event-stream') !== -1) {
-          return res.text().then(function(raw) {
-            // Parse SSE: extract content deltas
-            var full = '';
-            raw.split('\n').forEach(function(line) {
-              line = line.trim();
-              if (!line.startsWith('data: ')) return;
-              var data = line.substring(6);
-              if (data === '[DONE]') return;
-              try {
-                var parsed = JSON.parse(data);
-                var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
-                if (delta && delta.content) full += delta.content;
-              } catch(_) {}
-            });
-            return full;
-          });
-        }
-        return res.json().then(function(data) {
-          if (data.choices && data.choices[0]) return data.choices[0].message.content;
-          return JSON.stringify(data);
-        });
-      }).then(function(content) {
-        // Extract JSON from response (handle markdown code fences)
-        var jsonStr = content.trim();
-        var fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-        if (fenceMatch) jsonStr = fenceMatch[1].trim();
-
-        var config = JSON.parse(jsonStr);
+        return res.json();
+      }).then(function(data) {
+        // Edge Function returns { config: "json string" }
+        var configStr = data.config || '{}';
+        var config = typeof configStr === 'string' ? JSON.parse(configStr) : configStr;
         applyAIConfig(config);
         status.textContent = 'Map updated!';
         status.className = 'ai-builder-status';
@@ -1746,13 +1742,30 @@
         });
       }
 
-      // Continent → country filter
+      // ── Geographic filtering (deterministic — LLM just flags intent) ──
       var chipLabel = '';
-      if (config.continent && CONTINENT_COUNTRIES[config.continent]) {
+      var continentLabels = { africa: 'Africa', asia: 'Asia', europe: 'Europe', americas: 'Americas', middleeast: 'Middle East' };
+
+      if (config.excludeContinent && CONTINENT_COUNTRIES[config.excludeContinent]) {
+        // EXCLUSION: get all classified countries, remove those in the excluded continent
+        var excludeSet = {};
+        CONTINENT_COUNTRIES[config.excludeContinent].forEach(function(c) { excludeSet[c.toLowerCase()] = true; });
+        var allCountries = getAllClassifiedCountries();
+        countryFilter = allCountries.filter(function(c) { return !excludeSet[c.toLowerCase()]; });
+        chipLabel = 'Excluding ' + (continentLabels[config.excludeContinent] || config.excludeContinent);
+      } else if (config.excludeCountries && config.excludeCountries.length > 0) {
+        // EXCLUSION by specific countries
+        var excludeSet2 = {};
+        config.excludeCountries.forEach(function(c) { excludeSet2[c.toLowerCase()] = true; });
+        var allCountries2 = getAllClassifiedCountries();
+        countryFilter = allCountries2.filter(function(c) { return !excludeSet2[c.toLowerCase()]; });
+        chipLabel = 'Excluding ' + (config.excludeCountries.length <= 3 ? config.excludeCountries.join(', ') : config.excludeCountries.length + ' countries');
+      } else if (config.continent && CONTINENT_COUNTRIES[config.continent]) {
+        // INCLUSION by continent
         countryFilter = CONTINENT_COUNTRIES[config.continent].slice();
-        var continentLabels = { africa: 'Africa', asia: 'Asia', europe: 'Europe', americas: 'Americas', middleeast: 'Middle East' };
         chipLabel = continentLabels[config.continent] || config.continent;
-      } else if (Array.isArray(config.countries) && config.countries.length > 0) {
+      } else if (config.countries && config.countries.length > 0) {
+        // INCLUSION by specific countries
         countryFilter = config.countries.slice();
         chipLabel = config.countries.length <= 3 ? config.countries.join(', ') : config.countries.length + ' countries';
       } else {
