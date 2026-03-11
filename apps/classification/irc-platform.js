@@ -61,42 +61,6 @@
     };
   }
 
-  // ── Data repair ──
-  window.IRC.repairData = function() {
-    var repairKey = 'irc_data_repair_v2';
-    if (localStorage.getItem(repairKey)) return;
-    var data = window.IRC.getClassifications();
-    if (!data.length) return;
-    var needsRepair = data.some(function(c) {
-      return c.reclassificationNumber && c.reclassificationNumber >= 100;
-    });
-    if (!needsRepair) {
-      localStorage.setItem(repairKey, '1');
-      return;
-    }
-    var groups = {};
-    data.forEach(function(c) {
-      var key = c.classificationId || c.id;
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(c);
-    });
-    var repaired = 0;
-    for (var key in groups) {
-      var group = groups[key];
-      group.sort(function(a, b) { return (a.date || '').localeCompare(b.date || ''); });
-      for (var i = 0; i < group.length; i++) {
-        var correct = i + 1;
-        if (group[i].reclassificationNumber !== correct) {
-          group[i].reclassificationNumber = correct;
-          repaired++;
-        }
-      }
-    }
-    if (repaired > 0) {
-      window.IRC.saveClassifications(data);
-      console.log('[Data Repair] Fixed ' + repaired + ' reclassificationNumber values.');
-    }
-    localStorage.setItem(repairKey, '1');
-  };
+  // Data repair is handled by shared.js — no duplicate here
 
 })();

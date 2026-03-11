@@ -60,7 +60,11 @@ export function ClassificationProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
 
-  // Fetch all classifications on mount
+  // 3D: Offline fallback — cache last successful fetch
+  const CACHE_KEY = 'ern-classifications-cache';
+  const CACHE_TS_KEY = 'ern-classifications-cache-ts';
+
+  // Fetch all classifications on mount, with offline fallback
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -68,11 +72,29 @@ export function ClassificationProvider({ children }: { children: ReactNode }) {
       setFetchError(false);
       const data = await fetchClassifications();
       if (cancelled) return;
-      if (data.length === 0) {
-        // Could be a fetch error or genuinely empty
+      if (data.length > 0) {
+        // Cache successful fetch
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+          localStorage.setItem(CACHE_TS_KEY, new Date().toISOString());
+        } catch { /* quota exceeded */ }
+        setAllClassifications(data);
+      } else {
+        // Try offline fallback from cache
+        try {
+          const cached = localStorage.getItem(CACHE_KEY);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setAllClassifications(parsed);
+              setFetchError(true); // signal stale data
+              setIsLoading(false);
+              return;
+            }
+          }
+        } catch { /* ignore */ }
         setFetchError(true);
       }
-      setAllClassifications(data);
       setIsLoading(false);
     })();
     return () => { cancelled = true; };

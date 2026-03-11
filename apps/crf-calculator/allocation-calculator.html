@@ -1066,6 +1066,7 @@
         <ul class="classification-listbox" id="classification-listbox" role="listbox"></ul>
       </div>
       <div class="classification-info" id="classification-info" style="display: none;"></div>
+      <div id="classification-expiry-warning" style="display:none; margin-top:8px; padding:10px 16px; border-radius:8px; font-size:0.8125rem; font-weight:600; line-height:1.4;"></div>
       <div class="classification-error" id="classification-error" style="display: none;"></div>
     </div>
 
@@ -1097,6 +1098,7 @@
             autocomplete="off"
           />
           <div class="target-hint" id="target-hint">Defaults to 10% — editable</div>
+          <p style="font-size:0.75rem; color:rgba(255,255,255,0.45); margin-top:6px; line-height:1.4;">IRC's global response goal — adjust based on access &amp; capacity</p>
         </div>
       </div>
     </div>
@@ -1117,6 +1119,11 @@
         </button>
       </div>
       <div class="stance-hint" id="stance-hint">Select the emergency response stance to set the allocation ceiling.</div>
+      <details id="stance-explainer" style="display:none; margin-top:10px; font-size:0.8125rem; color:#383838; line-height:1.5;">
+        <summary style="cursor:pointer; font-weight:600; color:#666; user-select:none;">How was this determined?</summary>
+        <div id="stance-explainer-body" style="margin-top:8px; padding:12px 16px; background:#F6F6F6; border-radius:8px; border:1px solid #D1D1D1;">
+        </div>
+      </details>
       <div class="stance-not-eligible" id="stance-not-eligible">Based on the affected population and country profile, this emergency would be classified <strong>Yellow or White</strong>, which does not qualify for CRF allocation. You can override this by selecting a stance above.</div>
     </div>
 
@@ -1135,6 +1142,7 @@
         <div class="total-cost-sub" id="total-cost-sub" style="display: none;">
           <strong id="total-cost-people">—</strong> people &times; $47.34 per person over 6 months
         </div>
+        <p style="font-size:0.75rem; color:rgba(255,255,255,0.35); margin-top:8px; line-height:1.4;">$47.34 is the average cost across IRC programming</p>
       </div>
 
       <!-- Allocation card (white bottom) — hidden until inputs provided -->
@@ -1157,6 +1165,9 @@
             <div class="coverage-btn-label">of affected people</div>
           </button>
         </div>
+        <p id="coverage-guidance" style="font-size:0.75rem; color:#666; margin:-20px 0 20px; line-height:1.5;">
+          <strong>1%</strong> — standard initial allocation &nbsp;|&nbsp; <strong>2%</strong> — scaled response for high-severity &nbsp;|&nbsp; <strong>3%</strong> — maximum for large-scale emergencies
+        </p>
 
         <!-- Split bar -->
         <div class="split-bar">
@@ -1187,6 +1198,20 @@
           This allocation exceeds $2M. Consider whether the CRF pool can sustain this alongside other active emergencies.
         </div>
 
+        <!-- Copy Summary button -->
+        <button id="copy-summary-btn" class="copy-summary-btn" style="display:none; margin-top:16px; padding:10px 20px; background:#FFC72C; color:#000; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.875rem;">Copy Summary to Clipboard</button>
+
+      </div>
+
+      <!-- Next Steps section -->
+      <div id="next-steps" class="next-steps-section" style="display:none; margin-top:24px; padding:20px; background:#FFF8E5; border-radius:12px; border:1px solid #FFD960;">
+        <h3 style="font-size:1rem; font-weight:700; margin-bottom:12px;">Next Steps</h3>
+        <ul style="list-style:disc; padding-left:20px; font-size:0.875rem; color:#383838; line-height:1.8;">
+          <li>Submit CRF request within <strong>14 days</strong> of classification</li>
+          <li>Response plan must include <strong>Sections A-G</strong></li>
+          <li>For Orange: ceiling <strong>$1M</strong> | For Red: ceiling <strong>$2M</strong></li>
+          <li>Set a Scale Target of reaching at least <strong>10%</strong> of affected population</li>
+        </ul>
       </div>
 
       <!-- Empty state -->
@@ -1299,6 +1324,11 @@
       var classificationLoading = document.getElementById('classification-loading');
       var affectedAutoBadge = document.getElementById('affected-auto-badge');
       var stanceAutoBadge = document.getElementById('stance-auto-badge');
+      var copySummaryBtn = document.getElementById('copy-summary-btn');
+      var nextStepsSection = document.getElementById('next-steps');
+      var stanceExplainer = document.getElementById('stance-explainer');
+      var stanceExplainerBody = document.getElementById('stance-explainer-body');
+      var classificationExpiryWarning = document.getElementById('classification-expiry-warning');
 
       // ── State ──
       var selectedCountry = null; // {name, pop, pv, rob}
@@ -1532,6 +1562,7 @@
       // ── Auto stance from matrix ──
       function updateAutoStance() {
         stanceNotEligible.style.display = 'none';
+        stanceExplainer.style.display = 'none';
 
         if (!selectedCountry || affectedPop <= 0) {
           if (!stanceManuallyOverridden) {
@@ -1544,6 +1575,20 @@
 
         var severity = getSeverity(affectedPop, selectedCountry.pop);
         var autoStance = lookupStance(severity, selectedCountry.pv, selectedCountry.rob);
+
+        // Populate the stance explainer
+        var proportion = selectedCountry.pop > 0 ? (affectedPop / selectedCountry.pop) : 0;
+        var proportionPct = (proportion * 100).toFixed(2);
+        stanceExplainerBody.innerHTML =
+          '<div style="margin-bottom:6px;"><strong>Matrix Inputs:</strong></div>' +
+          '<div>Affected Population: <strong>' + formatNum(affectedPop) + '</strong></div>' +
+          '<div>Country Population: <strong>' + formatNum(selectedCountry.pop) + '</strong></div>' +
+          '<div>Proportion Affected: <strong>' + proportionPct + '%</strong></div>' +
+          '<div>Computed Severity: <strong>' + severity + '/10</strong></div>' +
+          '<div>Pre-crisis Vulnerability (PV): <strong>' + selectedCountry.pv + '</strong></div>' +
+          '<div>Robustness: <strong>' + selectedCountry.rob + '</strong></div>' +
+          '<div style="margin-top:8px; padding-top:8px; border-top:1px solid #D1D1D1;">Stance Matrix Lookup: severity=' + severity + ', PV=' + selectedCountry.pv + ', robustness=' + selectedCountry.rob + ' &rarr; <strong>' + autoStance.charAt(0).toUpperCase() + autoStance.slice(1) + '</strong></div>';
+        stanceExplainer.style.display = 'block';
 
         if (autoStance === 'orange' || autoStance === 'red') {
           selectedStance = autoStance;
@@ -1633,6 +1678,8 @@
           allocationEmpty.style.display = 'block';
           totalCostCard.style.borderRadius = '12px';
           totalCost = 0;
+          copySummaryBtn.style.display = 'none';
+          nextStepsSection.style.display = 'none';
 
           if (targetPop > 0 && !selectedStance) {
             allocationEmpty.textContent = 'Select a response stance to see allocation options';
@@ -1651,13 +1698,22 @@
         allocationEmpty.style.display = 'none';
         totalCostCard.style.borderRadius = '12px 12px 0 0';
 
+        copySummaryBtn.style.display = 'inline-block';
+        nextStepsSection.style.display = 'block';
+
         updateAllocation();
       }
       // ── Classification functions ──
       function getOpenClassifications(countryName) {
         if (!classificationsCache || !countryName) return [];
         return classificationsCache.filter(function (c) {
-          return c.country === countryName && !IRCShared.isExpired(c.expirationDate);
+          if (c.country !== countryName) return false;
+          // Include active and recently expired (within 30 days) classifications
+          if (!c.expirationDate) return true;
+          var expiry = new Date(c.expirationDate);
+          var now = new Date();
+          var diffDays = Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+          return diffDays >= -30; // show up to 30 days past expiration
         }).sort(function (a, b) {
           return (b.date || '').localeCompare(a.date || '');
         });
@@ -1745,6 +1801,7 @@
       function selectClassification(classification) {
         selectedClassification = classification;
         classificationInfo.style.display = 'none';
+        classificationExpiryWarning.style.display = 'none';
         affectedAutoBadge.style.display = 'none';
         stanceAutoBadge.style.display = 'none';
 
@@ -1752,6 +1809,9 @@
           classificationSearchInput.value = '';
           return;
         }
+
+        // Check expiry warning
+        checkClassificationExpiry(classification);
 
         classificationSearchInput.value = classificationLabel(classification);
 
@@ -1920,6 +1980,67 @@
           stanceAutoBadge.style.display = 'none';
         });
       });
+
+      // ── Copy Summary to Clipboard ──
+      copySummaryBtn.addEventListener('click', function () {
+        var countryName = selectedCountry ? selectedCountry.name : 'Unknown';
+        var dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        var stanceLabel = selectedStance ? selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) : '—';
+        var severity = (selectedCountry && affectedPop > 0) ? getSeverity(affectedPop, selectedCountry.pop) : '—';
+        var crfAmount = crfAmountEl.textContent || '—';
+        var coveragePct = selectedCoverage + '%';
+
+        var summary = 'CRF REQUEST SUMMARY \u2014 ' + countryName + ' (' + dateStr + ')\n' +
+          'Classification: ' + stanceLabel + ' | Severity: ' + severity + '\n' +
+          'CRF Allocation: ' + crfAmount + '\n' +
+          'Coverage: ' + coveragePct + ' | Per-client cost: $' + PER_CLIENT_COST.toFixed(2);
+
+        navigator.clipboard.writeText(summary).then(function () {
+          var origText = copySummaryBtn.textContent;
+          copySummaryBtn.textContent = 'Copied!';
+          setTimeout(function () { copySummaryBtn.textContent = origText; }, 2000);
+        }).catch(function () {
+          // Fallback
+          var ta = document.createElement('textarea');
+          ta.value = summary;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          var origText = copySummaryBtn.textContent;
+          copySummaryBtn.textContent = 'Copied!';
+          setTimeout(function () { copySummaryBtn.textContent = origText; }, 2000);
+        });
+      });
+
+      // ── Classification Expiry Warning (4F) ──
+      function checkClassificationExpiry(classification) {
+        classificationExpiryWarning.style.display = 'none';
+        if (!classification || !classification.expirationDate) return;
+
+        var now = new Date();
+        var expiry = new Date(classification.expirationDate);
+        var diffMs = expiry.getTime() - now.getTime();
+        var diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) {
+          // Expired
+          classificationExpiryWarning.style.display = 'block';
+          classificationExpiryWarning.style.background = '#FFF0EB';
+          classificationExpiryWarning.style.color = '#C4421A';
+          classificationExpiryWarning.style.border = '1px solid #C4421A';
+          classificationExpiryWarning.textContent = 'This classification expired ' + Math.abs(diffDays) + ' day' + (Math.abs(diffDays) !== 1 ? 's' : '') + ' ago. A new classification may be required before submitting a CRF request.';
+        } else if (diffDays <= 7) {
+          // Expiring soon
+          classificationExpiryWarning.style.display = 'block';
+          classificationExpiryWarning.style.background = '#FFF8E5';
+          classificationExpiryWarning.style.color = '#8B6914';
+          classificationExpiryWarning.style.border = '1px solid #FFD960';
+          classificationExpiryWarning.textContent = 'This classification expires in ' + diffDays + ' day' + (diffDays !== 1 ? 's' : '') + '. Ensure CRF submission is completed before expiration.';
+        }
+      }
 
       // ── Fetch classifications on load ──
       IRCShared.fetchClassifications().then(function (rows) {

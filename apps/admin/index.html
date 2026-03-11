@@ -706,6 +706,34 @@
         </div>
       </div>
 
+      <!-- 5A/5B: Sync History -->
+      <div class="settings-card" style="margin-top:16px;">
+        <h3>Sync History</h3>
+        <div id="syncHistoryList" style="font-size:0.8125rem;color:#666;">Loading...</div>
+      </div>
+
+      <!-- 5C: Knowledge Base Stats -->
+      <div class="settings-card" style="margin-top:16px;">
+        <h3>Knowledge Base Details</h3>
+        <div class="dashboard-grid" style="margin-bottom:12px;">
+          <div class="stat-card">
+            <h4>RAG Chunks</h4>
+            <div class="stat-value" id="kbChunkCount">--</div>
+            <div class="stat-sub" id="kbChunkSub">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <h4>Resources</h4>
+            <div class="stat-value" id="kbResourceCount">--</div>
+            <div class="stat-sub">Indexed templates & docs</div>
+          </div>
+          <div class="stat-card">
+            <h4>Chat Feedback</h4>
+            <div class="stat-value" id="kbFeedbackCount">--</div>
+            <div class="stat-sub" id="kbFeedbackSub">User ratings</div>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-card" style="margin-top:16px;">
         <h3>Quick Links</h3>
         <div class="app-links" id="dashAppLinks"></div>
@@ -1175,6 +1203,61 @@
         document.getElementById('dashRagChunks').textContent = '--';
         document.getElementById('dashRagSub').textContent = 'Could not fetch';
       });
+
+      // 5A: Sync history
+      fetch(SUPABASE_URL + '/rest/v1/sync_log?order=started_at.desc&limit=10', {
+        headers: SUPABASE_HEADERS
+      }).then(function(res) { return res.json(); }).then(function(logs) {
+        if (!logs || logs.length === 0) {
+          document.getElementById('syncHistoryList').textContent = 'No sync history yet.';
+          return;
+        }
+        var html = '<table style="width:100%;border-collapse:collapse;">';
+        html += '<tr style="border-bottom:1px solid #E9E9E9;"><th style="text-align:left;padding:6px 8px;font-size:0.75rem;text-transform:uppercase;color:#666;">Time</th><th style="text-align:left;padding:6px 8px;font-size:0.75rem;text-transform:uppercase;color:#666;">Status</th><th style="text-align:right;padding:6px 8px;font-size:0.75rem;text-transform:uppercase;color:#666;">New</th><th style="text-align:right;padding:6px 8px;font-size:0.75rem;text-transform:uppercase;color:#666;">Updated</th><th style="text-align:right;padding:6px 8px;font-size:0.75rem;text-transform:uppercase;color:#666;">Errors</th><th style="text-align:right;padding:6px 8px;font-size:0.75rem;text-transform:uppercase;color:#666;">Duration</th></tr>';
+        logs.forEach(function(log) {
+          var date = log.started_at ? new Date(log.started_at).toLocaleString() : '--';
+          var statusDot = log.status === 'success' ? 'green' : log.status === 'error' ? 'red' : 'yellow';
+          var duration = log.duration_ms ? (log.duration_ms / 1000).toFixed(1) + 's' : '--';
+          html += '<tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:6px 8px;">' + date + '</td><td style="padding:6px 8px;"><span class="status-dot ' + statusDot + '" style="margin-right:4px;"></span>' + (log.status || '--') + '</td><td style="text-align:right;padding:6px 8px;">' + (log.inserted || 0) + '</td><td style="text-align:right;padding:6px 8px;">' + (log.updated || 0) + '</td><td style="text-align:right;padding:6px 8px;">' + (log.errors || 0) + '</td><td style="text-align:right;padding:6px 8px;">' + duration + '</td></tr>';
+        });
+        html += '</table>';
+        document.getElementById('syncHistoryList').innerHTML = html;
+      }).catch(function() {
+        document.getElementById('syncHistoryList').textContent = 'Could not load sync history.';
+      });
+
+      // 5C: Resource count
+      fetch(SUPABASE_URL + '/rest/v1/ern_resources?select=id&limit=1', {
+        headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
+      }).then(function(res) {
+        var range = res.headers.get('content-range');
+        if (range) document.getElementById('kbResourceCount').textContent = range.split('/')[1] || '--';
+      }).catch(function() {});
+
+      // 5C: Chunk count detail
+      fetch(SUPABASE_URL + '/rest/v1/ern_chunks?select=id&limit=1', {
+        headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
+      }).then(function(res) {
+        var range = res.headers.get('content-range');
+        if (range) {
+          document.getElementById('kbChunkCount').textContent = range.split('/')[1] || '--';
+          document.getElementById('kbChunkSub').textContent = 'Embedded text chunks';
+        }
+      }).catch(function() {});
+
+      // 5C: Feedback count
+      fetch(SUPABASE_URL + '/rest/v1/chat_feedback?select=id,rating&limit=1000', {
+        headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
+      }).then(function(res) {
+        var range = res.headers.get('content-range');
+        return res.json().then(function(data) {
+          var total = range ? range.split('/')[1] : (data ? data.length : 0);
+          var up = data ? data.filter(function(f) { return f.rating === 'up'; }).length : 0;
+          var down = data ? data.filter(function(f) { return f.rating === 'down'; }).length : 0;
+          document.getElementById('kbFeedbackCount').textContent = total || '0';
+          document.getElementById('kbFeedbackSub').textContent = up + ' helpful, ' + down + ' not helpful';
+        });
+      }).catch(function() {});
 
       // App links
       var config = S.getSiteConfig();

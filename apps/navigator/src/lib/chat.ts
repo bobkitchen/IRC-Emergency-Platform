@@ -19,6 +19,8 @@ export interface ModelOption {
 
 export const MODELS: ModelOption[] = [
   { id: 'google/gemini-2.5-flash', name: 'Gemini 2.5 Flash', tier: 'standard', description: 'Fast, high quality — fractions of a cent per query' },
+  { id: 'anthropic/claude-sonnet-4', name: 'Claude Sonnet 4', tier: 'standard', description: 'Better reasoning for complex multi-step questions' },
+  { id: 'openai/gpt-4.1-mini', name: 'GPT-4.1 Mini', tier: 'standard', description: 'Good balance of speed and quality' },
 ];
 
 export const DEFAULT_MODEL = 'google/gemini-2.5-flash';

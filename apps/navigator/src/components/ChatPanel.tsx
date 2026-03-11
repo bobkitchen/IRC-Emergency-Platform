@@ -1,14 +1,20 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { streamChat } from '@/lib/chat';
+import { streamChat, MODELS, getModel, setModel } from '@/lib/chat';
 import type { ChatMessage } from '@/types';
 import albertAvatar from '@/assets/albert.png';
 // @ts-ignore — @irc/shared is a workspace dependency (plain JS)
 import { getSettingsUrl } from '@irc/shared';
 
+const SUPABASE_FUNCTION_URL =
+  import.meta.env.VITE_SUPABASE_FUNCTION_URL ||
+  'https://qykjjfbdvwqxqmsgiebs.supabase.co/functions/v1';
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  prefillQuery?: string | null;
+  onPrefillConsumed?: () => void;
 }
 
 const EXAMPLE_QUERIES = [
@@ -19,10 +25,40 @@ const EXAMPLE_QUERIES = [
   'What does Supply Chain need to do first?',
 ];
 
-export default function ChatPanel({ isOpen, onClose }: Props) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+const CHAT_STORAGE_KEY = 'irc_albert_chat_navigator';
+
+function loadPersistedChat(): ChatMessage[] {
+  try {
+    const saved = localStorage.getItem(CHAT_STORAGE_KEY);
+    if (!saved) return [];
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+
+function persistChat(messages: ChatMessage[]) {
+  try {
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+  } catch { /* quota exceeded — ignore */ }
+}
+
+// 1E: Feedback — store thumbs up/down
+async function sendFeedback(messageId: string, rating: 'up' | 'down', query: string) {
+  try {
+    await fetch(`${SUPABASE_FUNCTION_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ feedback: { messageId, rating, query, timestamp: new Date().toISOString() } }),
+    });
+  } catch { /* non-blocking */ }
+}
+
+export default function ChatPanel({ isOpen, onClose, prefillQuery, onPrefillConsumed }: Props) {
+  const [messages, setMessages] = useState<ChatMessage[]>(loadPersistedChat);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(getModel);
+  const [feedbackGiven, setFeedbackGiven] = useState<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const streamBufferRef = useRef('');
@@ -35,11 +71,26 @@ export default function ChatPanel({ isOpen, onClose }: Props) {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
+  // Persist chat to localStorage whenever messages change (skip during streaming)
+  useEffect(() => {
+    if (!isStreaming && messages.length > 0) {
+      persistChat(messages);
+    }
+  }, [messages, isStreaming]);
+
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  // Handle prefilled query from "Ask Albert about this task"
+  useEffect(() => {
+    if (prefillQuery && isOpen && !isStreaming) {
+      sendMessage(prefillQuery);
+      onPrefillConsumed?.();
+    }
+  }, [prefillQuery, isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isStreaming) return;
@@ -142,12 +193,13 @@ export default function ChatPanel({ isOpen, onClose }: Props) {
           <div className="flex items-center gap-1 flex-shrink-0">
             {messages.length > 0 && (
               <button
-                onClick={() => setMessages([])}
+                onClick={() => { setMessages([]); localStorage.removeItem(CHAT_STORAGE_KEY); }}
                 className="p-1.5 rounded hover:bg-irc-gray-100 text-irc-gray-500"
-                title="Clear chat"
+                title="New conversation"
+                aria-label="New conversation"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </button>
             )}
@@ -189,7 +241,7 @@ export default function ChatPanel({ isOpen, onClose }: Props) {
             </div>
           )}
 
-          {messages.map(msg => (
+          {messages.map((msg, idx) => (
             <div
               key={msg.id}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -197,16 +249,53 @@ export default function ChatPanel({ isOpen, onClose }: Props) {
               {msg.role === 'assistant' ? (
                 <div className="flex gap-2.5 max-w-[85%]">
                   <img src={albertAvatar} alt="Albert" className="w-9 h-9 rounded-full object-cover flex-shrink-0 self-start" />
-                  <div className="rounded-lg px-3 py-2 text-sm bg-irc-gray-50 text-black">
-                    <div className="chat-content">
-                      <ReactMarkdown
-                        components={{
-                          a: ({ href, children, ...props }) => (
-                            <a href={href} target="_blank" rel="noopener noreferrer" {...props}>{children}</a>
-                          ),
-                        }}
-                      >{msg.content || '...'}</ReactMarkdown>
+                  <div>
+                    <div className="rounded-lg px-3 py-2 text-sm bg-irc-gray-50 text-black">
+                      <div className="chat-content">
+                        <ReactMarkdown
+                          components={{
+                            a: ({ href, children, ...props }) => (
+                              <a href={href} target="_blank" rel="noopener noreferrer" {...props}>{children}</a>
+                            ),
+                          }}
+                        >{msg.content || '...'}</ReactMarkdown>
+                      </div>
                     </div>
+                    {/* 1E: Feedback buttons */}
+                    {msg.content && !isStreaming && (
+                      <div className="flex gap-1 mt-1 ml-1">
+                        {feedbackGiven.has(msg.id) ? (
+                          <span className="text-xs text-irc-gray-400">Thanks for the feedback</span>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => {
+                                const prevUser = messages.slice(0, idx).reverse().find(m => m.role === 'user');
+                                sendFeedback(msg.id, 'up', prevUser?.content || '');
+                                setFeedbackGiven(prev => new Set(prev).add(msg.id));
+                              }}
+                              className="p-1 rounded hover:bg-irc-gray-100 text-irc-gray-400 hover:text-green-600 transition-colors"
+                              title="Helpful"
+                              aria-label="Thumbs up"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
+                            </button>
+                            <button
+                              onClick={() => {
+                                const prevUser = messages.slice(0, idx).reverse().find(m => m.role === 'user');
+                                sendFeedback(msg.id, 'down', prevUser?.content || '');
+                                setFeedbackGiven(prev => new Set(prev).add(msg.id));
+                              }}
+                              className="p-1 rounded hover:bg-irc-gray-100 text-irc-gray-400 hover:text-red-500 transition-colors"
+                              title="Not helpful"
+                              aria-label="Thumbs down"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17" /></svg>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -230,8 +319,21 @@ export default function ChatPanel({ isOpen, onClose }: Props) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
+        {/* Input + Model selector */}
         <form onSubmit={handleSubmit} className="p-3 border-t border-irc-gray-200 bg-white">
+          {/* Model selector row */}
+          <div className="flex items-center gap-2 mb-2">
+            <select
+              value={selectedModel}
+              onChange={e => { setSelectedModel(e.target.value); setModel(e.target.value); }}
+              className="text-xs px-2 py-1 border border-irc-gray-200 rounded bg-white text-irc-gray-600"
+            >
+              {MODELS.map(m => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ))}
+            </select>
+            <span className="text-xs text-irc-gray-400">{MODELS.find(m => m.id === selectedModel)?.description}</span>
+          </div>
           <div className="flex gap-2">
             <textarea
               ref={inputRef}

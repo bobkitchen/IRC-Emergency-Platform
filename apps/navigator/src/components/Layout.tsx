@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import ChatPanel from './ChatPanel';
+const ChatPanel = lazy(() => import('./ChatPanel'));
 import { MessageCircle, Settings, X } from 'lucide-react';
 // @ts-ignore — @irc/shared is a workspace dependency (plain JS)
 import { getSiteConfig, getSettingsUrl, IRC_LOGO_DATA_URI } from '@irc/shared';
@@ -144,8 +144,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [chatOpen, setChatOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [prefillQuery, setPrefillQuery] = useState<string | null>(null);
   const windowWidth = useWindowWidth();
   const { country, stance, clearClassification } = useClassification();
+
+  // Expose askAlbert function for child components via window
+  useEffect(() => {
+    (window as any).__askAlbert = (query: string) => {
+      setPrefillQuery(query);
+      setChatOpen(true);
+    };
+    return () => { delete (window as any).__askAlbert; };
+  }, []);
 
   const isMobile = windowWidth <= 768;
   const isNarrow = windowWidth <= 400;
@@ -453,7 +463,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </main>
 
         {/* Chat Panel */}
-        <ChatPanel isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+        {chatOpen && (
+          <Suspense fallback={null}>
+            <ChatPanel
+              isOpen={chatOpen}
+              onClose={() => setChatOpen(false)}
+              prefillQuery={prefillQuery}
+              onPrefillConsumed={() => setPrefillQuery(null)}
+            />
+          </Suspense>
+        )}
       </div>
 
       {/* Footer */}

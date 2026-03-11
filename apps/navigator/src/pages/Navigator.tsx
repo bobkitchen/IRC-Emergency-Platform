@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { processData, filterTasks } from '@/lib/data';
 import SectorIcon from '@/components/SectorIcon';
@@ -71,9 +71,43 @@ export default function Navigator() {
     return grouped;
   }, [filteredTasks]);
 
+  // 3C: Group tasks by section within a sector
+  const tasksBySection = useMemo(() => {
+    if (!sectorId || filters.phase !== 'all') return null;
+    const grouped = new Map<string, typeof filteredTasks>();
+    for (const task of filteredTasks) {
+      const section = task.section || 'General';
+      const existing = grouped.get(section) || [];
+      existing.push(task);
+      grouped.set(section, existing);
+    }
+    // Only use section grouping if at least some tasks have sections
+    const hasNamedSections = [...grouped.keys()].some(k => k !== 'General');
+    return hasNamedSections ? grouped : null;
+  }, [filteredTasks, sectorId, filters.phase]);
+
+  // 3F: Deep link to task via URL parameter
+  const highlightTaskId = searchParams.get('highlight');
+  useEffect(() => {
+    if (highlightTaskId) {
+      setTimeout(() => {
+        const el = document.getElementById(`task-${highlightTaskId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('ring-2', 'ring-irc-yellow', 'ring-offset-2');
+          setTimeout(() => el.classList.remove('ring-2', 'ring-irc-yellow', 'ring-offset-2'), 3000);
+        }
+      }, 300);
+    }
+  }, [highlightTaskId]);
+
   const handlePhaseClick = (phase: string | 'all') => {
     setFilters(prev => ({ ...prev, phase: phase === prev.phase ? 'all' : phase }));
   };
+
+  const handleAskAlbert = useCallback((query: string) => {
+    (window as any).__askAlbert?.(query);
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
@@ -201,7 +235,29 @@ export default function Navigator() {
 
       {/* Task List */}
       <div className="space-y-6">
-        {filters.phase === 'all' ? (
+        {tasksBySection ? (
+          // 3C: Show grouped by section (when viewing a specific sector with all phases)
+          [...tasksBySection.entries()].map(([section, sectionTasks]) => (
+            <div key={section}>
+              <h2 className="text-xs font-bold text-irc-gray-700 mb-2 flex items-center gap-2 tracking-irc-tight uppercase">
+                <span className="w-1.5 h-6 bg-irc-yellow rounded-full" />
+                {section}
+                <span className="text-irc-gray-400 font-normal">({sectionTasks.length})</span>
+              </h2>
+              <div className="space-y-2">
+                {sectionTasks.map(task => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    showSector={!sectorId}
+                    sectorName={processData.sectors.find(s => s.tasks.includes(task))?.name}
+                    onAskAlbert={handleAskAlbert}
+                  />
+                ))}
+              </div>
+            </div>
+          ))
+        ) : filters.phase === 'all' ? (
           // Show grouped by phase
           processData.phases.map(phase => {
             const phaseTasks = tasksByPhase.get(phase.id);
@@ -230,6 +286,7 @@ export default function Navigator() {
                       task={task}
                       showSector={!sectorId}
                       sectorName={processData.sectors.find(s => s.tasks.includes(task))?.name}
+                      onAskAlbert={handleAskAlbert}
                     />
                   ))}
                 </div>

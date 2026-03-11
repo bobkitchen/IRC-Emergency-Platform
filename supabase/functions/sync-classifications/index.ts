@@ -454,14 +454,41 @@ Deno.serve(async (req: Request) => {
     });
   }
 
+  // 5A: Create sync log entry
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  const logId = crypto.randomUUID();
+  await supabase.from('sync_log').insert({ id: logId, status: 'running' }).single();
+
   try {
     const result = await syncClassifications();
+
+    // Update sync log with results
+    await supabase.from('sync_log').update({
+      completed_at: new Date().toISOString(),
+      status: result.errors > 0 ? 'error' : 'success',
+      inserted: result.inserted,
+      updated: result.updated,
+      unchanged: result.unchanged,
+      errors: result.errors,
+      duration_ms: result.duration,
+      total_rows: result.totalRows,
+      error_details: result.errorDetails ? result.errorDetails : null,
+    }).eq('id', logId);
+
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: { ...cors, 'Content-Type': 'application/json' },
     });
   } catch (err) {
     console.error('[sync] Fatal error:', (err as Error).message);
+
+    // Log the error
+    await supabase.from('sync_log').update({
+      completed_at: new Date().toISOString(),
+      status: 'error',
+      error_details: [(err as Error).message],
+    }).eq('id', logId);
+
     return new Response(
       JSON.stringify({ error: (err as Error).message }),
       {

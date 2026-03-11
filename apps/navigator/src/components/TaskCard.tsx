@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import type { Task } from '@/types';
 import { getPhaseColorLight, getPriorityColor } from '@/lib/data';
-import { Star, ExternalLink, Paperclip } from 'lucide-react';
+import { Star, ExternalLink, Paperclip, MessageCircle } from 'lucide-react';
 
 interface Props {
   task: Task;
   showSector?: boolean;
   sectorName?: string;
+  onAskAlbert?: (query: string) => void;
 }
 
-export default function TaskCard({ task, showSector, sectorName }: Props) {
+export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: Props) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="card p-3 sm:p-4 hover:shadow-md transition-shadow">
+    <div id={`task-${task.id}`} className="card p-3 sm:p-4 hover:shadow-md transition-shadow">
       {/* Header */}
       <div
         className="flex items-start gap-3 cursor-pointer"
@@ -88,12 +89,25 @@ export default function TaskCard({ task, showSector, sectorName }: Props) {
           )}
         </div>
 
-        {/* Subtask count */}
-        {task.subtasks.length > 0 && (
-          <span className="text-xs text-irc-gray-500 bg-irc-gray-100 px-2 py-0.5 rounded-full shrink-0">
-            {task.subtasks.length}
-          </span>
-        )}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* Ask Albert about this task */}
+          {onAskAlbert && (
+            <button
+              onClick={e => { e.stopPropagation(); onAskAlbert(`Tell me about task ${task.id}: "${task.title}" in the ${task.phase} phase`); }}
+              className="p-1 rounded hover:bg-yellow-50 text-irc-gray-400 hover:text-irc-yellow transition-colors"
+              title="Ask Albert about this task"
+              aria-label="Ask Albert about this task"
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+            </button>
+          )}
+          {/* Subtask count */}
+          {task.subtasks.length > 0 && (
+            <span className="text-xs text-irc-gray-500 bg-irc-gray-100 px-2 py-0.5 rounded-full">
+              {task.subtasks.length}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Expanded subtasks */}

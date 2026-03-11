@@ -1,11 +1,32 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { processData } from '@/lib/data';
 import SectorIcon from '@/components/SectorIcon';
 import CountrySearch from '@/components/CountrySearch';
-import { Compass, Library, MessageCircle } from 'lucide-react';
+import { Compass, Library, MessageCircle, User } from 'lucide-react';
+
+const ROLE_SECTORS: Record<string, string[]> = {
+  'Response Management': ['response_mgmt'],
+  'Finance': ['finance'],
+  'Logistics / Supply Chain': ['supply_chain'],
+  'People & Culture (HR)': ['people_culture'],
+  'Safety & Security': ['safety_security'],
+  'Technical Programs': ['technical'],
+  'MEAL': ['meal'],
+  'Grants': ['grants'],
+  'Partnerships': ['partnerships'],
+};
+
+const ROLE_STORAGE_KEY = 'ern-user-role';
 
 export default function Home() {
   const { metadata, sectors, phases } = processData;
+  const [selectedRole, setSelectedRole] = useState<string | null>(() => localStorage.getItem(ROLE_STORAGE_KEY));
+
+  useEffect(() => {
+    if (selectedRole) localStorage.setItem(ROLE_STORAGE_KEY, selectedRole);
+    else localStorage.removeItem(ROLE_STORAGE_KEY);
+  }, [selectedRole]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -58,6 +79,61 @@ export default function Home() {
             AI-powered Q&A backed by {metadata.totalDownloadedDocs} indexed documents
           </p>
         </div>
+      </div>
+
+      {/* 3B: Role-Based Quick Start */}
+      <div className="card p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-bold text-black tracking-irc-tight flex items-center gap-2">
+            <User className="w-4 h-4 text-irc-gray-500" />
+            What's your role?
+          </h2>
+          {selectedRole && (
+            <button onClick={() => setSelectedRole(null)} className="text-xs text-irc-gray-500 hover:text-black">Clear</button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {Object.keys(ROLE_SECTORS).map(role => (
+            <button
+              key={role}
+              onClick={() => setSelectedRole(selectedRole === role ? null : role)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                selectedRole === role
+                  ? 'bg-black text-white'
+                  : 'border border-irc-gray-200 text-irc-gray-500 hover:border-irc-yellow hover:bg-yellow-50'
+              }`}
+            >
+              {role}
+            </button>
+          ))}
+        </div>
+        {selectedRole && ROLE_SECTORS[selectedRole] && (
+          <div className="mt-3 pt-3 border-t border-irc-gray-200">
+            <p className="text-xs text-irc-gray-500 mb-2">Quick access to your key tasks:</p>
+            <div className="flex flex-wrap gap-2">
+              {ROLE_SECTORS[selectedRole].map(sectorId => {
+                const sector = sectors.find(s => s.id === sectorId);
+                if (!sector) return null;
+                return (
+                  <Link
+                    key={sectorId}
+                    to={`/navigator/${sectorId}?phase=R1`}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-yellow-50 border border-irc-yellow text-sm font-medium text-black hover:bg-yellow-100 transition-colors"
+                  >
+                    <SectorIcon sectorId={sectorId} className="w-4 h-4" />
+                    {sector.name} — R1 Key Tasks
+                  </Link>
+                );
+              })}
+              <Link
+                to={`/navigator/${ROLE_SECTORS[selectedRole][0]}`}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-irc-gray-200 text-sm text-irc-gray-700 hover:bg-irc-gray-50 transition-colors"
+              >
+                View all phases
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Country Search + Classification Picker */}

@@ -212,7 +212,24 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { messages, site = 'navigator', model = 'google/gemini-2.5-flash' } = await req.json();
+    const body = await req.json();
+
+    // 1E: Handle feedback submissions
+    if (body.feedback) {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      await supabase.from('chat_feedback').insert({
+        message_id: body.feedback.messageId,
+        rating: body.feedback.rating,
+        query: body.feedback.query,
+        site: body.feedback.site || 'navigator',
+      });
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { ...corsHeaders(req), 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { messages, site = 'navigator', model = 'google/gemini-2.5-flash' } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: 'Missing "messages" array' }), {
@@ -223,13 +240,49 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // Find last user message for RAG context
+    // ── 1B: Conversation memory — build composite query from recent messages ──
     const lastUserMsg = [...messages].reverse().find((m: any) => m.role === 'user');
     let ragContext = '';
 
     if (lastUserMsg) {
       try {
-        const embedding = await getEmbedding(lastUserMsg.content);
+        // Use last 3 messages (user + assistant) as context for better RAG retrieval
+        const recentMessages = messages.slice(-6); // up to 3 exchanges
+        const compositeQuery = recentMessages
+          .filter((m: any) => m.role === 'user')
+          .map((m: any) => m.content)
+          .slice(-3)
+          .join(' ');
+        const queryForEmbedding = compositeQuery || lastUserMsg.content;
+
+        // ── 1F: Query expansion — expand with domain synonyms ──
+        let expandedQuery = queryForEmbedding;
+        try {
+          const expansionRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-2.5-flash',
+              max_tokens: 150,
+              messages: [{
+                role: 'user',
+                content: `Given this IRC emergency response query, output 2-3 related search terms that use IRC/humanitarian domain synonyms. Only output the terms, comma-separated, no explanation.\n\nQuery: "${lastUserMsg.content}"`,
+              }],
+            }),
+          });
+          if (expansionRes.ok) {
+            const expansionData = await expansionRes.json();
+            const expanded = expansionData.choices?.[0]?.message?.content?.trim();
+            if (expanded && expanded.length < 300) {
+              expandedQuery = `${queryForEmbedding} ${expanded}`;
+            }
+          }
+        } catch { /* continue without expansion */ }
+
+        const embedding = await getEmbedding(expandedQuery);
 
         // Search chunks
         const { data: chunks } = await supabase.rpc('search_chunks', {
@@ -266,9 +319,15 @@ Deno.serve(async (req) => {
     // Fetch live classification data
     const classificationContext = await fetchClassificationContext(supabase);
 
+    // ── 1G: Append source citation instruction to system prompt ──
+    const citationInstruction = `\n\n## Citation Guidelines
+- When referencing specific tasks, always use the task ID format (e.g., RMIE-001, FINANCE-015)
+- When you mention resources or templates from the context above, always include the full markdown link
+- At the end of your response, if you referenced specific documents or tasks, add a "**Sources:**" section listing them`;
+
     // Build system prompt
     const focusPriority = FOCUS_PRIORITIES[site] || FOCUS_PRIORITIES.navigator;
-    const systemPrompt = CORE_PROMPT + '\n\n' + focusPriority + ragContext + classificationContext;
+    const systemPrompt = CORE_PROMPT + '\n\n' + focusPriority + ragContext + classificationContext + citationInstruction;
 
     // Stream from OpenRouter
     const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {

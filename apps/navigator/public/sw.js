@@ -1,10 +1,10 @@
-const CACHE_NAME = 'ern-v3';
+const CACHE_NAME = 'ern-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
 ];
 
-// Install: cache shell
+// Install: cache SPA shell only
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
@@ -22,17 +22,20 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for API, cache-first for assets
+// Fetch: network-first for everything
+// Vite content-hashed filenames handle cache busting for JS/CSS.
+// Only fall back to cache for SPA navigation (index.html).
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
   // Skip non-GET, API calls, and external services
   if (request.method !== 'GET') return;
-  if (url.hostname === 'api.anthropic.com') return;
   if (url.hostname.includes('supabase.co')) return;
+  if (url.hostname === 'api.anthropic.com') return;
+  if (url.hostname === 'openrouter.ai') return;
 
-  // For navigation requests, serve index.html (SPA routing)
+  // SPA navigation: network-first, fall back to cached index.html
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() => caches.match('/index.html'))
@@ -40,17 +43,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For assets: stale-while-revalidate
+  // All other assets: network-first, no caching of stale assets
   event.respondWith(
-    caches.match(request).then((cached) => {
-      const fetching = fetch(request).then((response) => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-        }
-        return response;
-      });
-      return cached || fetching;
-    })
+    fetch(request).catch(() => caches.match(request))
   );
 });
