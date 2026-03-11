@@ -6,6 +6,8 @@
   <title>Dashboard — IRC Emergency Classification</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="albert-panel.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
   <div id="header-mount"></div>
@@ -71,6 +73,30 @@
             <div class="summary-card-label">Complex</div>
           </div>
         </section>
+      </section>
+
+      <!-- Classification Map -->
+      <section class="map-section">
+        <div class="map-section-header">
+          <h2 class="section-title">Classification Map</h2>
+          <div class="map-controls">
+            <button class="map-toggle-btn active" data-view="map" title="Map view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+              Map
+            </button>
+            <button class="map-toggle-btn" data-view="list" title="List view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              List
+            </button>
+          </div>
+        </div>
+        <div id="classification-map" style="height: 420px; border-radius: 8px; background: #f0f0f0;"></div>
+        <div class="map-legend" id="map-legend">
+          <span class="map-legend-item"><span class="map-legend-dot" style="background:#E52911;"></span> Red</span>
+          <span class="map-legend-item"><span class="map-legend-dot" style="background:#F58220;"></span> Orange</span>
+          <span class="map-legend-item"><span class="map-legend-dot" style="background:#FFC72C;"></span> Yellow</span>
+          <span class="map-legend-item"><span class="map-legend-dot" style="background:#E9E9E9;"></span> White / No data</span>
+        </div>
       </section>
 
       <!-- Recent Classifications -->
@@ -265,6 +291,107 @@
       padding: 2px 8px;
       border-radius: 10px;
       cursor: pointer;
+    }
+
+    /* ── Map Section ── */
+    .map-section {
+      margin-bottom: 24px;
+    }
+    .map-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .map-controls {
+      display: flex;
+      gap: 4px;
+      background: var(--neutral-100, #f0f0f0);
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .map-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--neutral-500, #666);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .map-toggle-btn.active {
+      background: #fff;
+      color: var(--neutral-900, #1a1a2e);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .map-toggle-btn:hover:not(.active) {
+      color: var(--neutral-700, #333);
+    }
+    .map-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--neutral-50, #f7f7f7);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--neutral-600, #555);
+    }
+    .map-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .map-legend-dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+    #classification-map {
+      z-index: 1;
+    }
+    .leaflet-popup-content {
+      margin: 10px 14px;
+      font-family: inherit;
+    }
+    .map-popup-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .map-popup-stance {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .map-popup-detail {
+      font-size: 0.82rem;
+      color: #555;
+      margin: 2px 0;
+    }
+    .map-popup-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: var(--orange-4, #e87722);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .map-popup-link:hover { text-decoration: underline; }
+    .map-popup-multi {
+      border-top: 1px solid #eee;
+      padding-top: 6px;
+      margin-top: 6px;
     }
   </style>
 
@@ -719,6 +846,213 @@
           this.blur();
         }
       });
+    })();
+
+    // ── 2D: Classification Map ──
+    (function() {
+      var map = null;
+      var geoLayer = null;
+      var geoData = null;
+
+      // Map from geojson country names to classification country names
+      var GEO_TO_CLASS = {
+        'Republic of the Congo': 'Congo',
+        'United Republic of Tanzania': 'Tanzania',
+        'eSwatini': 'Eswatini',
+        'Côte d\'Ivoire': 'Ivory Coast',
+        'Republic of Serbia': 'Serbia',
+        'The Bahamas': 'Bahamas',
+        'Somaliland': 'Somalia',
+        'Republic of Korea': 'South Korea',
+        'Dem. Rep. Korea': 'North Korea',
+        'Timor-Leste': 'East Timor',
+        'Lao PDR': 'Laos'
+      };
+
+      // Reverse: classification names → geojson names
+      var CLASS_TO_GEO = {};
+      Object.keys(GEO_TO_CLASS).forEach(function(k) { CLASS_TO_GEO[GEO_TO_CLASS[k]] = k; });
+
+      function getCountryClassifications() {
+        var latest = getLatestPerClassification(classifications);
+        var byCountry = {};
+        latest.forEach(function(c) {
+          if (!c.country) return;
+          var name = IRC.normalizeCountry(c.country);
+          if (!byCountry[name]) byCountry[name] = [];
+          byCountry[name].push(c);
+        });
+        return byCountry;
+      }
+
+      function getHighestStance(items) {
+        var order = { red: 3, orange: 2, yellow: 1, white: 0 };
+        var highest = 'white';
+        items.forEach(function(c) {
+          var s = (c.stance || 'white').toLowerCase();
+          if ((order[s] || 0) > (order[highest] || 0)) highest = s;
+        });
+        return highest;
+      }
+
+      function stanceColor(stance) {
+        return IRC.STANCE_COLORS[stance] || '#E9E9E9';
+      }
+
+      function matchGeoToClassification(geoName, byCountry) {
+        // Direct match
+        if (byCountry[geoName]) return byCountry[geoName];
+        // Try alias mapping
+        var aliasName = GEO_TO_CLASS[geoName];
+        if (aliasName && byCountry[aliasName]) return byCountry[aliasName];
+        // Try case-insensitive partial match
+        var lowerGeo = geoName.toLowerCase();
+        var keys = Object.keys(byCountry);
+        for (var i = 0; i < keys.length; i++) {
+          if (keys[i].toLowerCase() === lowerGeo) return byCountry[keys[i]];
+        }
+        return null;
+      }
+
+      function buildPopup(countryName, items) {
+        var html = '<div class="map-popup-title">' + countryName + '</div>';
+        items.forEach(function(c, idx) {
+          if (idx > 0) html += '<div class="map-popup-multi"></div>';
+          var stance = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : 'White';
+          var color = stanceColor(c.stance);
+          var isRed = c.stance === 'red';
+          var sev = (c.severity !== null && c.severity !== undefined) ? ' ' + c.severity : '';
+          html += '<span class="map-popup-stance" style="background:' + color + ';color:' + (isRed ? '#fff' : '#000') + ';">' + stance + sev + '</span>';
+          if (c.emergencyName) html += '<div class="map-popup-detail">' + c.emergencyName + '</div>';
+          if (c.type) html += '<div class="map-popup-detail">Type: ' + (IRC.TYPE_LABELS[c.type] || c.type) + '</div>';
+          if (c.date) html += '<div class="map-popup-detail">Date: ' + IRC.formatDate(c.date) + '</div>';
+          var daysLeft = IRC.daysUntilExpiration(c.expirationDate);
+          if (daysLeft !== null) {
+            if (daysLeft < 0) html += '<div class="map-popup-detail" style="color:#E52911;">Expired</div>';
+            else if (daysLeft <= 7) html += '<div class="map-popup-detail" style="color:#F58220;">' + daysLeft + ' days until expiry</div>';
+          }
+          html += '<a class="map-popup-link" href="classify.html?view=' + encodeURIComponent(c.id) + '">View details &rarr;</a>';
+        });
+        return html;
+      }
+
+      function initMap() {
+        if (map) return;
+        map = L.map('classification-map', {
+          center: [15, 20],
+          zoom: 2,
+          minZoom: 2,
+          maxZoom: 7,
+          worldCopyJump: true,
+          zoomControl: true,
+          attributionControl: false
+        });
+
+        // Light grey basemap tiles
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd',
+          maxZoom: 19
+        }).addTo(map);
+
+        // Add labels on top (separate layer so country fills are visible)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd',
+          maxZoom: 19,
+          pane: 'overlayPane'
+        }).addTo(map);
+
+        loadGeoData();
+      }
+
+      function loadGeoData() {
+        fetch('countries-simplified.json')
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            geoData = data;
+            renderMapLayer();
+          })
+          .catch(function(err) {
+            console.warn('Failed to load map data:', err);
+            document.getElementById('classification-map').innerHTML =
+              '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:0.9rem;">Map data unavailable</div>';
+          });
+      }
+
+      function renderMapLayer() {
+        if (!map || !geoData) return;
+        if (geoLayer) map.removeLayer(geoLayer);
+
+        var byCountry = getCountryClassifications();
+
+        geoLayer = L.geoJSON(geoData, {
+          style: function(feature) {
+            var name = feature.properties.name;
+            var items = matchGeoToClassification(name, byCountry);
+            var stance = items ? getHighestStance(items) : null;
+            var fillColor = stance ? stanceColor(stance) : '#f0f0f0';
+            var fillOpacity = stance ? 0.7 : 0.15;
+            return {
+              fillColor: fillColor,
+              fillOpacity: fillOpacity,
+              color: '#999',
+              weight: 0.5,
+              opacity: 0.6
+            };
+          },
+          onEachFeature: function(feature, layer) {
+            var name = feature.properties.name;
+            var items = matchGeoToClassification(name, byCountry);
+            if (items) {
+              var displayName = items[0].country || name;
+              layer.bindPopup(buildPopup(displayName, items), { maxWidth: 280, className: 'map-classification-popup' });
+              layer.on('mouseover', function(e) {
+                this.setStyle({ weight: 2, color: '#333', fillOpacity: 0.85 });
+                this.bringToFront();
+              });
+              layer.on('mouseout', function(e) {
+                geoLayer.resetStyle(this);
+              });
+              layer.on('click', function(e) {
+                // Also filter the list below to this country
+                countryFilter = displayName;
+                document.getElementById('country-search-input').value = displayName;
+                renderRecent();
+              });
+            }
+          }
+        }).addTo(map);
+      }
+
+      // Re-render map when classifications refresh
+      var origUpdateSummary = updateSummaryCards;
+      updateSummaryCards = function() {
+        origUpdateSummary();
+        if (map && geoData) renderMapLayer();
+      };
+
+      // Map/List toggle
+      document.querySelectorAll('.map-toggle-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.map-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+          var view = this.getAttribute('data-view');
+          var mapEl = document.getElementById('classification-map');
+          var legendEl = document.getElementById('map-legend');
+          var recentEl = document.querySelector('.recent-section');
+
+          if (view === 'map') {
+            mapEl.style.display = 'block';
+            legendEl.style.display = 'flex';
+            if (map) map.invalidateSize();
+          } else {
+            mapEl.style.display = 'none';
+            legendEl.style.display = 'none';
+          }
+        });
+      });
+
+      // Initialize map on load
+      initMap();
     })();
 
   </script>
