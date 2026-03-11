@@ -878,6 +878,8 @@
         var byCountry = {};
         latest.forEach(function(c) {
           if (!c.country) return;
+          // Only show active (non-expired) classifications on the map
+          if (IRC.isExpired(c.expirationDate)) return;
           var name = IRC.normalizeCountry(c.country);
           if (!byCountry[name]) byCountry[name] = [];
           byCountry[name].push(c);
