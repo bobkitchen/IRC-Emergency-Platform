@@ -4,16 +4,10 @@
   <meta charset="utf-8">
   <title>Emergency Response Navigator</title>
   <script>
-    // GitHub Pages SPA routing: redirect all paths to index.html with path preserved in query
-    var pathSegmentsToKeep = 1;
-    var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+    // GitHub Pages SPA routing: store the full path in sessionStorage
+    // then redirect to index.html, which will restore it via history.replaceState
+    sessionStorage.setItem('redirect', location.pathname + location.search + location.hash);
+    location.replace('/emergency-response-navigator/');
   </script>
 </head>
 <body>
