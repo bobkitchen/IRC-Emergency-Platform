@@ -155,22 +155,13 @@
       background: #f0f0f0;
     }
 
-    /* ── Below-map panels (3 stacked rows) ── */
+    /* ── Below-map panels (2 stacked rows) ── */
 
-    /* Row 1: Legend */
-    .maps-legend-bar {
-      padding: 10px 20px;
-      background: #fff;
-      border-top: 1px solid #e5e5e5;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
+    /* Legend (inside sidebar) */
     .maps-legend {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
       flex-wrap: wrap;
     }
     .legend-item {
@@ -496,6 +487,10 @@
           </div>
           <span id="ai-filter-chip-wrap"></span>
           <div class="sidebar-summary" id="filter-summary">0 shown</div>
+          <div class="filter-group">
+            <span class="filter-label">Legend</span>
+            <div class="maps-legend" id="maps-legend"></div>
+          </div>
         </div>
 
         <!-- Map fills remaining width -->
@@ -504,12 +499,7 @@
         </div>
       </div>
 
-      <!-- Row 1: Legend -->
-      <div class="maps-legend-bar">
-        <div class="maps-legend" id="maps-legend"></div>
-      </div>
-
-      <!-- Row 2: Ask Albert Map Builder -->
+      <!-- Row 1: Ask Albert Map Builder -->
       <div class="maps-ai-bar">
         <span class="ai-bar-label"><span class="ai-sparkle">&#10024;</span> Ask Albert</span>
         <input class="ai-bar-input" type="text" id="ai-builder-input" placeholder="Ask Albert to build a map, e.g. &quot;red conflicts in East Africa last 12 months&quot;">
