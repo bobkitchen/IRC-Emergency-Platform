@@ -938,6 +938,12 @@
       btn.disabled = true;
       btn.textContent = 'Exporting...';
 
+      // Use requestAnimationFrame so the button text updates before heavy work
+      requestAnimationFrame(function() { setTimeout(doExport, 50); });
+
+      function doExport() {
+      try {
+
       var branded = document.getElementById('branding-toggle').checked;
       var title = document.getElementById('map-title').textContent;
       var filtered = getFilteredClassifications();
@@ -1212,15 +1218,34 @@
         }
       }
 
-      // ── Download ──
+      // ── Download (async toBlob — much faster than toDataURL for large canvases) ──
       function downloadCanvas() {
-        var link = document.createElement('a');
-        link.download = 'irc-classification-map-' + today + '.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        canvas.toBlob(function(blob) {
+          if (!blob) {
+            alert('Export failed — could not generate image.');
+            btn.disabled = false;
+            btn.textContent = 'Export PNG';
+            return;
+          }
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement('a');
+          link.download = 'irc-classification-map-' + today + '.png';
+          link.href = url;
+          link.click();
+          // Clean up after a short delay
+          setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+          btn.disabled = false;
+          btn.textContent = 'Export PNG';
+        }, 'image/png');
+      }
+
+      } catch(err) {
+        console.error('Export error:', err);
+        alert('Export failed: ' + err.message);
         btn.disabled = false;
         btn.textContent = 'Export PNG';
       }
+      } // end doExport
     });
 
     // ── Init ──
