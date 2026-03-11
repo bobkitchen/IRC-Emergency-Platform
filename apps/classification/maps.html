@@ -236,6 +236,85 @@
       background: #ccc;
       cursor: not-allowed;
     }
+    .export-format-row {
+      display: flex;
+      gap: 8px;
+    }
+    .export-format-row .export-btn {
+      flex: 1;
+      font-size: 0.8rem;
+      padding: 9px 12px;
+    }
+
+    /* AI Map Builder */
+    .ai-builder {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 1px solid #eee;
+      padding-top: 16px;
+    }
+    .ai-builder-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-builder-label .ai-sparkle {
+      font-size: 0.85rem;
+    }
+    .ai-builder-input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 56px;
+      max-height: 120px;
+      color: #333;
+      box-sizing: border-box;
+    }
+    .ai-builder-input:focus {
+      outline: none;
+      border-color: #FFC72C;
+      box-shadow: 0 0 0 2px rgba(255,199,44,0.15);
+    }
+    .ai-builder-input::placeholder {
+      color: #aaa;
+    }
+    .ai-builder-go {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #FFC72C;
+      background: #FFFDF5;
+      color: #1a1a1a;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .ai-builder-go:hover {
+      background: #FFC72C;
+    }
+    .ai-builder-go:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .ai-builder-status {
+      font-size: 0.75rem;
+      color: #888;
+      min-height: 1em;
+    }
+    .ai-builder-status.error {
+      color: #E52911;
+    }
 
     /* Map tooltip styles (same as dashboard) */
     .map-country-tooltip {
@@ -411,7 +490,18 @@
           <label class="export-checkbox">
             <input type="checkbox" id="branding-toggle" checked> IRC branding
           </label>
-          <button class="export-btn" id="export-btn">Export PNG</button>
+          <div class="export-format-row">
+            <button class="export-btn" id="export-btn">Export PNG</button>
+            <button class="export-btn" id="export-svg-btn" style="background:#fff;color:#1a1a1a;border:1px solid #1a1a1a;">Export SVG</button>
+          </div>
+        </div>
+
+        <!-- AI Map Builder -->
+        <div class="ai-builder">
+          <div class="ai-builder-label"><span class="ai-sparkle">&#10024;</span> Describe Your Map</div>
+          <textarea class="ai-builder-input" id="ai-builder-input" placeholder="e.g. Show me all red conflict classifications in East Africa from the last 12 months"></textarea>
+          <button class="ai-builder-go" id="ai-builder-go">Build Map</button>
+          <div class="ai-builder-status" id="ai-builder-status"></div>
         </div>
       </div>
 
@@ -1254,6 +1344,370 @@
       }
       } // end doExport
     });
+
+    // ── SVG Export ──
+    document.getElementById('export-svg-btn').addEventListener('click', function() {
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Exporting...';
+      requestAnimationFrame(function() { setTimeout(doSvgExport, 50); });
+
+      function doSvgExport() {
+      try {
+        var branded = document.getElementById('branding-toggle').checked;
+        var title = document.getElementById('map-title').textContent;
+        var filtered = getFilteredClassifications();
+        var byCountry = getCountryMap(filtered);
+        var today = new Date().toISOString().split('T')[0];
+
+        var W = 1600;
+        var padding = 40;
+        var headerH = branded ? 90 : 0;
+        var legendH = 50;
+        var footerH = branded ? 40 : 0;
+
+        var bounds = map.getBounds();
+        var lngMin = bounds.getWest();
+        var lngMax = bounds.getEast();
+        var latMin = Math.max(bounds.getSouth(), -85);
+        var latMax = Math.min(bounds.getNorth(), 85);
+
+        var mapEl = document.getElementById('maps-container');
+        var mapH = Math.round(W * (mapEl.offsetHeight / mapEl.offsetWidth));
+        var totalH = headerH + mapH + legendH + footerH;
+        var mapX = 0, mapY = headerH, mapW = W;
+
+        // SVG projection helpers (same math, output d-string coords)
+        function pLng(lng) { return mapX + (lng - lngMin) / (lngMax - lngMin) * mapW; }
+        function pLat(lat) {
+          var yMin = latToMercY(latMin), yMax = latToMercY(latMax);
+          return mapY + mapH - (latToMercY(lat) - yMin) / (yMax - yMin) * mapH;
+        }
+
+        function ringToPath(ring) {
+          var d = '';
+          ring.forEach(function(coord, i) {
+            d += (i === 0 ? 'M' : 'L') + pLng(coord[0]).toFixed(2) + ',' + pLat(coord[1]).toFixed(2);
+          });
+          return d + 'Z';
+        }
+
+        function featureToPath(feature) {
+          var geom = feature.geometry;
+          if (!geom) return '';
+          var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
+          var d = '';
+          polys.forEach(function(poly) {
+            poly.forEach(function(ring) { d += ringToPath(ring); });
+          });
+          return d;
+        }
+
+        var svgParts = [];
+        svgParts.push('<?xml version="1.0" encoding="UTF-8"?>');
+        svgParts.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + totalH + '" width="' + W + '" height="' + totalH + '" font-family="-apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif">');
+
+        // White background
+        svgParts.push('<rect width="' + W + '" height="' + totalH + '" fill="#fff"/>');
+
+        // Map area background
+        svgParts.push('<rect x="' + mapX + '" y="' + mapY + '" width="' + mapW + '" height="' + mapH + '" fill="#f0f0f0"/>');
+
+        // Clip to map area
+        svgParts.push('<defs><clipPath id="map-clip"><rect x="' + mapX + '" y="' + mapY + '" width="' + mapW + '" height="' + mapH + '"/></clipPath></defs>');
+        svgParts.push('<g clip-path="url(#map-clip)">');
+
+        // Pass 1: Unmatched countries
+        if (geoData && geoData.features) {
+          geoData.features.forEach(function(feature) {
+            var name = feature.properties.name;
+            var items = matchGeoToClassification(name, byCountry);
+            if (items) return;
+            var d = featureToPath(feature);
+            if (d) svgParts.push('<path d="' + d + '" fill="#e8e8e8" fill-opacity="0.8" stroke="#d0d0d0" stroke-width="0.5"/>');
+          });
+        }
+
+        // Pass 2: Matched countries
+        if (geoData && geoData.features) {
+          geoData.features.forEach(function(feature) {
+            var name = feature.properties.name;
+            var items = matchGeoToClassification(name, byCountry);
+            if (!items) return;
+            var fillColor;
+            if (displayMode === 'severity') {
+              var totalSev = 0, sevCount = 0;
+              items.forEach(function(c) {
+                if (c.severity !== null && c.severity !== undefined) { totalSev += Number(c.severity); sevCount++; }
+              });
+              fillColor = getSeverityColor(sevCount > 0 ? totalSev / sevCount : 0);
+            } else {
+              fillColor = stanceColor(getHighestStance(items));
+            }
+            var d = featureToPath(feature);
+            if (d) svgParts.push('<path d="' + d + '" fill="' + fillColor + '" stroke="#777" stroke-width="0.5"/>');
+          });
+        }
+
+        // Pass 3: Borders
+        if (geoData && geoData.features) {
+          geoData.features.forEach(function(feature) {
+            var d = featureToPath(feature);
+            if (d) svgParts.push('<path d="' + d + '" fill="none" stroke="#bbb" stroke-width="0.5" opacity="0.5"/>');
+          });
+        }
+
+        // Country labels
+        if (geoData && geoData.features) {
+          geoData.features.forEach(function(feature) {
+            var name = feature.properties.name;
+            var items = matchGeoToClassification(name, byCountry);
+            if (!items) return;
+            var centroid = getFeatureCentroid(feature);
+            var cx = pLng(centroid[0]);
+            var cy = pLat(centroid[1]);
+            if (cx > padding && cx < W - padding && cy > mapY + 15 && cy < mapY + mapH - 15) {
+              var label = (items[0].country || name).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+              svgParts.push('<text x="' + cx.toFixed(1) + '" y="' + cy.toFixed(1) + '" text-anchor="middle" font-size="14" font-weight="bold" fill="#222" stroke="#fff" stroke-width="3" paint-order="stroke">' + label + '</text>');
+            }
+          });
+        }
+
+        // Close map clip group
+        svgParts.push('</g>');
+
+        // Branded header
+        if (branded) {
+          svgParts.push('<rect x="0" y="0" width="' + W + '" height="' + headerH + '" fill="#fff"/>');
+          // IRC logo
+          var lx = padding, ly = 18, ls = 48;
+          svgParts.push('<rect x="' + lx + '" y="' + ly + '" width="' + ls + '" height="' + ls + '" fill="#FDC62F"/>');
+          var s = ls / 217;
+          svgParts.push('<rect x="' + (lx + 26.6*s) + '" y="' + (ly + 26.6*s) + '" width="' + (163.81*s) + '" height="' + (63.15*s) + '" fill="#00040C"/>');
+          svgParts.push('<path d="M' + (lx + 134.59*s) + ',' + (ly + 89.75*s) + ' L' + (lx + 190.41*s) + ',' + (ly + 145.57*s) + ' L' + (lx + 190.41*s) + ',' + (ly + 190.39*s) + ' L' + (lx + 144.97*s) + ',' + (ly + 190.39*s) + ' L' + (lx + 89.75*s) + ',' + (ly + 135.18*s) + ' L' + (lx + 89.75*s) + ',' + (ly + 190.39*s) + ' L' + (lx + 26.6*s) + ',' + (ly + 190.39*s) + ' L' + (lx + 26.6*s) + ',' + (ly + 89.75*s) + 'Z" fill="#00040C"/>');
+          // Title
+          svgParts.push('<text x="' + (padding + 65) + '" y="' + 51 + '" font-size="24" font-weight="bold" fill="#1a1a1a">' + title.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</text>');
+          svgParts.push('<line x1="' + padding + '" y1="' + 79 + '" x2="' + (W - padding) + '" y2="' + 79 + '" stroke="#e5e5e5" stroke-width="1"/>');
+        }
+
+        // Legend
+        var ly2 = headerH + mapH + 30;
+        if (displayMode === 'severity') {
+          svgParts.push('<text x="' + padding + '" y="' + ly2 + '" font-size="14" font-weight="500" fill="#555">Severity</text>');
+          var gx = padding + 80, gw = 200, gh = 14;
+          svgParts.push('<defs><linearGradient id="sev-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFF4CC"/><stop offset="30%" stop-color="#FFC72C"/><stop offset="60%" stop-color="#F58220"/><stop offset="100%" stop-color="#E52911"/></linearGradient></defs>');
+          svgParts.push('<rect x="' + gx + '" y="' + (ly2 - 12) + '" width="' + gw + '" height="' + gh + '" rx="2" fill="url(#sev-grad)" stroke="#ddd" stroke-width="0.5"/>');
+          svgParts.push('<text x="' + gx + '" y="' + (ly2 + 16) + '" font-size="11" fill="#888">0</text>');
+          svgParts.push('<text x="' + (gx + gw * 0.3) + '" y="' + (ly2 + 16) + '" font-size="11" fill="#888">3</text>');
+          svgParts.push('<text x="' + (gx + gw * 0.6) + '" y="' + (ly2 + 16) + '" font-size="11" fill="#888">6</text>');
+          svgParts.push('<text x="' + (gx + gw - 5) + '" y="' + (ly2 + 16) + '" font-size="11" fill="#888">10</text>');
+        } else {
+          var stances = [
+            { label: 'Red', color: '#E52911' },
+            { label: 'Orange', color: '#F58220' },
+            { label: 'Yellow', color: '#FFC72C' },
+            { label: 'White', color: '#E9E9E9' }
+          ];
+          var lxPos = padding;
+          stances.forEach(function(st) {
+            svgParts.push('<circle cx="' + (lxPos + 7) + '" cy="' + (ly2 - 3) + '" r="7" fill="' + st.color + '" stroke="rgba(0,0,0,0.15)" stroke-width="0.75"/>');
+            svgParts.push('<text x="' + (lxPos + 20) + '" y="' + ly2 + '" font-size="14" fill="#444">' + st.label + '</text>');
+            lxPos += st.label.length * 9 + 50;
+          });
+        }
+
+        // Branded footer
+        if (branded) {
+          var fy = totalH - 14;
+          svgParts.push('<line x1="' + padding + '" y1="' + (fy - 14) + '" x2="' + (W - padding) + '" y2="' + (fy - 14) + '" stroke="#e5e5e5" stroke-width="0.5"/>');
+          svgParts.push('<text x="' + padding + '" y="' + fy + '" font-size="12" fill="#999">Generated ' + today + '  |  IRC Emergency Classification System  |  ' + filtered.length + ' classifications shown</text>');
+        }
+
+        svgParts.push('</svg>');
+
+        var svgStr = svgParts.join('\n');
+        var blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.download = 'irc-classification-map-' + today + '.svg';
+        link.href = url;
+        link.click();
+        setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+
+        btn.disabled = false;
+        btn.textContent = 'Export SVG';
+
+      } catch(err) {
+        console.error('SVG export error:', err);
+        alert('SVG export failed: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Export SVG';
+      }
+      } // end doSvgExport
+
+      // Centroid helper (reuse from PNG export scope)
+      function getFeatureCentroid(feature) {
+        var geom = feature.geometry;
+        if (!geom) return [0, 0];
+        var coords = geom.type === 'MultiPolygon' ? geom.coordinates[0][0] : geom.coordinates[0];
+        var sumLng = 0, sumLat = 0;
+        coords.forEach(function(c) { sumLng += c[0]; sumLat += c[1]; });
+        return [sumLng / coords.length, sumLat / coords.length];
+      }
+    });
+
+    // ── AI Map Builder ──
+    var AI_SUPABASE_URL = 'https://qykjjfbdvwqxqmsgiebs.supabase.co/functions/v1';
+
+    document.getElementById('ai-builder-go').addEventListener('click', function() {
+      var input = document.getElementById('ai-builder-input');
+      var status = document.getElementById('ai-builder-status');
+      var btn = this;
+      var text = input.value.trim();
+      if (!text) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Thinking...';
+      status.textContent = 'Interpreting your request...';
+      status.className = 'ai-builder-status';
+
+      // Build system prompt that constrains output to filter JSON
+      var systemPrompt = 'You are a map configuration assistant for the IRC Emergency Classification system. ' +
+        'The user will describe a map they want to see. You must return ONLY a JSON object (no markdown, no explanation) with these fields:\n' +
+        '- timePeriod: "all" | "fy" | "12m"\n' +
+        '- selectedTypes: array of zero or more of ["conflict","outbreak","food","hazard","complex"] (empty = all types)\n' +
+        '- selectedStances: array of zero or more of ["red","orange","yellow","white"] (empty = all stances)\n' +
+        '- regionFilter: "all" | "asia" | "east africa" | "latam" | "mena" | "rai" | "west and central africa"\n' +
+        '- displayMode: "stance" | "severity"\n' +
+        '- statusFilter: "active" | "all"\n' +
+        '- title: a short descriptive title for this map (optional)\n\n' +
+        'Current fiscal year: ' + fyLabel + ' (Oct ' + (currentFY - 1) + ' – Sep ' + currentFY + ').\n' +
+        'Examples:\n' +
+        '"Show red conflicts" → {"timePeriod":"all","selectedTypes":["conflict"],"selectedStances":["red"],"regionFilter":"all","displayMode":"stance","statusFilter":"active","title":"Active Red Conflict Classifications"}\n' +
+        '"Severity heatmap of East Africa in the last 12 months" → {"timePeriod":"12m","selectedTypes":[],"selectedStances":[],"regionFilter":"east africa","displayMode":"severity","statusFilter":"active","title":"East Africa Severity Heatmap — Last 12 Months"}\n' +
+        'Return ONLY the JSON object.';
+
+      fetch(AI_SUPABASE_URL + '/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: text }
+          ],
+          site: 'classification',
+          stream: false
+        })
+      }).then(function(res) {
+        if (!res.ok) throw new Error('Service error (' + res.status + ')');
+        // Handle both streaming SSE and plain JSON responses
+        var contentType = res.headers.get('content-type') || '';
+        if (contentType.indexOf('text/event-stream') !== -1) {
+          return res.text().then(function(raw) {
+            // Parse SSE: extract content deltas
+            var full = '';
+            raw.split('\n').forEach(function(line) {
+              line = line.trim();
+              if (!line.startsWith('data: ')) return;
+              var data = line.substring(6);
+              if (data === '[DONE]') return;
+              try {
+                var parsed = JSON.parse(data);
+                var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
+                if (delta && delta.content) full += delta.content;
+              } catch(_) {}
+            });
+            return full;
+          });
+        }
+        return res.json().then(function(data) {
+          if (data.choices && data.choices[0]) return data.choices[0].message.content;
+          return JSON.stringify(data);
+        });
+      }).then(function(content) {
+        // Extract JSON from response (handle markdown code fences)
+        var jsonStr = content.trim();
+        var fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (fenceMatch) jsonStr = fenceMatch[1].trim();
+
+        var config = JSON.parse(jsonStr);
+        applyAIConfig(config);
+        status.textContent = 'Map updated!';
+        status.className = 'ai-builder-status';
+        btn.disabled = false;
+        btn.textContent = 'Build Map';
+      }).catch(function(err) {
+        console.error('AI builder error:', err);
+        status.textContent = 'Could not interpret that. Try rephrasing.';
+        status.className = 'ai-builder-status error';
+        btn.disabled = false;
+        btn.textContent = 'Build Map';
+      });
+    });
+
+    // Allow Enter to submit (Shift+Enter for newline)
+    document.getElementById('ai-builder-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('ai-builder-go').click();
+      }
+    });
+
+    function applyAIConfig(config) {
+      // Time period
+      if (config.timePeriod) {
+        timePeriod = config.timePeriod;
+        document.querySelectorAll('#time-pills .filter-pill').forEach(function(p) {
+          p.classList.toggle('active', p.getAttribute('data-period') === timePeriod);
+        });
+      }
+
+      // Types
+      if (Array.isArray(config.selectedTypes)) {
+        selectedTypes = config.selectedTypes;
+        document.querySelectorAll('#type-toggles .toggle-btn').forEach(function(b) {
+          b.classList.toggle('active', selectedTypes.indexOf(b.getAttribute('data-type')) !== -1);
+        });
+      }
+
+      // Stances
+      if (Array.isArray(config.selectedStances)) {
+        selectedStances = config.selectedStances;
+        document.querySelectorAll('#stance-toggles .toggle-btn').forEach(function(b) {
+          b.classList.toggle('active', selectedStances.indexOf(b.getAttribute('data-stance')) !== -1);
+        });
+      }
+
+      // Region
+      if (config.regionFilter) {
+        regionFilter = config.regionFilter;
+        document.getElementById('region-select').value = regionFilter;
+      }
+
+      // Display mode
+      if (config.displayMode) {
+        displayMode = config.displayMode;
+        document.querySelectorAll('input[name="display-mode"]').forEach(function(r) {
+          r.checked = r.value === displayMode;
+        });
+      }
+
+      // Status
+      if (config.statusFilter) {
+        statusFilter = config.statusFilter;
+        document.querySelectorAll('#status-pills .filter-pill').forEach(function(p) {
+          p.classList.toggle('active', p.getAttribute('data-status') === statusFilter);
+        });
+      }
+
+      // Title
+      if (config.title) {
+        document.getElementById('map-title').textContent = config.title;
+        titleEdited = true; // Prevent auto-overwrite
+      }
+
+      applyFilters();
+    }
 
     // ── Init ──
     initMap();
