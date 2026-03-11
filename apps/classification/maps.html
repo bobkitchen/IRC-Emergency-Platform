@@ -589,10 +589,21 @@
     Object.keys(GEO_TO_CLASS).forEach(function(k) { CLASS_TO_GEO[GEO_TO_CLASS[k]] = k; });
 
     // Display name overrides (data stays unchanged, only affects labels/tooltips/exports)
-    var DISPLAY_NAMES = {
-      'State of Palestine': 'Occupied Palestinian Territory'
-    };
-    function displayName(name) { return DISPLAY_NAMES[name] || name; }
+    var DISPLAY_NAMES = {};
+    (function() {
+      var raw = {
+        'State of Palestine': 'Occupied Palestinian Territory',
+        'Palestine': 'Occupied Palestinian Territory'
+      };
+      Object.keys(raw).forEach(function(k) {
+        DISPLAY_NAMES[k] = raw[k];
+        DISPLAY_NAMES[k.toLowerCase()] = raw[k];
+      });
+    })();
+    function displayName(name) {
+      if (!name) return name;
+      return DISPLAY_NAMES[name] || DISPLAY_NAMES[name.toLowerCase()] || name;
+    }
 
     // ── Type icons (same as dashboard) ──
     var typeIcons = {
