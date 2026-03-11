@@ -2081,6 +2081,35 @@
         calculate();
       }
 
+      // Pick the highest-stance active classification (red > orange > yellow > white)
+      var STANCE_RANK = { white: 0, yellow: 1, orange: 2, red: 3 };
+      function highestStakes(classifications) {
+        if (!classifications || classifications.length === 0) return null;
+        // Deduplicate: keep latest reclassificationNumber per classificationId
+        var latest = {};
+        classifications.forEach(function(c) {
+          var key = c.classificationId || c.id;
+          var num = c.reclassificationNumber || 1;
+          if (!latest[key] || num > (latest[key].reclassificationNumber || 1)) {
+            latest[key] = c;
+          }
+        });
+        var deduped = Object.keys(latest).map(function(k) { return latest[k]; });
+        // Filter out expired and white
+        var active = deduped.filter(function(c) {
+          if (c.expirationDate && new Date(c.expirationDate) < new Date()) return false;
+          var s = (c.stance || '').toLowerCase();
+          if (s === 'white') return false;
+          return true;
+        });
+        if (active.length === 0) return null;
+        return active.reduce(function(best, c) {
+          var bestRank = STANCE_RANK[(best.stance || '').toLowerCase()] || 0;
+          var cRank = STANCE_RANK[(c.stance || '').toLowerCase()] || 0;
+          return cRank > bestRank ? c : best;
+        });
+      }
+
       function updateClassificationDropdown() {
         selectedClassification = null;
         classificationSearchInput.value = '';
@@ -2100,7 +2129,6 @@
         }
 
         classificationLoading.style.display = 'none';
-        classificationCombobox.style.display = 'block';
 
         if (classificationsFetchFailed) {
           classificationSection.style.display = 'block';
@@ -2116,7 +2144,15 @@
           return;
         }
 
-        classificationSection.style.display = 'block';
+        // Auto-select highest stance classification
+        var best = highestStakes(open);
+        if (best) {
+          classificationSection.style.display = 'block';
+          classificationCombobox.style.display = 'none';
+          selectClassification(best);
+        } else {
+          classificationSection.style.display = 'none';
+        }
       }
 
       // ── Classification combobox handlers ──
