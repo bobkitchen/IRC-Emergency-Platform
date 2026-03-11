@@ -948,7 +948,14 @@ function build() {
     });
   }
 
-  // Write output files
+  // Write output files — but only if we actually parsed sector data.
+  // When CSV source files are absent (e.g. in CI), preserve the existing
+  // committed process-data.json rather than overwriting with empty data.
+  if (totalTasks === 0) {
+    console.log('\n⚠️  No tasks parsed (CSV sources not found). Preserving existing data files.');
+    return;
+  }
+
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
   fs.writeFileSync(
