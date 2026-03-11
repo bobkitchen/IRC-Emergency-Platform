@@ -830,9 +830,8 @@ textarea:focus { outline: none; border-color: var(--irc-yellow); background: var
   flex-wrap: wrap;
 }
 
-.toolbar-sort {
-  flex: 0 0 auto;
-  align-self: center;
+.toolbar-right {
+  margin-left: auto;
 }
 
 .toolbar-sort .toolbar-select {
@@ -841,7 +840,6 @@ textarea:focus { outline: none; border-color: var(--irc-yellow); background: var
 
 .toolbar-country-search {
   flex: 0 1 220px;
-  align-self: center;
 }
 
 .country-search-wrapper {

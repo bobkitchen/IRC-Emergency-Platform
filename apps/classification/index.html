@@ -117,14 +117,35 @@
               </div>
             </div>
 
+            <div class="toolbar-group toolbar-country-search toolbar-right">
+              <div class="toolbar-label">Country:</div>
+              <div class="country-search-wrapper">
+                <input type="text" id="country-search-input" class="country-search-input" placeholder="Search country..." autocomplete="off">
+                <div id="country-search-dropdown" class="country-search-dropdown" style="display:none;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="toolbar-row">
             <div class="toolbar-group">
               <div class="toolbar-label">Status:</div>
               <div class="status-pills">
-                <button class="status-pill active" data-status="active">Active</button>
                 <button class="status-pill" data-status="all">All</button>
+                <button class="status-pill active" data-status="active">Active</button>
                 <button class="status-pill" data-status="expired">Expired</button>
                 <button class="status-pill" data-status="expiring">Expiring Soon</button>
               </div>
+            </div>
+
+            <div class="toolbar-group toolbar-sort toolbar-right">
+              <div class="toolbar-label">Sort:</div>
+              <select id="sort-select" class="toolbar-select">
+                <option value="date-desc">Date (Newest)</option>
+                <option value="date-asc">Date (Oldest)</option>
+                <option value="severity-desc">Severity (Highest)</option>
+                <option value="severity-asc">Severity (Lowest)</option>
+                <option value="country-asc">Country (A-Z)</option>
+              </select>
             </div>
           </div>
 
@@ -140,24 +161,6 @@
               </div>
             </div>
 
-            <div class="toolbar-group toolbar-country-search">
-              <div class="toolbar-label">Country:</div>
-              <div class="country-search-wrapper">
-                <input type="text" id="country-search-input" class="country-search-input" placeholder="Search country..." autocomplete="off">
-                <div id="country-search-dropdown" class="country-search-dropdown" style="display:none;"></div>
-              </div>
-            </div>
-
-            <div class="toolbar-group toolbar-sort">
-              <div class="toolbar-label">Sort:</div>
-              <select id="sort-select" class="toolbar-select">
-                <option value="date-desc">Date (Newest)</option>
-                <option value="date-asc">Date (Oldest)</option>
-                <option value="severity-desc">Severity (Highest)</option>
-                <option value="severity-asc">Severity (Lowest)</option>
-                <option value="country-asc">Country (A-Z)</option>
-              </select>
-            </div>
           </div>
         </div>
 
