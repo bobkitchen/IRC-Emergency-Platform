@@ -12,7 +12,6 @@
     .maps-layout {
       display: flex;
       flex-direction: column;
-      min-height: calc(100vh - 180px);
     }
 
     /* ── Title bar (full width, top) ── */
@@ -43,8 +42,6 @@
     /* ── Middle: sidebar + map side by side ── */
     .maps-body {
       display: flex;
-      flex: 1;
-      min-height: 0;
     }
 
     /* ── Slim sidebar (220px) ── */
@@ -55,6 +52,7 @@
       border-right: 1px solid #e5e5e5;
       padding: 16px;
       overflow-y: auto;
+      align-self: stretch;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -143,16 +141,15 @@
       border-top: 1px solid #eee;
     }
 
-    /* ── Map area ── */
+    /* ── Map area — forced landscape via aspect-ratio ── */
     .maps-map-wrap {
       flex: 1;
-      display: flex;
-      flex-direction: column;
       min-width: 0;
+      position: relative;
     }
     #maps-container {
-      flex: 1;
-      min-height: 340px;
+      width: 100%;
+      aspect-ratio: 16 / 9;
       background: #f0f0f0;
     }
 
