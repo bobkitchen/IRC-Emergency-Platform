@@ -101,6 +101,13 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
               <MessageCircle className="w-3.5 h-3.5" />
             </button>
           )}
+          {/* Resource count badge (when collapsed) */}
+          {!expanded && task.resources.length > 0 && (
+            <span className="inline-flex items-center gap-1 text-xs text-irc-gray-400 bg-irc-gray-50 px-2 py-0.5 rounded-full">
+              <Paperclip className="w-3 h-3" />
+              {task.resources.length}
+            </span>
+          )}
           {/* Subtask count */}
           {task.subtasks.length > 0 && (
             <span className="text-xs text-irc-gray-500 bg-irc-gray-100 px-2 py-0.5 rounded-full">

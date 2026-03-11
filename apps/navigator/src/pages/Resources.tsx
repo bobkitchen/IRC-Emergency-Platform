@@ -11,6 +11,17 @@ interface ResourceEntry {
   task: string;
 }
 
+// Build a mapping of task title → { taskId, sectorId } for cross-linking
+function buildTaskLinkMap(): Map<string, { taskId: string; sectorId: string }> {
+  const map = new Map<string, { taskId: string; sectorId: string }>();
+  for (const sector of processData.sectors) {
+    for (const task of sector.tasks) {
+      map.set(task.title, { taskId: task.id, sectorId: sector.id });
+    }
+  }
+  return map;
+}
+
 // Build a unified resource list from all sources
 function buildAllResources() {
   const all: Array<{
@@ -133,6 +144,7 @@ export default function Resources() {
   const [linkFilter, setLinkFilter] = useState<'all' | 'linked' | 'unlinked'>('all');
 
   const allResources = useMemo(() => buildAllResources(), []);
+  const taskLinkMap = useMemo(() => buildTaskLinkMap(), []);
 
   const sectors = useMemo(() => {
     const s = [...new Set(allResources.map(r => r.sector))].sort();
@@ -237,6 +249,14 @@ export default function Resources() {
                       <p className="text-sm font-medium text-irc-gray-500 leading-snug">{r.name}</p>
                     )}
                     <p className="text-xs text-irc-gray-400 mt-0.5">{r.context}</p>
+                    {r.source === 'task' && (() => {
+                      const link = taskLinkMap.get(r.context);
+                      return link ? (
+                        <p className="text-xs text-irc-gray-400 mt-0.5">
+                          Used by: <Link to={`/navigator/${link.sectorId}?highlight=${link.taskId}`} className="text-irc-gray-500 hover:text-black underline decoration-irc-gray-300 hover:decoration-black">{link.taskId}</Link>
+                        </p>
+                      ) : null;
+                    })()}
                   </div>
                   <span className={`badge shrink-0 ${getSectorColor(r.sector)}`}>
                     {r.sector}
