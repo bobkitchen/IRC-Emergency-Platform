@@ -466,7 +466,6 @@
               <button class="toggle-btn" data-stance="red"><span class="toggle-dot" style="background:#E52911;"></span> Red</button>
               <button class="toggle-btn" data-stance="orange"><span class="toggle-dot" style="background:#F58220;"></span> Orange</button>
               <button class="toggle-btn" data-stance="yellow"><span class="toggle-dot" style="background:#FFC72C;"></span> Yellow</button>
-              <button class="toggle-btn" data-stance="white"><span class="toggle-dot" style="background:#E9E9E9;"></span> White</button>
             </div>
           </div>
           <div class="filter-group">
@@ -688,6 +687,9 @@
     function getFilteredClassifications() {
       var latest = getLatestPerClassification(classifications);
       var filtered = latest.filter(function(c) {
+        // Exclude white classifications entirely
+        if ((c.stance || 'white').toLowerCase() === 'white') return false;
+
         // Status filter
         if (statusFilter === 'active' && IRC.isExpired(c.expirationDate)) return false;
 
@@ -953,8 +955,7 @@
         var stances = [
           { label: 'Red', color: '#E52911' },
           { label: 'Orange', color: '#F58220' },
-          { label: 'Yellow', color: '#FFC72C' },
-          { label: 'White', color: '#E9E9E9' }
+          { label: 'Yellow', color: '#FFC72C' }
         ];
         legendEl.innerHTML = stances.map(function(s) {
           return '<div class="legend-item"><span class="legend-dot" style="background:' + s.color + ';"></span>' + s.label + '</div>';
@@ -1758,7 +1759,7 @@
         'REQUIRED fields:\n' +
         '- timePeriod: "all" | "fy" | "12m"\n' +
         '- selectedTypes: array from ["conflict","outbreak","food","hazard","complex"] (empty = all)\n' +
-        '- selectedStances: array from ["red","orange","yellow","white"] (empty = all)\n' +
+        '- selectedStances: array from ["red","orange","yellow"] (empty = all; white classifications are excluded)\n' +
         '- regionFilter: "all" | "asia" | "east africa" | "latam" | "mena" | "rai" | "west and central africa"\n' +
         '- displayMode: "stance" | "severity"\n' +
         '- statusFilter: "active" | "all"\n' +
