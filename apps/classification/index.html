@@ -413,6 +413,39 @@
       border: 1px solid #ddd;
       box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
+    .map-tip-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 2px;
+    }
+    .map-tip-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .map-tip-stance {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .map-tip-type {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      color: #555;
+    }
+    .map-tip-type svg {
+      width: 100%;
+      height: 100%;
+    }
+    .map-tip-count {
+      font-size: 0.7rem;
+      color: #888;
+      margin-top: 2px;
+    }
   </style>
 
   <script src="irc-shared.iife.js"></script>
@@ -1077,16 +1110,28 @@
             var items = matchGeoToClassification(name, byCountry);
             var displayName = items ? (items[0].country || name) : name;
 
-            // Tooltip for ALL countries — shows name + stance summary on hover
-            var tipHtml = '<strong>' + displayName + '</strong>';
+            // Tooltip for ALL countries — compact hover summary
+            var tipHtml = '<div class="map-tip-name">' + displayName + '</div>';
             if (items) {
-              items.forEach(function(c) {
-                var stance = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : 'White';
-                var color = stanceColor(c.stance);
-                var isRed = c.stance === 'red';
-                tipHtml += '<br><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:600;background:' + color + ';color:' + (isRed ? '#fff' : '#000') + ';">' + stance + '</span>';
-                if (c.emergencyName) tipHtml += ' ' + c.emergencyName;
-              });
+              // Get highest stance for the badge
+              var topStance = getHighestStance(items);
+              var stanceLabel = topStance ? topStance.charAt(0).toUpperCase() + topStance.slice(1) : 'White';
+              var color = stanceColor(topStance);
+              var isRed = topStance === 'red';
+              // Collect unique emergency types
+              var seenTypes = {};
+              items.forEach(function(c) { if (c.type) seenTypes[c.type] = true; });
+              var typeIconsHtml = Object.keys(seenTypes).map(function(t) {
+                var icon = typeIcons[t];
+                return icon ? '<span class="map-tip-type">' + icon + '</span>' : '';
+              }).join('');
+              tipHtml += '<div class="map-tip-row">';
+              tipHtml += '<span class="map-tip-stance" style="background:' + color + ';color:' + (isRed ? '#fff' : '#000') + ';">' + stanceLabel + '</span>';
+              tipHtml += typeIconsHtml;
+              tipHtml += '</div>';
+              if (items.length > 1) {
+                tipHtml += '<div class="map-tip-count">' + items.length + ' classifications</div>';
+              }
             }
             layer.bindTooltip(tipHtml, { sticky: true, direction: 'top', offset: [0, -10], className: 'map-country-tooltip' });
 
