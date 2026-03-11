@@ -1,10 +1,12 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { streamChat, MODELS, getModel, setModel } from '@/lib/chat';
 import type { ChatMessage } from '@/types';
 import albertAvatar from '@/assets/albert.png';
 // @ts-ignore — @irc/shared is a workspace dependency (plain JS)
 import { getSettingsUrl } from '@irc/shared';
+import { useClassification } from '@/context/ClassificationContext';
+import { isExpired } from '@/lib/supabase';
 
 const SUPABASE_FUNCTION_URL =
   import.meta.env.VITE_SUPABASE_FUNCTION_URL ||
@@ -17,13 +19,53 @@ interface Props {
   onPrefillConsumed?: () => void;
 }
 
-const EXAMPLE_QUERIES = [
+const STATIC_EXAMPLE_QUERIES = [
   'What should we do in Week 1 of a Red emergency?',
-  'What comes after the MSNA?',
   'Difference between Orange and Red for Finance?',
-  'What is the Response Imperative?',
   'What does Supply Chain need to do first?',
 ];
+
+/** Build dynamic example queries from live classification data. */
+function useDynamicExamples(): string[] {
+  const { allClassifications } = useClassification();
+
+  return useMemo(() => {
+    // Filter to active (non-expired) classifications with a meaningful stance
+    const active = allClassifications.filter(
+      (c) => !isExpired(c.expirationDate) && ['red', 'orange'].includes(c.stance?.toLowerCase() ?? '')
+    );
+
+    if (active.length === 0) return STATIC_EXAMPLE_QUERIES;
+
+    // Sort by severity descending, then by date descending to get recent high-severity items
+    const sorted = [...active].sort((a, b) => {
+      if (b.severity !== a.severity) return b.severity - a.severity;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+
+    const dynamic: string[] = [];
+    const seen = new Set<string>();
+
+    for (const cls of sorted) {
+      if (dynamic.length >= 2) break;
+      const key = cls.country.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      const stanceLabel = cls.stance.charAt(0).toUpperCase() + cls.stance.slice(1).toLowerCase();
+
+      if (dynamic.length === 0) {
+        dynamic.push(`What's the response plan for ${cls.country}'s ${stanceLabel} classification?`);
+      } else {
+        dynamic.push(`What should ${cls.country} prioritize in R1?`);
+      }
+    }
+
+    // Pad with static fallbacks to always have ~5 examples
+    const combined = [...dynamic, ...STATIC_EXAMPLE_QUERIES];
+    return combined.slice(0, 5);
+  }, [allClassifications]);
+}
 
 const CHAT_STORAGE_KEY = 'irc_albert_chat_navigator';
 
@@ -54,6 +96,7 @@ async function sendFeedback(messageId: string, rating: 'up' | 'down', query: str
 }
 
 export default function ChatPanel({ isOpen, onClose, prefillQuery, onPrefillConsumed }: Props) {
+  const EXAMPLE_QUERIES = useDynamicExamples();
   const [messages, setMessages] = useState<ChatMessage[]>(loadPersistedChat);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);

@@ -14,30 +14,122 @@
   var SUPABASE_FUNCTION_URL = 'https://qykjjfbdvwqxqmsgiebs.supabase.co/functions/v1';
 
   // ── Site detection ──────────────────────────────────────────────
+  var STATIC_EXAMPLES = {
+    classification: [
+      'What triggers a reclassification?',
+      'What are the 7 response phases?',
+      'What tasks happen in the R4 planning phase?',
+      'How does the complex emergency rule work?'
+    ],
+    crf: [
+      'How is the CRF allocation calculated?',
+      'What is the 10% scale target?',
+      'What sections are in the CRF response plan?',
+      'What are the Orange vs Red funding ceilings?'
+    ]
+  };
+
   var SITE_CONFIGS = {
     classification: {
       site: 'classification',
       xTitle: 'IRC Emergency Classification',
       welcome: 'I can help with classification data, emergency response processes, guidelines, and response tasks across all sectors.',
-      examples: [
-        'What triggers a reclassification?',
-        'What are the 7 response phases?',
-        'What tasks happen in the R4 planning phase?',
-        'How does the complex emergency rule work?'
-      ]
+      examples: STATIC_EXAMPLES.classification.slice()
     },
     crf: {
       site: 'crf',
       xTitle: 'IRC CRF Calculator',
       welcome: 'I can help with CRF allocation methodology, funding ceilings, response plan requirements, and emergency classification data.',
-      examples: [
-        'How is the CRF allocation calculated?',
-        'What is the 10% scale target?',
-        'What sections are in the CRF response plan?',
-        'What are the Orange vs Red funding ceilings?'
-      ]
+      examples: STATIC_EXAMPLES.crf.slice()
     }
   };
+
+  /**
+   * Generate dynamic example queries from live classification data.
+   * Looks for IRC.db.data (array of classification objects).
+   * Returns an array of dynamic queries, or empty if no data is available.
+   */
+  function generateDynamicExamples(siteKey) {
+    var data = window.IRC && window.IRC.db && window.IRC.db.data;
+    if (!data || !Array.isArray(data) || data.length === 0) return [];
+
+    var now = new Date();
+    // Filter to active, non-expired, high-severity classifications
+    var active = data.filter(function (c) {
+      if (!c.country || !c.stance) return false;
+      var stance = c.stance.toLowerCase();
+      if (stance !== 'red' && stance !== 'orange') return false;
+      if (c.expirationDate && new Date(c.expirationDate) < now) return false;
+      return true;
+    });
+
+    if (active.length === 0) return [];
+
+    // Sort by severity (red first), then by most recent date
+    active.sort(function (a, b) {
+      var stanceRank = { red: 2, orange: 1 };
+      var rankA = stanceRank[a.stance.toLowerCase()] || 0;
+      var rankB = stanceRank[b.stance.toLowerCase()] || 0;
+      if (rankB !== rankA) return rankB - rankA;
+      return new Date(b.date || 0) - new Date(a.date || 0);
+    });
+
+    var dynamic = [];
+    var seen = {};
+
+    for (var i = 0; i < active.length && dynamic.length < 2; i++) {
+      var c = active[i];
+      var key = c.country.toLowerCase();
+      if (seen[key]) continue;
+      seen[key] = true;
+
+      var stanceLabel = c.stance.charAt(0).toUpperCase() + c.stance.slice(1).toLowerCase();
+
+      if (siteKey === 'crf') {
+        dynamic.push("What's the CRF ceiling for " + c.country + "'s " + stanceLabel + " emergency?");
+      } else {
+        if (dynamic.length === 0) {
+          dynamic.push('Tell me about the ' + c.country + ' ' + stanceLabel + ' classification');
+        } else {
+          dynamic.push('How many ' + stanceLabel + ' emergencies are active right now?');
+        }
+      }
+    }
+
+    return dynamic;
+  }
+
+  /**
+   * Refresh the example chips in the panel with dynamic data if available.
+   * Called after initialization and after a delay to allow IRC.db.data to load.
+   */
+  function refreshExamplesIfNeeded(siteKey) {
+    var dynamic = generateDynamicExamples(siteKey);
+    if (dynamic.length === 0) return;
+
+    var staticFallbacks = STATIC_EXAMPLES[siteKey] || [];
+    // Combine: dynamic examples first, then fill with static up to 4 total
+    var combined = dynamic.concat(staticFallbacks).slice(0, 4);
+    SITE.examples = combined;
+
+    // Re-render example chips if the panel has been built
+    var examplesContainer = document.getElementById('ap-examples');
+    if (!examplesContainer) return;
+    examplesContainer.innerHTML = '';
+
+    combined.forEach(function (text) {
+      var btn = document.createElement('button');
+      btn.className = 'albert-panel-example-btn';
+      btn.textContent = text;
+      btn.addEventListener('click', function () {
+        els.textarea.value = text;
+        els.textarea.focus();
+        autoResize();
+        sendMessage();
+      });
+      examplesContainer.appendChild(btn);
+    });
+  }
 
   function detectSite() {
     var path = window.location.pathname;
@@ -531,6 +623,12 @@
       updateInputState();
       updateHeaderAppearance();
       restoreChatHistory();
+
+      // Try to generate dynamic examples immediately
+      refreshExamplesIfNeeded(siteKey);
+      // Retry after a delay in case IRC.db.data loads asynchronously
+      setTimeout(function () { refreshExamplesIfNeeded(siteKey); }, 1500);
+      setTimeout(function () { refreshExamplesIfNeeded(siteKey); }, 4000);
 
       // Auto-open if URL has #albert hash
       if (window.location.hash === '#albert') {
