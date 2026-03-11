@@ -94,18 +94,33 @@ export interface Classification {
 }
 
 /**
- * Fetch all classifications from Supabase.
+ * Fetch all classifications from Supabase, paginating past the 1000-row default limit.
  * Returns an empty array on failure (non-blocking).
  */
 export async function fetchClassifications(): Promise<Classification[]> {
+  const PAGE_SIZE = 1000;
+  const all: Classification[] = [];
   try {
-    const res = await fetch(`${baseUrl}?order=date.desc.nullslast`, { headers });
-    if (!res.ok) throw new Error(`Supabase: ${res.status}`);
-    const rows = await res.json();
-    return rows.map(mapToCamel) as Classification[];
+    let offset = 0;
+    let done = false;
+    while (!done) {
+      const url = `${baseUrl}?order=date.desc.nullslast&limit=${PAGE_SIZE}&offset=${offset}`;
+      const res = await fetch(url, {
+        headers: { ...headers, Prefer: 'count=exact' },
+      });
+      if (!res.ok) throw new Error(`Supabase: ${res.status}`);
+      const rows = await res.json();
+      all.push(...(rows.map(mapToCamel) as Classification[]));
+      if (rows.length < PAGE_SIZE) {
+        done = true;
+      } else {
+        offset += PAGE_SIZE;
+      }
+    }
+    return all;
   } catch (err) {
     console.warn('[Supabase] Failed to fetch classifications:', err);
-    return [];
+    return all; // return whatever was fetched before the error
   }
 }
 
@@ -160,17 +175,31 @@ function countryMatches(selectedCountry: string, classificationCountry: string):
 
 /**
  * Filter classifications for a country, excluding expired and white-stance entries.
+ * Deduplicates by classificationId — keeps only the latest reclassification.
+ * Filters out records with null/invalid dates (ghost "Jan 1970" entries).
  * Sorted by date descending (most recent first).
  */
 export function getActiveClassificationsForCountry(
   all: Classification[],
   country: string,
 ): Classification[] {
-  return all
-    .filter(c =>
-      countryMatches(country, c.country) &&
-      !isExpired(c.expirationDate) &&
-      c.stance?.toLowerCase() !== 'white'
-    )
+  const matched = all.filter(c =>
+    countryMatches(country, c.country) &&
+    !isExpired(c.expirationDate) &&
+    c.stance?.toLowerCase() !== 'white' &&
+    c.date && !isNaN(new Date(c.date).getTime()) && new Date(c.date).getFullYear() > 1970
+  );
+
+  // Deduplicate: keep only the highest reclassificationNumber per classificationId
+  const latest = new Map<string, Classification>();
+  for (const c of matched) {
+    const key = c.classificationId;
+    const existing = latest.get(key);
+    if (!existing || (c.reclassificationNumber ?? 0) > (existing.reclassificationNumber ?? 0)) {
+      latest.set(key, c);
+    }
+  }
+
+  return Array.from(latest.values())
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
