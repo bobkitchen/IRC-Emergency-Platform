@@ -8,50 +8,14 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    /* ── Full-width layout: toolbar above, map below ── */
+    /* ── Option A: Slim sidebar + title top + stacked bottom panels ── */
     .maps-layout {
       display: flex;
       flex-direction: column;
       min-height: calc(100vh - 180px);
     }
 
-    /* ── Filter toolbar (horizontal, above map) ── */
-    .maps-toolbar {
-      background: #fff;
-      border-bottom: 1px solid #e5e5e5;
-      padding: 12px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-    }
-    .maps-toolbar .filter-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .maps-toolbar .filter-label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #999;
-      white-space: nowrap;
-    }
-    .toolbar-sep {
-      width: 1px;
-      height: 24px;
-      background: #e5e5e5;
-      flex-shrink: 0;
-    }
-    .toolbar-summary {
-      font-size: 0.78rem;
-      color: #666;
-      margin-left: auto;
-      white-space: nowrap;
-    }
-
-    /* ── Title bar ── */
+    /* ── Title bar (full width, top) ── */
     .maps-title-bar {
       padding: 10px 20px;
       background: #fff;
@@ -61,7 +25,7 @@
       gap: 12px;
     }
     .maps-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 600;
       color: #1a1a1a;
       margin: 0;
@@ -74,128 +38,44 @@
     }
     .maps-title:hover { border-color: #ddd; }
     .maps-title:focus { outline: none; border-color: #FFC72C; background: #FFFDF5; }
-    .maps-title-hint {
-      font-size: 0.7rem;
-      color: #bbb;
-    }
+    .maps-title-hint { font-size: 0.7rem; color: #bbb; }
 
-    /* ── Map container (fills remaining height) ── */
-    .maps-main {
-      flex: 1;
+    /* ── Middle: sidebar + map side by side ── */
+    .maps-body {
       display: flex;
-      flex-direction: column;
+      flex: 1;
       min-height: 0;
     }
-    #maps-container {
-      flex: 1;
-      min-height: 340px;
-      background: #f0f0f0;
-    }
 
-    /* ── Bottom bar: legend + export + AI builder ── */
-    .maps-bottom-bar {
+    /* ── Slim sidebar (220px) ── */
+    .maps-sidebar {
+      width: 220px;
+      min-width: 220px;
       background: #fff;
-      border-top: 1px solid #e5e5e5;
-      padding: 10px 20px;
+      border-right: 1px solid #e5e5e5;
+      padding: 16px;
+      overflow-y: auto;
       display: flex;
-      align-items: center;
-      gap: 20px;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filter-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #999;
+    }
+    .pill-group {
+      display: flex;
       flex-wrap: wrap;
+      gap: 4px;
     }
-    .maps-legend {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.78rem;
-      color: #555;
-    }
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      border: 1px solid rgba(0,0,0,0.15);
-    }
-    .legend-gradient-bar {
-      width: 160px;
-      height: 12px;
-      border-radius: 3px;
-      border: 1px solid #ddd;
-    }
-    .legend-gradient-labels {
-      display: flex;
-      justify-content: space-between;
-      width: 160px;
-      font-size: 0.65rem;
-      color: #888;
-    }
-    .bottom-sep {
-      width: 1px;
-      height: 24px;
-      background: #e5e5e5;
-      flex-shrink: 0;
-    }
-    .bottom-export {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .export-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.75rem;
-      color: #555;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .export-checkbox input { accent-color: #1a1a1a; }
-    .export-btn {
-      padding: 6px 14px;
-      border-radius: 6px;
-      border: none;
-      background: #1a1a1a;
-      color: #fff;
-      font-size: 0.78rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-    .export-btn:hover { background: #333; }
-    .export-btn:disabled { background: #ccc; cursor: not-allowed; }
-
-    /* ── AI builder (inline in bottom bar) ── */
-    .ai-builder-inline {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: auto;
-    }
-    .ai-builder-inline .ai-sparkle { font-size: 0.85rem; }
-    .ai-builder-inline input {
-      width: 280px;
-      padding: 6px 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-family: inherit;
-      color: #333;
-    }
-    .ai-builder-inline input:focus {
-      outline: none;
-      border-color: #FFC72C;
-      box-shadow: 0 0 0 2px rgba(255,199,44,0.15);
-    }
-    .ai-builder-inline input::placeholder { color: #aaa; }
-
-    /* ── Shared control styles ── */
     .filter-pill {
       padding: 4px 10px;
       border-radius: 16px;
@@ -232,7 +112,7 @@
       border: 1px solid rgba(0,0,0,0.15);
     }
     .filter-select {
-      padding: 4px 8px;
+      padding: 5px 8px;
       border-radius: 5px;
       border: 1px solid #ddd;
       font-size: 0.75rem;
@@ -240,49 +120,189 @@
       background: #fff;
       color: #333;
       cursor: pointer;
+      width: 100%;
     }
     .radio-group {
       display: flex;
-      gap: 10px;
+      flex-direction: column;
+      gap: 5px;
     }
     .radio-item {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       font-size: 0.75rem;
       color: #555;
       cursor: pointer;
     }
     .radio-item input[type="radio"] { accent-color: #1a1a1a; }
-    .pill-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
+    .sidebar-summary {
+      font-size: 0.8rem;
+      color: #666;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
     }
 
-    /* AI builder go button */
-    .ai-builder-go {
-      padding: 6px 14px;
-      border-radius: 6px;
-      border: 1px solid #FFC72C;
+    /* ── Map area ── */
+    .maps-map-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    #maps-container {
+      flex: 1;
+      min-height: 340px;
+      background: #f0f0f0;
+    }
+
+    /* ── Below-map panels (3 stacked rows) ── */
+
+    /* Row 1: Legend */
+    .maps-legend-bar {
+      padding: 10px 20px;
+      background: #fff;
+      border-top: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .maps-legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+    .legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+    .legend-gradient-bar {
+      width: 180px;
+      height: 13px;
+      border-radius: 3px;
+      border: 1px solid #ddd;
+    }
+    .legend-gradient-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 180px;
+      font-size: 0.68rem;
+      color: #888;
+    }
+
+    /* Row 2: AI Map Builder */
+    .maps-ai-bar {
+      padding: 12px 20px;
       background: #FFFDF5;
+      border-top: 1px solid #F5E6B8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ai-bar-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #B8860B;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .ai-bar-label .ai-sparkle { font-size: 0.9rem; }
+    .ai-bar-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #E8D5A0;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      color: #333;
+      background: #fff;
+    }
+    .ai-bar-input:focus {
+      outline: none;
+      border-color: #FFC72C;
+      box-shadow: 0 0 0 2px rgba(255,199,44,0.2);
+    }
+    .ai-bar-input::placeholder { color: #bba76a; }
+    .ai-builder-go {
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #FFC72C;
       color: #1a1a1a;
-      font-size: 0.78rem;
-      font-weight: 500;
+      font-size: 0.82rem;
+      font-weight: 600;
       cursor: pointer;
       font-family: inherit;
-      transition: all 0.15s;
+      transition: background 0.15s;
       white-space: nowrap;
     }
-    .ai-builder-go:hover { background: #FFC72C; }
+    .ai-builder-go:hover { background: #F0B81C; }
     .ai-builder-go:disabled { opacity: 0.5; cursor: not-allowed; }
     .ai-builder-status {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       color: #888;
+      white-space: nowrap;
     }
     .ai-builder-status.error { color: #E52911; }
 
-    /* Filter chip */
+    /* Row 3: Export */
+    .maps-export-bar {
+      padding: 10px 20px;
+      background: #fafafa;
+      border-top: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .export-bar-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #999;
+    }
+    .export-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: #555;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .export-checkbox input { accent-color: #1a1a1a; }
+    .export-btn {
+      padding: 7px 18px;
+      border-radius: 6px;
+      border: none;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .export-btn:hover { background: #333; }
+    .export-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* ── Filter chip ── */
     .ai-filter-chip {
       display: inline-flex;
       align-items: center;
@@ -380,15 +400,31 @@
     }
 
     @media (max-width: 768px) {
-      .maps-toolbar {
-        gap: 8px;
-        padding: 8px 12px;
+      .maps-body {
+        flex-direction: column;
       }
-      .toolbar-sep { display: none; }
-      .ai-builder-inline { width: 100%; margin-left: 0; }
-      .ai-builder-inline input { flex: 1; width: auto; }
-      .maps-bottom-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .maps-sidebar {
+        width: 100%;
+        min-width: 0;
+        border-right: none;
+        border-bottom: 1px solid #e5e5e5;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 10px 12px;
+        gap: 10px;
+      }
+      .filter-group { min-width: 0; }
       #maps-container { min-height: 300px; }
+      .maps-ai-bar {
+        flex-wrap: wrap;
+      }
+      .ai-bar-input {
+        min-width: 0;
+        flex: 1 1 200px;
+      }
+      .maps-export-bar {
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
@@ -397,97 +433,98 @@
   <main>
     <div id="nav-mount"></div>
     <div class="maps-layout">
-      <!-- Filter toolbar (horizontal, above map) -->
-      <div class="maps-toolbar">
-        <div class="filter-group">
-          <span class="filter-label">Time</span>
-          <div class="pill-group" id="time-pills">
-            <button class="filter-pill active" data-period="all">All time</button>
-            <button class="filter-pill" data-period="fy" id="fy-pill">FY26</button>
-            <button class="filter-pill" data-period="12m">Last 12 mo</button>
-          </div>
-        </div>
-        <span class="toolbar-sep"></span>
-        <div class="filter-group">
-          <span class="filter-label">Type</span>
-          <div class="pill-group" id="type-toggles">
-            <button class="toggle-btn" data-type="conflict">Conflict</button>
-            <button class="toggle-btn" data-type="outbreak">Outbreak</button>
-            <button class="toggle-btn" data-type="food">Food</button>
-            <button class="toggle-btn" data-type="hazard">Hazard</button>
-            <button class="toggle-btn" data-type="complex">Complex</button>
-          </div>
-        </div>
-        <span class="toolbar-sep"></span>
-        <div class="filter-group">
-          <span class="filter-label">Stance</span>
-          <div class="pill-group" id="stance-toggles">
-            <button class="toggle-btn" data-stance="red"><span class="toggle-dot" style="background:#E52911;"></span> Red</button>
-            <button class="toggle-btn" data-stance="orange"><span class="toggle-dot" style="background:#F58220;"></span> Orange</button>
-            <button class="toggle-btn" data-stance="yellow"><span class="toggle-dot" style="background:#FFC72C;"></span> Yellow</button>
-            <button class="toggle-btn" data-stance="white"><span class="toggle-dot" style="background:#E9E9E9;"></span> White</button>
-          </div>
-        </div>
-        <span class="toolbar-sep"></span>
-        <div class="filter-group">
-          <span class="filter-label">Region</span>
-          <select class="filter-select" id="region-select">
-            <option value="all">All</option>
-            <option value="asia">Asia</option>
-            <option value="east africa">East Africa</option>
-            <option value="latam">LatAm</option>
-            <option value="mena">MENA</option>
-            <option value="rai">RAI</option>
-            <option value="west and central africa">W&C Africa</option>
-          </select>
-        </div>
-        <span class="toolbar-sep"></span>
-        <div class="filter-group">
-          <span class="filter-label">Display</span>
-          <div class="radio-group">
-            <label class="radio-item"><input type="radio" name="display-mode" value="stance" checked> Stance</label>
-            <label class="radio-item"><input type="radio" name="display-mode" value="severity"> Severity</label>
-          </div>
-        </div>
-        <span class="toolbar-sep"></span>
-        <div class="filter-group">
-          <span class="filter-label">Status</span>
-          <div class="pill-group" id="status-pills">
-            <button class="filter-pill active" data-status="active">Active</button>
-            <button class="filter-pill" data-status="all">All</button>
-          </div>
-        </div>
-        <span id="ai-filter-chip-wrap"></span>
-        <span class="toolbar-summary" id="filter-summary">0 shown</span>
-      </div>
-
-      <!-- Title bar -->
+      <!-- Title bar (full width, top) -->
       <div class="maps-title-bar">
         <h2 class="maps-title" id="map-title" contenteditable="true" spellcheck="false">Active Classifications</h2>
         <span class="maps-title-hint">Click to edit</span>
       </div>
 
-      <!-- Map (full width, landscape) -->
-      <div class="maps-main">
-        <div id="maps-container"></div>
+      <!-- Middle: sidebar + map side by side -->
+      <div class="maps-body">
+        <!-- Slim sidebar (220px) with filters -->
+        <div class="maps-sidebar">
+          <div class="filter-group">
+            <span class="filter-label">Time Period</span>
+            <div class="pill-group" id="time-pills">
+              <button class="filter-pill active" data-period="all">All time</button>
+              <button class="filter-pill" data-period="fy" id="fy-pill">FY26</button>
+              <button class="filter-pill" data-period="12m">Last 12 mo</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Emergency Type</span>
+            <div class="pill-group" id="type-toggles">
+              <button class="toggle-btn" data-type="conflict">Conflict</button>
+              <button class="toggle-btn" data-type="outbreak">Outbreak</button>
+              <button class="toggle-btn" data-type="food">Food</button>
+              <button class="toggle-btn" data-type="hazard">Hazard</button>
+              <button class="toggle-btn" data-type="complex">Complex</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Stance</span>
+            <div class="pill-group" id="stance-toggles">
+              <button class="toggle-btn" data-stance="red"><span class="toggle-dot" style="background:#E52911;"></span> Red</button>
+              <button class="toggle-btn" data-stance="orange"><span class="toggle-dot" style="background:#F58220;"></span> Orange</button>
+              <button class="toggle-btn" data-stance="yellow"><span class="toggle-dot" style="background:#FFC72C;"></span> Yellow</button>
+              <button class="toggle-btn" data-stance="white"><span class="toggle-dot" style="background:#E9E9E9;"></span> White</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Region</span>
+            <select class="filter-select" id="region-select">
+              <option value="all">All Regions</option>
+              <option value="asia">Asia</option>
+              <option value="east africa">East Africa</option>
+              <option value="latam">LatAm</option>
+              <option value="mena">MENA</option>
+              <option value="rai">RAI</option>
+              <option value="west and central africa">W&C Africa</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Display Mode</span>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="display-mode" value="stance" checked> Stance color</label>
+              <label class="radio-item"><input type="radio" name="display-mode" value="severity"> Severity heatmap</label>
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Status</span>
+            <div class="pill-group" id="status-pills">
+              <button class="filter-pill active" data-status="active">Active only</button>
+              <button class="filter-pill" data-status="all">All</button>
+            </div>
+          </div>
+          <span id="ai-filter-chip-wrap"></span>
+          <div class="sidebar-summary" id="filter-summary">0 shown</div>
+        </div>
+
+        <!-- Map fills remaining width -->
+        <div class="maps-map-wrap">
+          <div id="maps-container"></div>
+        </div>
       </div>
 
-      <!-- Bottom bar: legend + export + AI builder -->
-      <div class="maps-bottom-bar">
+      <!-- Row 1: Legend -->
+      <div class="maps-legend-bar">
         <div class="maps-legend" id="maps-legend"></div>
-        <span class="bottom-sep"></span>
-        <div class="bottom-export">
-          <label class="export-checkbox"><input type="checkbox" id="branding-toggle" checked> Branded</label>
-          <button class="export-btn" id="export-btn">PNG</button>
-          <button class="export-btn" id="export-svg-btn" style="background:#fff;color:#1a1a1a;border:1px solid #1a1a1a;">SVG</button>
-        </div>
-        <span class="bottom-sep"></span>
-        <div class="ai-builder-inline">
-          <span class="ai-sparkle">&#10024;</span>
-          <input type="text" id="ai-builder-input" placeholder="Describe a map, e.g. &quot;red conflicts in East Africa last 12 months&quot;">
-          <button class="ai-builder-go" id="ai-builder-go">Build</button>
-          <span class="ai-builder-status" id="ai-builder-status"></span>
-        </div>
+      </div>
+
+      <!-- Row 2: AI Map Builder -->
+      <div class="maps-ai-bar">
+        <span class="ai-bar-label"><span class="ai-sparkle">&#10024;</span> AI Map Builder</span>
+        <input class="ai-bar-input" type="text" id="ai-builder-input" placeholder="Describe a map, e.g. &quot;red conflicts in East Africa last 12 months&quot;">
+        <button class="ai-builder-go" id="ai-builder-go">Build Map</button>
+        <span class="ai-builder-status" id="ai-builder-status"></span>
+      </div>
+
+      <!-- Row 3: Export -->
+      <div class="maps-export-bar">
+        <span class="export-bar-label">Export</span>
+        <label class="export-checkbox"><input type="checkbox" id="branding-toggle" checked> IRC branding</label>
+        <button class="export-btn" id="export-btn">Export PNG</button>
+        <button class="export-btn" id="export-svg-btn" style="background:#fff;color:#1a1a1a;border:1px solid #1a1a1a;">Export SVG</button>
       </div>
     </div>
   </main>
