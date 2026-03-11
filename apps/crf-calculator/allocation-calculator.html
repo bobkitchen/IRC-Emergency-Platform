@@ -914,6 +914,196 @@
       font-size: 0.9375rem;
     }
 
+    /* ── Scenario Comparison ── */
+    .scenario-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      align-items: center;
+    }
+
+    .save-scenario-btn {
+      padding: 10px 20px;
+      background: var(--black);
+      color: var(--irc-yellow);
+      border: 2px solid var(--black);
+      border-radius: 8px;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .save-scenario-btn:hover {
+      background: var(--dark-gray);
+    }
+
+    .save-scenario-btn:active {
+      transform: scale(0.97);
+    }
+
+    .save-scenario-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .scenario-count {
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    .scenario-comparison {
+      margin-top: 32px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--mid-gray);
+      background: var(--white);
+    }
+
+    .scenario-comparison-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--black);
+    }
+
+    .scenario-comparison-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--irc-yellow);
+    }
+
+    .clear-scenarios-btn {
+      padding: 6px 14px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .clear-scenarios-btn:hover {
+      color: var(--white);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .scenario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .scenario-table tr {
+      border-bottom: 1px solid var(--gray-e9);
+    }
+
+    .scenario-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .scenario-table th,
+    .scenario-table td {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 0.8125rem;
+      vertical-align: middle;
+    }
+
+    .scenario-table th {
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--light-gray);
+      white-space: nowrap;
+    }
+
+    .scenario-table td {
+      color: var(--dark-gray);
+      font-weight: 500;
+    }
+
+    .scenario-table td.scenario-label {
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--light-gray);
+      white-space: nowrap;
+      width: 160px;
+    }
+
+    .scenario-table td.scenario-highlight {
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .scenario-col-header {
+      text-align: center !important;
+    }
+
+    .scenario-table td:not(.scenario-label) {
+      text-align: center;
+    }
+
+    .scenario-remove-btn {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 8px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--mid-gray);
+      border-radius: 4px;
+      font-size: 0.6875rem;
+      cursor: pointer;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      transition: all 0.1s ease;
+    }
+
+    .scenario-remove-btn:hover {
+      color: var(--warning);
+      border-color: var(--warning);
+    }
+
+    .scenario-stance-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .scenario-stance-orange {
+      background: #E87722;
+      color: var(--black);
+    }
+
+    .scenario-stance-red {
+      background: #C4421A;
+      color: var(--white);
+    }
+
+    @media (max-width: 600px) {
+      .scenario-comparison {
+        overflow-x: auto;
+      }
+
+      .scenario-table {
+        min-width: 500px;
+      }
+    }
+
     /* ── Footer ── */
     footer {
       border-top: 3px solid var(--black);
@@ -1198,8 +1388,12 @@
           This allocation exceeds $2M. Consider whether the CRF pool can sustain this alongside other active emergencies.
         </div>
 
-        <!-- Copy Summary button -->
-        <button id="copy-summary-btn" class="copy-summary-btn" style="display:none; margin-top:16px; padding:10px 20px; background:#FFC72C; color:#000; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.875rem;">Copy Summary to Clipboard</button>
+        <!-- Copy Summary + Save Scenario buttons -->
+        <div class="scenario-actions" id="scenario-actions" style="display:none;">
+          <button id="copy-summary-btn" class="copy-summary-btn" style="padding:10px 20px; background:#FFC72C; color:#000; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.875rem;">Copy Summary to Clipboard</button>
+          <button id="save-scenario-btn" class="save-scenario-btn" type="button">Save Scenario</button>
+          <span class="scenario-count" id="scenario-count"></span>
+        </div>
 
       </div>
 
@@ -1212,6 +1406,15 @@
           <li>For Orange: ceiling <strong>$1M</strong> | For Red: ceiling <strong>$2M</strong></li>
           <li>Set a Scale Target of reaching at least <strong>10%</strong> of affected population</li>
         </ul>
+      </div>
+
+      <!-- Scenario Comparison -->
+      <div class="scenario-comparison" id="scenario-comparison" style="display:none;">
+        <div class="scenario-comparison-header">
+          <div class="scenario-comparison-title">Scenario Comparison</div>
+          <button class="clear-scenarios-btn" id="clear-scenarios-btn" type="button">Clear All</button>
+        </div>
+        <div id="scenario-table-wrap"></div>
       </div>
 
       <!-- Empty state -->
@@ -1329,6 +1532,12 @@
       var stanceExplainer = document.getElementById('stance-explainer');
       var stanceExplainerBody = document.getElementById('stance-explainer-body');
       var classificationExpiryWarning = document.getElementById('classification-expiry-warning');
+      var scenarioActionsEl = document.getElementById('scenario-actions');
+      var saveScenarioBtn = document.getElementById('save-scenario-btn');
+      var scenarioCountEl = document.getElementById('scenario-count');
+      var scenarioComparisonEl = document.getElementById('scenario-comparison');
+      var scenarioTableWrap = document.getElementById('scenario-table-wrap');
+      var clearScenariosBtn = document.getElementById('clear-scenarios-btn');
 
       // ── State ──
       var selectedCountry = null; // {name, pop, pv, rob}
@@ -1342,6 +1551,7 @@
       var classificationsCache = null; // null = not yet fetched
       var classificationsFetchFailed = false;
       var selectedClassification = null;
+      var savedScenarios = []; // max 3
 
       // ── Populate country list ──
       COUNTRIES.sort(function (a, b) { return a[0].localeCompare(b[0]); });
@@ -1678,7 +1888,7 @@
           allocationEmpty.style.display = 'block';
           totalCostCard.style.borderRadius = '12px';
           totalCost = 0;
-          copySummaryBtn.style.display = 'none';
+          scenarioActionsEl.style.display = 'none';
           nextStepsSection.style.display = 'none';
 
           if (targetPop > 0 && !selectedStance) {
@@ -1698,7 +1908,7 @@
         allocationEmpty.style.display = 'none';
         totalCostCard.style.borderRadius = '12px 12px 0 0';
 
-        copySummaryBtn.style.display = 'inline-block';
+        scenarioActionsEl.style.display = 'flex';
         nextStepsSection.style.display = 'block';
 
         updateAllocation();
@@ -2041,6 +2251,136 @@
           classificationExpiryWarning.textContent = 'This classification expires in ' + diffDays + ' day' + (diffDays !== 1 ? 's' : '') + '. Ensure CRF submission is completed before expiration.';
         }
       }
+
+      // ── Scenario Comparison ──
+      var MAX_SCENARIOS = 3;
+
+      function captureCurrentScenario() {
+        var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
+        var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
+        var gapPeople = Math.max(0, targetPop - crfPeople);
+        var gapAmount = Math.max(0, totalCost - crfAmount);
+        var countryName = selectedCountry ? selectedCountry.name : 'Unknown';
+
+        return {
+          country: countryName,
+          affectedPop: affectedPop,
+          targetPop: targetPop,
+          stance: selectedStance,
+          coverage: selectedCoverage,
+          crfPeople: crfPeople,
+          crfAmount: crfAmount,
+          gapPeople: gapPeople,
+          gapAmount: gapAmount,
+          totalCost: totalCost,
+          timestamp: new Date()
+        };
+      }
+
+      function updateScenarioCount() {
+        if (savedScenarios.length >= MAX_SCENARIOS) {
+          saveScenarioBtn.disabled = true;
+          scenarioCountEl.textContent = MAX_SCENARIOS + '/' + MAX_SCENARIOS + ' scenarios saved';
+        } else {
+          saveScenarioBtn.disabled = false;
+          scenarioCountEl.textContent = savedScenarios.length > 0 ? savedScenarios.length + '/' + MAX_SCENARIOS : '';
+        }
+      }
+
+      function findMaxIndex(arr, key) {
+        if (arr.length === 0) return -1;
+        var maxVal = -Infinity;
+        var maxIdx = 0;
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i][key] > maxVal) { maxVal = arr[i][key]; maxIdx = i; }
+        }
+        return maxIdx;
+      }
+
+      function renderScenarioTable() {
+        if (savedScenarios.length === 0) {
+          scenarioComparisonEl.style.display = 'none';
+          return;
+        }
+        scenarioComparisonEl.style.display = 'block';
+
+        var maxCrfIdx = findMaxIndex(savedScenarios, 'crfAmount');
+
+        var rows = [
+          { label: 'Country', key: 'country', format: 'text' },
+          { label: 'Affected Pop.', key: 'affectedPop', format: 'num' },
+          { label: 'Target Pop.', key: 'targetPop', format: 'num' },
+          { label: 'Stance', key: 'stance', format: 'stance' },
+          { label: 'Coverage', key: 'coverage', format: 'pct' },
+          { label: 'CRF People', key: 'crfPeople', format: 'num' },
+          { label: 'CRF Amount', key: 'crfAmount', format: 'currency', highlight: true },
+          { label: 'Gap People', key: 'gapPeople', format: 'num' },
+          { label: 'Gap Amount', key: 'gapAmount', format: 'currency' },
+          { label: 'Total Cost', key: 'totalCost', format: 'currency' }
+        ];
+
+        var html = '<table class="scenario-table">';
+        // Header row
+        html += '<tr><th></th>';
+        for (var s = 0; s < savedScenarios.length; s++) {
+          var ts = savedScenarios[s].timestamp;
+          var timeStr = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          html += '<th class="scenario-col-header">Scenario ' + (s + 1) + '<br><span style="font-weight:400; text-transform:none; letter-spacing:normal; font-size:0.625rem;">' + timeStr + '</span><br><button class="scenario-remove-btn" data-idx="' + s + '" type="button">Remove</button></th>';
+        }
+        html += '</tr>';
+
+        // Data rows
+        for (var r = 0; r < rows.length; r++) {
+          var row = rows[r];
+          html += '<tr><td class="scenario-label">' + row.label + '</td>';
+          for (var c = 0; c < savedScenarios.length; c++) {
+            var val = savedScenarios[c][row.key];
+            var display = '';
+            if (row.format === 'currency') display = formatCurrency(val);
+            else if (row.format === 'num') display = formatNum(val);
+            else if (row.format === 'pct') display = val + '%';
+            else if (row.format === 'stance') {
+              var stClass = val === 'orange' ? 'scenario-stance-orange' : val === 'red' ? 'scenario-stance-red' : '';
+              display = '<span class="scenario-stance-badge ' + stClass + '">' + (val ? val.charAt(0).toUpperCase() + val.slice(1) : '—') + '</span>';
+            } else {
+              display = val || '—';
+            }
+            var isHighlight = row.highlight && c === maxCrfIdx && savedScenarios.length > 1;
+            html += '<td' + (isHighlight ? ' class="scenario-highlight"' : '') + '>' + display + '</td>';
+          }
+          html += '</tr>';
+        }
+        html += '</table>';
+        scenarioTableWrap.innerHTML = html;
+
+        // Bind remove buttons
+        var removeBtns = scenarioTableWrap.querySelectorAll('.scenario-remove-btn');
+        removeBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var idx = parseInt(this.getAttribute('data-idx'), 10);
+            savedScenarios.splice(idx, 1);
+            updateScenarioCount();
+            renderScenarioTable();
+          });
+        });
+      }
+
+      saveScenarioBtn.addEventListener('click', function () {
+        if (savedScenarios.length >= MAX_SCENARIOS || totalCost <= 0) return;
+        savedScenarios.push(captureCurrentScenario());
+        updateScenarioCount();
+        renderScenarioTable();
+        // Brief feedback
+        var origText = saveScenarioBtn.textContent;
+        saveScenarioBtn.textContent = 'Saved!';
+        setTimeout(function () { saveScenarioBtn.textContent = origText; }, 1200);
+      });
+
+      clearScenariosBtn.addEventListener('click', function () {
+        savedScenarios = [];
+        updateScenarioCount();
+        renderScenarioTable();
+      });
 
       // ── Fetch classifications on load ──
       IRCShared.fetchClassifications().then(function (rows) {
