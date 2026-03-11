@@ -954,10 +954,8 @@
       var W = 3200;
       var padding = 80;
       var headerH = branded ? 180 : 0;
-      var mapH = 1600;
       var legendH = 100;
       var footerH = branded ? 80 : 0;
-      var totalH = headerH + mapH + legendH + footerH;
 
       // Use Leaflet's current view bounds for projection
       var bounds = map.getBounds();
@@ -965,6 +963,17 @@
       var lngMax = bounds.getEast();
       var latMin = Math.max(bounds.getSouth(), -85);
       var latMax = Math.min(bounds.getNorth(), 85);
+
+      // Calculate map height from Mercator aspect ratio of current view
+      var mercYMin = latToMercY(latMin);
+      var mercYMax = latToMercY(latMax);
+      var lngSpan = lngMax - lngMin;
+      var mercSpan = mercYMax - mercYMin;
+      var mapH = Math.round(W * (mercSpan / (lngSpan * Math.PI / 180) * (Math.PI / 180)));
+      // Clamp to reasonable range
+      mapH = Math.max(800, Math.min(mapH, 2400));
+
+      var totalH = headerH + mapH + legendH + footerH;
 
       var mapX = 0;
       var mapY = headerH;
