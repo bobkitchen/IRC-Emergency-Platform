@@ -1101,6 +1101,7 @@
       // ── Helper: draw filled + stroked polygons ──
       function drawFeature(ctx, feature, fillColor, fillAlpha, strokeColor, strokeAlpha, lineW) {
         var geom = feature.geometry;
+        if (!geom) return;
         var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
         polys.forEach(function(poly) {
           poly.forEach(function(ring) {
@@ -1128,6 +1129,7 @@
       // ── Helper: stroke only ──
       function drawFeatureStroke(ctx, feature) {
         var geom = feature.geometry;
+        if (!geom) return;
         var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
         polys.forEach(function(poly) {
           poly.forEach(function(ring) {
@@ -1148,6 +1150,7 @@
       // ── Helper: rough polygon centroid ──
       function getFeatureCentroid(feature) {
         var geom = feature.geometry;
+        if (!geom) return [0, 0];
         var coords = geom.type === 'MultiPolygon' ? geom.coordinates[0][0] : geom.coordinates[0];
         var sumLng = 0, sumLat = 0;
         coords.forEach(function(c) { sumLng += c[0]; sumLat += c[1]; });
