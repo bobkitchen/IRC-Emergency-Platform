@@ -1056,53 +1056,41 @@
       // Restore clipping
       ctx.restore();
 
-      // ── Branded header (drawn on top of white background) ──
-      function finishHeader(withLogo, logoImg) {
+      // ── Branded header (fully synchronous — no Image loading) ──
+      if (branded) {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, W, headerH);
-        var titleX = padding;
-        if (withLogo && logoImg) {
-          ctx.drawImage(logoImg, padding, 40, 96, 96);
-          titleX = padding + 130;
-        }
+
+        // Draw IRC logo as canvas shapes (yellow square + black IRC mark)
+        var lx = padding, ly2 = 36, ls = 96;
+        ctx.fillStyle = '#FDC62F';
+        ctx.fillRect(lx, ly2, ls, ls);
+        // Black IRC letterform (simplified K-shape)
+        ctx.fillStyle = '#00040C';
+        var s = ls / 217; // scale factor from SVG viewBox
+        ctx.fillRect(lx + 26.6*s, ly2 + 26.6*s, 163.81*s, 63.15*s);
+        // Diagonal + vertical parts of the K
+        ctx.beginPath();
+        ctx.moveTo(lx + 134.59*s, ly2 + 89.75*s);
+        ctx.lineTo(lx + 190.41*s, ly2 + 145.57*s);
+        ctx.lineTo(lx + 190.41*s, ly2 + 190.39*s);
+        ctx.lineTo(lx + 144.97*s, ly2 + 190.39*s);
+        ctx.lineTo(lx + 89.75*s, ly2 + 135.18*s);
+        ctx.lineTo(lx + 89.75*s, ly2 + 190.39*s);
+        ctx.lineTo(lx + 26.6*s, ly2 + 190.39*s);
+        ctx.lineTo(lx + 26.6*s, ly2 + 89.75*s);
+        ctx.closePath();
+        ctx.fill();
+
         ctx.fillStyle = '#1a1a1a';
         ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-        ctx.fillText(title, titleX, 102);
+        ctx.fillText(title, padding + 130, 102);
         ctx.fillStyle = '#e5e5e5';
         ctx.fillRect(padding, 158, W - padding * 2, 2);
-        drawLegendAndFooter();
-        downloadCanvas();
       }
 
-      if (branded) {
-        var logoDataUri = (typeof IRCShared !== 'undefined' && IRCShared.IRC_LOGO_DATA_URI) || '';
-        if (!logoDataUri) {
-          finishHeader(false, null);
-        } else {
-          var logoImg = new Image();
-          var logoHandled = false;
-          logoImg.onload = function() {
-            if (logoHandled) return;
-            logoHandled = true;
-            finishHeader(true, logoImg);
-          };
-          logoImg.onerror = function() {
-            if (logoHandled) return;
-            logoHandled = true;
-            finishHeader(false, null);
-          };
-          // Safety timeout — if neither fires within 2s, proceed without logo
-          setTimeout(function() {
-            if (logoHandled) return;
-            logoHandled = true;
-            finishHeader(false, null);
-          }, 2000);
-          logoImg.src = logoDataUri;
-        }
-      } else {
-        drawLegendAndFooter();
-        downloadCanvas();
-      }
+      drawLegendAndFooter();
+      downloadCanvas();
 
       // ── Helper: draw filled + stroked polygons ──
       function drawFeature(ctx, feature, fillColor, fillAlpha, strokeColor, strokeAlpha, lineW) {
