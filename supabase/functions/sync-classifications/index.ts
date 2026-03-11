@@ -379,7 +379,8 @@ async function syncClassifications(): Promise<SyncResult> {
           result.unchanged++;
         }
       } else {
-        // New record — generate UUID
+        // Only create new records if notification has been sent (classification is official)
+        if (!notifDate) continue;
         record.id = crypto.randomUUID();
         toUpsert.push(record);
         result.inserted++;
