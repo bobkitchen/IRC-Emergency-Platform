@@ -1215,9 +1215,13 @@
       }
       ctx.globalAlpha = 1;
 
-      // ── Country labels for classified countries ──
+      // ── Country labels with collision avoidance ──
       ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
       ctx.textAlign = 'center';
+
+      // Collect label candidates with priority
+      var stancePriority = { red: 4, orange: 3, yellow: 2, white: 1 };
+      var labelCandidates = [];
       if (geoData && geoData.features) {
         geoData.features.forEach(function(feature) {
           var name = feature.properties.name;
@@ -1228,19 +1232,63 @@
           var cy = projectLat(centroid[1], mapY, mapH, latMin, latMax);
           if (cx > padding && cx < W - padding && cy > mapY + 30 && cy < mapY + mapH - 30) {
             var label = items[0].country || name;
-            // White text shadow for readability
+            var tw = ctx.measureText(label).width;
+            var stance = getHighestStance(items);
+            labelCandidates.push({
+              label: label, cx: cx, cy: cy,
+              w: tw + 12, h: 36, // bounding box with padding
+              priority: stancePriority[stance] || 0
+            });
+          }
+        });
+      }
+
+      // Sort: highest priority first so important labels get placed
+      labelCandidates.sort(function(a, b) { return b.priority - a.priority; });
+
+      // Place labels with collision detection
+      var placedBoxes = [];
+      var nudgeOffsets = [
+        [0, 0], [0, -40], [0, 40], [-60, 0], [60, 0],
+        [-40, -30], [40, -30], [-40, 30], [40, 30]
+      ];
+
+      labelCandidates.forEach(function(cand) {
+        var placed = false;
+        for (var oi = 0; oi < nudgeOffsets.length; oi++) {
+          var nx = cand.cx + nudgeOffsets[oi][0];
+          var ny = cand.cy + nudgeOffsets[oi][1];
+          // Check bounds
+          if (nx - cand.w/2 < padding || nx + cand.w/2 > W - padding) continue;
+          if (ny - cand.h/2 < mapY + 10 || ny + cand.h/2 > mapY + mapH - 10) continue;
+          // Check overlap with placed labels
+          var overlaps = false;
+          for (var pi = 0; pi < placedBoxes.length; pi++) {
+            var pb = placedBoxes[pi];
+            if (nx - cand.w/2 < pb.x + pb.w && nx + cand.w/2 > pb.x &&
+                ny - cand.h/2 < pb.y + pb.h && ny + cand.h/2 > pb.y) {
+              overlaps = true;
+              break;
+            }
+          }
+          if (!overlaps) {
+            // Draw label at this position
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             for (var dx = -1; dx <= 1; dx++) {
               for (var dy = -1; dy <= 1; dy++) {
                 if (dx === 0 && dy === 0) continue;
-                ctx.fillText(label, cx + dx, cy + dy);
+                ctx.fillText(cand.label, nx + dx, ny + dy);
               }
             }
             ctx.fillStyle = '#222';
-            ctx.fillText(label, cx, cy);
+            ctx.fillText(cand.label, nx, ny);
+            placedBoxes.push({ x: nx - cand.w/2, y: ny - cand.h/2, w: cand.w, h: cand.h });
+            placed = true;
+            break;
           }
-        });
-      }
+        }
+        // If no position works, label is simply omitted
+      });
       ctx.textAlign = 'start';
 
       // Restore clipping
@@ -1547,7 +1595,9 @@
           });
         }
 
-        // Country labels
+        // Country labels with collision avoidance
+        var svgStancePriority = { red: 4, orange: 3, yellow: 2, white: 1 };
+        var svgLabelCands = [];
         if (geoData && geoData.features) {
           geoData.features.forEach(function(feature) {
             var name = feature.properties.name;
@@ -1558,10 +1608,44 @@
             var cy = pLat(centroid[1]);
             if (cx > padding && cx < W - padding && cy > mapY + 15 && cy < mapY + mapH - 15) {
               var label = (items[0].country || name).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-              svgParts.push('<text x="' + cx.toFixed(1) + '" y="' + cy.toFixed(1) + '" text-anchor="middle" font-size="14" font-weight="bold" fill="#222" stroke="#fff" stroke-width="3" paint-order="stroke">' + label + '</text>');
+              var stance = getHighestStance(items);
+              // Approximate text width: ~8px per char at font-size 14
+              svgLabelCands.push({
+                label: label, cx: cx, cy: cy,
+                w: label.length * 8 + 8, h: 20,
+                priority: svgStancePriority[stance] || 0
+              });
             }
           });
         }
+        svgLabelCands.sort(function(a, b) { return b.priority - a.priority; });
+
+        var svgPlaced = [];
+        var svgNudges = [
+          [0, 0], [0, -22], [0, 22], [-32, 0], [32, 0],
+          [-22, -16], [22, -16], [-22, 16], [22, 16]
+        ];
+        svgLabelCands.forEach(function(cand) {
+          for (var oi = 0; oi < svgNudges.length; oi++) {
+            var nx = cand.cx + svgNudges[oi][0];
+            var ny = cand.cy + svgNudges[oi][1];
+            if (nx - cand.w/2 < padding || nx + cand.w/2 > W - padding) continue;
+            if (ny - cand.h/2 < mapY + 8 || ny + cand.h/2 > mapY + mapH - 8) continue;
+            var overlaps = false;
+            for (var pi = 0; pi < svgPlaced.length; pi++) {
+              var pb = svgPlaced[pi];
+              if (nx - cand.w/2 < pb.x + pb.w && nx + cand.w/2 > pb.x &&
+                  ny - cand.h/2 < pb.y + pb.h && ny + cand.h/2 > pb.y) {
+                overlaps = true; break;
+              }
+            }
+            if (!overlaps) {
+              svgParts.push('<text x="' + nx.toFixed(1) + '" y="' + ny.toFixed(1) + '" text-anchor="middle" font-size="14" font-weight="bold" fill="#222" stroke="#fff" stroke-width="3" paint-order="stroke">' + cand.label + '</text>');
+              svgPlaced.push({ x: nx - cand.w/2, y: ny - cand.h/2, w: cand.w, h: cand.h });
+              break;
+            }
+          }
+        });
 
         // Close map clip group
         svgParts.push('</g>');
