@@ -1344,15 +1344,15 @@
         <div class="coverage-buttons" id="coverage-buttons">
           <button class="coverage-btn selected" data-coverage="1" type="button">
             <div class="coverage-btn-num">1%</div>
-            <div class="coverage-btn-label">of IRC target</div>
+            <div class="coverage-btn-label">of affected people</div>
           </button>
           <button class="coverage-btn" data-coverage="2" type="button">
             <div class="coverage-btn-num">2%</div>
-            <div class="coverage-btn-label">of IRC target</div>
+            <div class="coverage-btn-label">of affected people</div>
           </button>
           <button class="coverage-btn" data-coverage="3" type="button">
             <div class="coverage-btn-num">3%</div>
-            <div class="coverage-btn-label">of IRC target</div>
+            <div class="coverage-btn-label">of affected people</div>
           </button>
         </div>
         <p id="coverage-guidance" style="font-size:0.75rem; color:#666; margin:-20px 0 20px; line-height:1.5;">
@@ -1437,9 +1437,9 @@
           adjustable based on operational access and feasibility.
         </p>
         <p>
-          Coverage options represent the percentage of the IRC target population that CRF funds directly,
-          from <strong>1%</strong> up to <strong>3%</strong> of the target. The remaining gap represents
-          the external fundraising required to reach the full IRC target.
+          Coverage options represent the percentage of the total affected population that CRF funds directly,
+          from <strong>1%</strong> up to <strong>3%</strong> of affected people. The remaining gap represents
+          the external fundraising required to reach the IRC's 10% response goal.
           All figures are rounded to the nearest $25,000.
         </p>
       </div>
@@ -1849,8 +1849,9 @@
       // ── Update allocation display ──
       function updateAllocation() {
         if (totalCost <= 0) return;
-        // selectedCoverage is 1, 2, or 3 (percent of IRC target pop)
-        var crfPeople = Math.round(targetPop * selectedCoverage / 100);
+        // selectedCoverage is 1, 2, or 3 (percent of affected pop)
+        // which equals 10%, 20%, or 30% of the target pop (10% of affected)
+        var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
         var gapPeople = Math.max(0, targetPop - crfPeople);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
         var gapAmount = Math.max(0, totalCost - crfAmount);
@@ -2291,7 +2292,7 @@
       var MAX_SCENARIOS = 3;
 
       function captureCurrentScenario() {
-        var crfPeople = Math.round(targetPop * selectedCoverage / 100);
+        var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
         var gapPeople = Math.max(0, targetPop - crfPeople);
         var gapAmount = Math.max(0, totalCost - crfAmount);
