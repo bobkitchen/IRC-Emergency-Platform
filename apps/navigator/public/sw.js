@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ern-v2';
+const CACHE_NAME = 'ern-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -27,9 +27,10 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET and API calls
+  // Skip non-GET, API calls, and external services
   if (request.method !== 'GET') return;
   if (url.hostname === 'api.anthropic.com') return;
+  if (url.hostname.includes('supabase.co')) return;
 
   // For navigation requests, serve index.html (SPA routing)
   if (request.mode === 'navigate') {
