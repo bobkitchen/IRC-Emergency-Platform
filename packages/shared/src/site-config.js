@@ -32,6 +32,7 @@ export function getSiteConfig() {
       url: env === 'github' ? '/emergency-classification/' : 'index.html',
       pages: [
         {id: 'dashboard', url: 'index.html', label: 'Dashboard'},
+        {id: 'maps', url: 'maps.html', label: 'Maps'},
         {id: 'classify', url: 'classify.html', label: 'Classify'},
         {id: 'ask-albert', url: 'ask-albert.html', label: 'Ask Albert'}
       ]

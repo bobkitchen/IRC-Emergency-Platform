@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maps — IRC Emergency Classification</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    .maps-layout {
+      display: flex;
+      min-height: calc(100vh - 180px);
+      gap: 0;
+    }
+    .maps-sidebar {
+      width: 280px;
+      min-width: 280px;
+      background: #fff;
+      border-right: 1px solid #e5e5e5;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .maps-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .maps-title-bar {
+      padding: 16px 24px;
+      border-bottom: 1px solid #e5e5e5;
+      background: #fff;
+    }
+    .maps-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .maps-title:hover {
+      border-color: #ddd;
+    }
+    .maps-title:focus {
+      outline: none;
+      border-color: #FFC72C;
+      background: #FFFDF5;
+    }
+    .maps-title-hint {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 4px;
+      padding-left: 8px;
+    }
+    #maps-container {
+      flex: 1;
+      min-height: 400px;
+      background: #f0f0f0;
+    }
+    .maps-legend {
+      padding: 12px 24px;
+      background: #fff;
+      border-top: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+    .legend-gradient-bar {
+      width: 200px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid #ddd;
+    }
+    .legend-gradient-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 200px;
+      font-size: 0.7rem;
+      color: #888;
+    }
+
+    /* Sidebar filter styles */
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #888;
+    }
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .filter-pill {
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #555;
+      font-family: inherit;
+    }
+    .filter-pill:hover {
+      border-color: #bbb;
+      background: #f9f9f9;
+    }
+    .filter-pill.active {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+    .toggle-btn {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: inherit;
+    }
+    .toggle-btn:hover {
+      border-color: #bbb;
+    }
+    .toggle-btn.active {
+      background: #f0f0f0;
+      border-color: #999;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+    .toggle-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+    .filter-select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 0.8rem;
+      font-family: inherit;
+      background: #fff;
+      color: #333;
+      cursor: pointer;
+    }
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #555;
+      cursor: pointer;
+    }
+    .radio-item input[type="radio"] {
+      accent-color: #1a1a1a;
+    }
+
+    .sidebar-summary {
+      font-size: 0.85rem;
+      color: #666;
+      padding: 8px 0;
+      border-top: 1px solid #eee;
+    }
+    .sidebar-export {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .export-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #555;
+      cursor: pointer;
+    }
+    .export-checkbox input {
+      accent-color: #1a1a1a;
+    }
+    .export-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+    .export-btn:hover {
+      background: #333;
+    }
+    .export-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Map tooltip styles (same as dashboard) */
+    .map-country-tooltip {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      max-width: 220px;
+    }
+    .map-country-tooltip .leaflet-tooltip-content {
+      margin: 0;
+    }
+    .map-tip-name {
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    .map-tip-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .map-tip-stance {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .map-tip-type {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      color: #666;
+    }
+    .map-tip-type svg {
+      width: 100%;
+      height: 100%;
+    }
+    .map-tip-count {
+      font-size: 0.7rem;
+      color: #888;
+      margin-top: 2px;
+    }
+    .map-popup-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+    .map-popup-stance {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .map-popup-detail {
+      font-size: 0.78rem;
+      color: #666;
+      margin: 2px 0;
+    }
+    .map-popup-multi {
+      border-top: 1px solid #eee;
+      margin: 8px 0;
+    }
+    .map-popup-link {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .maps-layout {
+        flex-direction: column;
+      }
+      .maps-sidebar {
+        width: 100%;
+        min-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e5e5e5;
+        max-height: 320px;
+        overflow-y: auto;
+      }
+      #maps-container {
+        min-height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-mount"></div>
+  <main>
+    <div id="nav-mount"></div>
+    <div class="maps-layout">
+      <!-- Sidebar -->
+      <div class="maps-sidebar">
+        <!-- Time Period -->
+        <div class="filter-group">
+          <div class="filter-label">Time Period</div>
+          <div class="pill-group" id="time-pills">
+            <button class="filter-pill active" data-period="all">All time</button>
+            <button class="filter-pill" data-period="fy" id="fy-pill">FY26</button>
+            <button class="filter-pill" data-period="12m">Last 12 months</button>
+          </div>
+        </div>
+
+        <!-- Emergency Type -->
+        <div class="filter-group">
+          <div class="filter-label">Emergency Type</div>
+          <div class="pill-group" id="type-toggles">
+            <button class="toggle-btn" data-type="conflict">Conflict</button>
+            <button class="toggle-btn" data-type="outbreak">Outbreak</button>
+            <button class="toggle-btn" data-type="food">Food</button>
+            <button class="toggle-btn" data-type="hazard">Hazard</button>
+            <button class="toggle-btn" data-type="complex">Complex</button>
+          </div>
+        </div>
+
+        <!-- Stance -->
+        <div class="filter-group">
+          <div class="filter-label">Stance</div>
+          <div class="pill-group" id="stance-toggles">
+            <button class="toggle-btn" data-stance="red"><span class="toggle-dot" style="background:#E52911;"></span> Red</button>
+            <button class="toggle-btn" data-stance="orange"><span class="toggle-dot" style="background:#F58220;"></span> Orange</button>
+            <button class="toggle-btn" data-stance="yellow"><span class="toggle-dot" style="background:#FFC72C;"></span> Yellow</button>
+            <button class="toggle-btn" data-stance="white"><span class="toggle-dot" style="background:#E9E9E9;"></span> White</button>
+          </div>
+        </div>
+
+        <!-- Region -->
+        <div class="filter-group">
+          <div class="filter-label">Region</div>
+          <select class="filter-select" id="region-select">
+            <option value="all">All Regions</option>
+            <option value="asia">Asia</option>
+            <option value="east africa">East Africa</option>
+            <option value="latam">LatAm</option>
+            <option value="mena">MENA</option>
+            <option value="rai">RAI</option>
+            <option value="west and central africa">West & Central Africa</option>
+          </select>
+        </div>
+
+        <!-- Display Mode -->
+        <div class="filter-group">
+          <div class="filter-label">Display Mode</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="display-mode" value="stance" checked> Stance color</label>
+            <label class="radio-item"><input type="radio" name="display-mode" value="severity"> Severity heatmap</label>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="filter-group">
+          <div class="filter-label">Status</div>
+          <div class="pill-group" id="status-pills">
+            <button class="filter-pill active" data-status="active">Active only</button>
+            <button class="filter-pill" data-status="all">All</button>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="sidebar-summary" id="filter-summary">0 classifications shown</div>
+
+        <!-- Export -->
+        <div class="sidebar-export">
+          <label class="export-checkbox">
+            <input type="checkbox" id="branding-toggle" checked> IRC branding
+          </label>
+          <button class="export-btn" id="export-btn">Export PNG</button>
+        </div>
+      </div>
+
+      <!-- Main map area -->
+      <div class="maps-main">
+        <div class="maps-title-bar">
+          <h2 class="maps-title" id="map-title" contenteditable="true" spellcheck="false">Active Classifications</h2>
+          <div class="maps-title-hint">Click to edit title</div>
+        </div>
+        <div id="maps-container"></div>
+        <div class="maps-legend" id="maps-legend"></div>
+      </div>
+    </div>
+  </main>
+  <div id="footer-mount"></div>
+
+  <script src="irc-shared.iife.js"></script>
+  <script src="supabase.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    // Render shared chrome
+    document.getElementById('header-mount').innerHTML = IRC.renderHeader('maps');
+    document.getElementById('nav-mount').innerHTML = IRC.renderNav();
+    document.getElementById('footer-mount').innerHTML = IRC.renderFooter();
+
+    // ── State ──
+    var classifications = IRC.getClassifications();
+    var timePeriod = 'all';
+    var statusFilter = 'active';
+    var selectedTypes = [];    // empty = all
+    var selectedStances = [];  // empty = all
+    var regionFilter = 'all';
+    var displayMode = 'stance';
+    var titleEdited = false;
+
+    // Fiscal year
+    var now = new Date();
+    var currentFY = now.getMonth() >= 9 ? now.getFullYear() + 1 : now.getFullYear();
+    var fyLabel = 'FY' + String(currentFY).slice(-2);
+    var fyStart = new Date(currentFY - 1, 9, 1);
+    var fyEnd = new Date(currentFY, 8, 30, 23, 59, 59);
+    document.getElementById('fy-pill').textContent = fyLabel;
+
+    // ── Async load from Supabase ──
+    IRC.db.migrateFromLocalStorage().then(function() {
+      return IRC.db.load();
+    }).then(function(data) {
+      classifications = data;
+      applyFilters();
+    });
+
+    // ── GEO alias maps ──
+    var GEO_TO_CLASS = {
+      'Republic of the Congo': 'Congo',
+      'United Republic of Tanzania': 'Tanzania',
+      'eSwatini': 'Eswatini',
+      'Côte d\'Ivoire': 'Ivory Coast',
+      'Republic of Serbia': 'Serbia',
+      'The Bahamas': 'Bahamas',
+      'Somaliland': 'Somalia',
+      'Republic of Korea': 'South Korea',
+      'Dem. Rep. Korea': 'North Korea',
+      'Timor-Leste': 'East Timor',
+      'Lao PDR': 'Laos',
+      'Iran': 'Iran (Islamic Republic of)',
+      'Syria': 'Syrian Arab Republic',
+      'Palestine': 'State of Palestine',
+      'Moldova': 'Moldova (Republic of)',
+      'Venezuela': 'Venezuela (Bolivarian Republic of)',
+      'Vietnam': 'Viet Nam',
+      'Tanzania': 'United Republic of Tanzania',
+      'Democratic Republic of the Congo': 'Democratic Republic of the Congo'
+    };
+    var CLASS_TO_GEO = {};
+    Object.keys(GEO_TO_CLASS).forEach(function(k) { CLASS_TO_GEO[GEO_TO_CLASS[k]] = k; });
+
+    // ── Type icons (same as dashboard) ──
+    var typeIcons = {
+      'conflict': '<svg viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m58 308.5c-15.439 0-28 12.561-28 28 0 6.763 2.41 12.973 6.417 17.818.058.074 59.793 70.911 59.986 71.096 9.632 11.068 23.806 18.086 39.597 18.086h240c15.798 0 29.977-7.024 39.61-18.102.188-.181 59.915-71.007 59.973-71.081 4.007-4.844 6.417-11.054 6.417-17.817 0-15.439-12.561-28-28-28zm0 15c7.168 0 13 5.832 13 13s-5.832 13-13 13-13-5.832-13-13 5.832-13 13-13zm40.5 67.5c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5zm120 0c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5zm74.192 37.5c9.745-9.537 15.808-22.821 15.808-37.5 0-28.949-23.552-52.5-52.5-52.5s-52.5 23.551-52.5 52.5c0 14.679 6.063 27.963 15.808 37.5h-46.616c9.745-9.537 15.808-22.821 15.808-37.5 0-28.949-23.552-52.5-52.5-52.5-27.636 0-50.337 21.469-52.34 48.602l-19.617-23.266c12.543-2.771 21.957-13.972 21.957-27.336 0-4.691-1.165-9.112-3.212-13h346.425c-2.047 3.888-3.212 8.309-3.212 13 0 13.364 9.414 24.565 21.957 27.336l-19.617 23.265c-2.005-27.133-24.706-48.601-52.341-48.601-28.948 0-52.5 23.551-52.5 52.5 0 14.679 6.063 27.963 15.808 37.5zm83.308 0c-20.678 0-37.5-16.822-37.5-37.5s16.822-37.5 37.5-37.5 37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5zm91-92c0 7.168-5.832 13-13 13s-13-5.832-13-13 5.832-13 13-13 13 5.832 13 13z"/><path d="m158.5 391c0-12.407-10.094-22.5-22.5-22.5s-22.5 10.093-22.5 22.5 10.094 22.5 22.5 22.5 22.5-10.093 22.5-22.5zm-30 0c0-4.136 3.364-7.5 7.5-7.5s7.5 3.364 7.5 7.5-3.364 7.5-7.5 7.5-7.5-3.364-7.5-7.5z"/><path d="m256 368.5c-12.406 0-22.5 10.093-22.5 22.5s10.094 22.5 22.5 22.5 22.5-10.093 22.5-22.5-10.094-22.5-22.5-22.5zm0 30c-4.136 0-7.5-3.364-7.5-7.5s3.364-7.5 7.5-7.5 7.5 3.364 7.5 7.5-3.364 7.5-7.5 7.5z"/><path d="m376 368.5c-12.406 0-22.5 10.093-22.5 22.5s10.094 22.5 22.5 22.5 22.5-10.093 22.5-22.5-10.094-22.5-22.5-22.5zm0 30c-4.136 0-7.5-3.364-7.5-7.5s3.364-7.5 7.5-7.5 7.5 3.364 7.5 7.5-3.364 7.5-7.5 7.5z"/><path d="m301 203.5c4.143 0 7.5-3.358 7.5-7.5v-7.5h196c4.143 0 7.5-3.358 7.5-7.5v-30c0-4.142-3.357-7.5-7.5-7.5h-196v-7.5c0-4.142-3.357-7.5-7.5-7.5h-67.5v-82.5c0-4.142-3.357-7.5-7.5-7.5s-7.5 3.358-7.5 7.5v82.5h-15v-22.5c0-4.142-3.357-7.5-7.5-7.5h-57.41c-20.678 0-37.5 16.822-37.5 37.5v60c0 4.142 3.357 7.5 7.5 7.5h22.5v15h-22.5c-2.211 0-4.309.975-5.733 2.666l-48.445 57.457c-30.316 1.86-54.412 27.102-54.412 57.877 0 13.651 4.848 26.921 13.651 37.366l59.288 70.331c15.741 18.622 38.725 29.303 63.061 29.303h240c24.352 0 47.335-10.685 63.059-29.316l59.343-70.367c8.769-10.446 13.598-23.699 13.598-37.317 0-30.775-24.096-56.017-54.411-57.878l-48.445-57.457c-1.425-1.69-3.522-2.666-5.733-2.666h-124.911v-15h22.5zm196-30h-45v-15h45zm-60-15v15h-128.5v-15zm-298.41-45h49.91v15h-71.12c3.096-8.729 11.433-15 21.21-15zm-26.514 120h76.424v45h-114.366zm384.924 103c0 10.096-3.582 19.924-10.076 27.66l-59.33 70.352c-12.866 15.244-31.671 23.988-51.594 23.988h-240c-19.911 0-38.721-8.743-51.598-23.979l-59.282-70.323c-6.526-7.742-10.12-17.579-10.12-27.698 0-23.71 19.29-43 43-43h396c23.71 0 43 19.29 43 43zm-59.134-58h-234.366v-45h196.424zm-174.366-60h-117.41v-22.5c0-4.142-3.357-7.5-7.5-7.5h-22.5v-45h177.41v45h-124.91c-4.143 0-7.5 3.358-7.5 7.5s3.357 7.5 7.5 7.5h94.91z"/></svg>',
+      'outbreak': '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M28.121,29.125a4.853,4.853,0,1,1,.184,0Zm.007-7.75c-.036,0-.073,0-.109,0A2.876,2.876,0,1,0,31,24.144h0a2.873,2.873,0,0,0-2.87-2.769Z"/><path d="M37.826,44.371a4.48,4.48,0,0,1-2.883-1.01,4.579,4.579,0,0,1-1.633-3.518A5.9,5.9,0,0,1,34.7,36c1.938-2.347,5.2-2.864,7.274-1.153s2.183,5.013.245,7.361h0A5.777,5.777,0,0,1,37.826,44.371Zm1.257-8.54a3.786,3.786,0,0,0-2.842,1.443,3.9,3.9,0,0,0-.931,2.533,2.607,2.607,0,0,0,.907,2.012c1.221,1.009,3.222.612,4.458-.884h0c1.236-1.5,1.247-3.537.025-4.546A2.5,2.5,0,0,0,39.083,35.831Z"/><path d="M41.486,30.319a3.583,3.583,0,0,1-1.657-.419,4.822,4.822,0,0,1-2.347-5.321,3.234,3.234,0,0,1,4.772-2.1,4.647,4.647,0,0,1,2.066,2.267c.941,2.133.236,4.518-1.571,5.315A3.131,3.131,0,0,1,41.486,30.319ZM40.6,24.054a1.12,1.12,0,0,0-.456.094,1.391,1.391,0,0,0-.726.944,2.825,2.825,0,0,0,1.338,3.035,1.4,1.4,0,0,0,1.187.1c.786-.346,1.037-1.573.549-2.679a2.687,2.687,0,0,0-1.161-1.3A1.621,1.621,0,0,0,40.6,24.054Z"/><path d="M22.8,39.559a4.9,4.9,0,0,1-1.822-.36,4.656,4.656,0,0,1-2.332-1.992A3.233,3.233,0,0,1,20.59,32.37a4.818,4.818,0,0,1,5.394,2.173,3.233,3.233,0,0,1-1.949,4.837A4.285,4.285,0,0,1,22.8,39.559Zm-.969-5.367a2.306,2.306,0,0,0-.661.093,1.244,1.244,0,0,0-.782,1.94,2.831,2.831,0,0,0,3.077,1.24,1.244,1.244,0,0,0,.782-1.94A2.692,2.692,0,0,0,22.9,34.407,2.906,2.906,0,0,0,21.826,34.192Z"/><path d="M35,64H29a3,3,0,0,1,0-6V50.757a18.909,18.909,0,0,1-8.138-3.376L19,49.243a3,3,0,0,1-4.243,4.243l-4.242-4.243a3,3,0,0,1,0-4.243,3.071,3.071,0,0,1,4.243,0l1.862-1.862A18.909,18.909,0,0,1,13.243,35H6a3,3,0,0,1-6,0V29a3,3,0,0,1,6,0h7.243a18.909,18.909,0,0,1,3.376-8.138L14.757,19a3,3,0,0,1-4.243-4.243l4.243-4.242A3,3,0,1,1,19,14.757h0l1.862,1.862A18.909,18.909,0,0,1,29,13.243V6a3,3,0,0,1,0-6h6a3,3,0,0,1,0,6v7.243a18.909,18.909,0,0,1,8.138,3.376L45,14.757a3,3,0,0,1,4.243-4.243l4.242,4.243A3,3,0,1,1,49.243,19h0l-1.862,1.862A18.909,18.909,0,0,1,50.757,29H58a3,3,0,0,1,6,0v6a3,3,0,0,1-6,0H50.757a18.909,18.909,0,0,1-3.376,8.138L49.243,45a3.07,3.07,0,0,1,4.242,0,3,3,0,0,1,0,4.243l-4.243,4.242A3,3,0,1,1,45,49.243h0l-1.862-1.862A18.909,18.909,0,0,1,35,50.757V58a3,3,0,0,1,0,6Z"/></svg>',
+      'food': '<svg viewBox="0 0 128 128" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m96.593 24.142c-.022-.38-.206-.732-.505-.969-9.253-7.291-20.354-11.145-32.103-11.145-28.658 0-51.973 23.314-51.973 51.972 0 11.749 3.854 22.85 11.146 32.103.236.299.589.483.969.505.026.002.052.003.078.003.353 0 .693-.14.943-.391l71.057-71.057c.27-.269.41-.641.388-1.021z"/></svg>',
+      'hazard': '<svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 267 267" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m181.966 139.367c-14.878-6.557-31.333-10.2-48.633-10.2-10.42 0-20.535 1.322-30.186 3.808z"/></svg>',
+      'complex': '<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'
+    };
+
+    // ── Region bounds ──
+    var REGION_BOUNDS = {
+      all: null,
+      asia: [[-10, 60], [45, 145]],
+      'east africa': [[-15, 25], [20, 55]],
+      latam: [[-55, -120], [30, -30]],
+      mena: [[10, -15], [45, 65]],
+      rai: [[-35, -20], [40, 55]],
+      'west and central africa': [[-5, -20], [25, 20]]
+    };
+
+    // ── Core functions ──
+    function getLatestPerClassification(list) {
+      var grouped = {};
+      list.forEach(function(c) {
+        var key = c.classificationId || c.id;
+        var num = c.reclassificationNumber || 1;
+        if (!grouped[key] || num > (grouped[key].reclassificationNumber || 1)) {
+          grouped[key] = c;
+        }
+      });
+      return Object.keys(grouped).map(function(k) { return grouped[k]; });
+    }
+
+    function getHighestStance(items) {
+      var order = { red: 3, orange: 2, yellow: 1, white: 0 };
+      var highest = 'white';
+      items.forEach(function(c) {
+        var s = (c.stance || 'white').toLowerCase();
+        if ((order[s] || 0) > (order[highest] || 0)) highest = s;
+      });
+      return highest;
+    }
+
+    function stanceColor(stance) {
+      return IRC.STANCE_COLORS[stance] || '#E9E9E9';
+    }
+
+    function matchGeoToClassification(geoName, byCountry) {
+      if (byCountry[geoName]) return byCountry[geoName];
+      var aliasName = GEO_TO_CLASS[geoName];
+      if (aliasName && byCountry[aliasName]) return byCountry[aliasName];
+      var lowerGeo = geoName.toLowerCase();
+      var keys = Object.keys(byCountry);
+      for (var i = 0; i < keys.length; i++) {
+        if (keys[i].toLowerCase() === lowerGeo) return byCountry[keys[i]];
+      }
+      for (var j = 0; j < keys.length; j++) {
+        if (keys[j].toLowerCase().indexOf(lowerGeo) === 0) return byCountry[keys[j]];
+      }
+      return null;
+    }
+
+    function getSeverityColor(avgSeverity) {
+      if (avgSeverity === null || avgSeverity === undefined || avgSeverity === 0) return '#E9E9E9';
+      if (avgSeverity <= 3) {
+        var t = (avgSeverity - 1) / 2;
+        return lerpColor('#FFF4CC', '#FFC72C', Math.max(0, t));
+      }
+      if (avgSeverity <= 6) {
+        var t2 = (avgSeverity - 3) / 3;
+        return lerpColor('#FFC72C', '#F58220', t2);
+      }
+      var t3 = (avgSeverity - 6) / 4;
+      return lerpColor('#F58220', '#E52911', Math.min(1, t3));
+    }
+
+    function lerpColor(a, b, t) {
+      var ar = parseInt(a.slice(1,3), 16), ag = parseInt(a.slice(3,5), 16), ab = parseInt(a.slice(5,7), 16);
+      var br = parseInt(b.slice(1,3), 16), bg = parseInt(b.slice(3,5), 16), bb = parseInt(b.slice(5,7), 16);
+      var rr = Math.round(ar + (br - ar) * t);
+      var rg = Math.round(ag + (bg - ag) * t);
+      var rb = Math.round(ab + (bb - ab) * t);
+      return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb).toString(16).slice(1);
+    }
+
+    // ── Filter logic ──
+    function getFilteredClassifications() {
+      var latest = getLatestPerClassification(classifications);
+      var filtered = latest.filter(function(c) {
+        // Status filter
+        if (statusFilter === 'active' && IRC.isExpired(c.expirationDate)) return false;
+
+        // Time period filter
+        if (timePeriod === 'fy') {
+          var d = new Date(c.date);
+          if (d < fyStart || d > fyEnd) return false;
+        } else if (timePeriod === '12m') {
+          var twelveAgo = new Date();
+          twelveAgo.setFullYear(twelveAgo.getFullYear() - 1);
+          if (new Date(c.date) < twelveAgo) return false;
+        }
+
+        // Type filter (multi-select; empty = all)
+        if (selectedTypes.length > 0 && selectedTypes.indexOf(c.type) === -1) return false;
+
+        // Stance filter (multi-select; empty = all)
+        if (selectedStances.length > 0) {
+          var s = (c.stance || 'white').toLowerCase();
+          if (selectedStances.indexOf(s) === -1) return false;
+        }
+
+        return true;
+      });
+
+      return filtered;
+    }
+
+    function getCountryMap(filtered) {
+      var byCountry = {};
+      filtered.forEach(function(c) {
+        if (!c.country) return;
+        var name = IRC.normalizeCountry(c.country);
+        if (!byCountry[name]) byCountry[name] = [];
+        byCountry[name].push(c);
+      });
+      return byCountry;
+    }
+
+    // ── Title generation ──
+    function generateTitle() {
+      if (titleEdited) return;
+      var parts = [];
+
+      // Status
+      if (statusFilter === 'active') parts.push('Active');
+
+      // Stances
+      if (selectedStances.length > 0 && selectedStances.length < 4) {
+        var stanceLabels = selectedStances.map(function(s) {
+          return s.charAt(0).toUpperCase() + s.slice(1);
+        });
+        parts.push(stanceLabels.join(' & '));
+      }
+
+      // Types
+      if (selectedTypes.length > 0 && selectedTypes.length <= 3) {
+        var typeLabels = selectedTypes.map(function(t) {
+          return (IRC.TYPE_LABELS[t] || t);
+        });
+        parts.push(typeLabels.join(' & '));
+      }
+
+      parts.push('Classifications');
+
+      // Time suffix
+      var timeSuffix = '';
+      if (timePeriod === 'fy') timeSuffix = ' \u2014 ' + fyLabel;
+      else if (timePeriod === '12m') timeSuffix = ' \u2014 Last 12 Months';
+
+      document.getElementById('map-title').textContent = parts.join(' ') + timeSuffix;
+    }
+
+    // Title edit tracking
+    document.getElementById('map-title').addEventListener('input', function() {
+      titleEdited = true;
+    });
+    document.getElementById('map-title').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.blur();
+      }
+    });
+
+    // ── Leaflet map ──
+    var map = null;
+    var geoLayer = null;
+    var geoData = null;
+
+    function initMap() {
+      map = L.map('maps-container', {
+        center: [15, 20],
+        zoom: 2,
+        minZoom: 2,
+        maxZoom: 7,
+        worldCopyJump: true,
+        zoomControl: true,
+        attributionControl: false,
+        preferCanvas: true
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 19,
+        pane: 'overlayPane'
+      }).addTo(map);
+
+      fetch('countries-simplified.json')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          geoData = data;
+          applyFilters();
+        })
+        .catch(function(err) {
+          console.warn('Failed to load map data:', err);
+          document.getElementById('maps-container').innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;">Map data unavailable</div>';
+        });
+    }
+
+    function renderMapLayer() {
+      if (!map || !geoData) return;
+      if (geoLayer) map.removeLayer(geoLayer);
+
+      var filtered = getFilteredClassifications();
+      var byCountry = getCountryMap(filtered);
+
+      // Update summary
+      document.getElementById('filter-summary').textContent = filtered.length + ' classification' + (filtered.length !== 1 ? 's' : '') + ' shown';
+
+      geoLayer = L.geoJSON(geoData, {
+        style: function(feature) {
+          var name = feature.properties.name;
+          var items = matchGeoToClassification(name, byCountry);
+
+          if (!items) {
+            return { fillColor: '#f0f0f0', fillOpacity: 0.15, color: '#999', weight: 0.5, opacity: 0.6 };
+          }
+
+          var fillColor, fillOpacity = 0.7;
+          if (displayMode === 'severity') {
+            var totalSev = 0, sevCount = 0;
+            items.forEach(function(c) {
+              if (c.severity !== null && c.severity !== undefined) {
+                totalSev += Number(c.severity);
+                sevCount++;
+              }
+            });
+            var avgSev = sevCount > 0 ? totalSev / sevCount : 0;
+            fillColor = getSeverityColor(avgSev);
+          } else {
+            var stance = getHighestStance(items);
+            fillColor = stanceColor(stance);
+          }
+
+          return { fillColor: fillColor, fillOpacity: fillOpacity, color: '#999', weight: 0.5, opacity: 0.6 };
+        },
+        onEachFeature: function(feature, layer) {
+          var name = feature.properties.name;
+          var items = matchGeoToClassification(name, byCountry);
+          var displayName = items ? (items[0].country || name) : name;
+
+          // Tooltip
+          var tipHtml = '<div class="map-tip-name">' + displayName + '</div>';
+          if (items) {
+            var topStance = getHighestStance(items);
+            var stanceLabel = topStance.charAt(0).toUpperCase() + topStance.slice(1);
+            var color = stanceColor(topStance);
+            var isRed = topStance === 'red';
+
+            var seenTypes = {};
+            items.forEach(function(c) { if (c.type) seenTypes[c.type] = true; });
+            var typeIconsHtml = Object.keys(seenTypes).map(function(t) {
+              var icon = typeIcons[t];
+              return icon ? '<span class="map-tip-type">' + icon + '</span>' : '';
+            }).join('');
+
+            tipHtml += '<div class="map-tip-row">';
+            tipHtml += '<span class="map-tip-stance" style="background:' + color + ';color:' + (isRed ? '#fff' : '#000') + ';">' + stanceLabel + '</span>';
+            tipHtml += typeIconsHtml;
+            tipHtml += '</div>';
+
+            if (displayMode === 'severity') {
+              var totalSev = 0, sevCount = 0;
+              items.forEach(function(c) {
+                if (c.severity !== null && c.severity !== undefined) { totalSev += Number(c.severity); sevCount++; }
+              });
+              if (sevCount > 0) {
+                tipHtml += '<div class="map-tip-count">Avg severity: ' + (totalSev / sevCount).toFixed(1) + '</div>';
+              }
+            }
+
+            if (items.length > 1) {
+              tipHtml += '<div class="map-tip-count">' + items.length + ' classifications</div>';
+            }
+          }
+          layer.bindTooltip(tipHtml, { sticky: true, direction: 'top', offset: [0, -10], className: 'map-country-tooltip' });
+
+          // Hover highlight
+          layer.on('mouseover', function() {
+            this.setStyle({ weight: 2, color: '#333', fillOpacity: items ? 0.85 : 0.3 });
+            this.bringToFront();
+          });
+          layer.on('mouseout', function() {
+            geoLayer.resetStyle(this);
+          });
+
+          // Popup for countries with data
+          if (items) {
+            var popupHtml = '<div class="map-popup-title">' + displayName + '</div>';
+            items.forEach(function(c, idx) {
+              if (idx > 0) popupHtml += '<div class="map-popup-multi"></div>';
+              var stance = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : 'White';
+              var sc = stanceColor(c.stance);
+              var isR = c.stance === 'red';
+              var sev = (c.severity !== null && c.severity !== undefined) ? ' ' + c.severity : '';
+              popupHtml += '<span class="map-popup-stance" style="background:' + sc + ';color:' + (isR ? '#fff' : '#000') + ';">' + stance + sev + '</span>';
+              if (c.emergencyName) popupHtml += '<div class="map-popup-detail">' + c.emergencyName + '</div>';
+              if (c.type) popupHtml += '<div class="map-popup-detail">Type: ' + (IRC.TYPE_LABELS[c.type] || c.type) + '</div>';
+              if (c.date) popupHtml += '<div class="map-popup-detail">Date: ' + IRC.formatDate(c.date) + '</div>';
+              var daysLeft = IRC.daysUntilExpiration(c.expirationDate);
+              if (daysLeft !== null) {
+                if (daysLeft < 0) popupHtml += '<div class="map-popup-detail" style="color:#E52911;">Expired</div>';
+                else if (daysLeft <= 7) popupHtml += '<div class="map-popup-detail" style="color:#F58220;">' + daysLeft + ' days until expiry</div>';
+              }
+              popupHtml += '<a class="map-popup-link" href="classify.html?view=' + encodeURIComponent(c.id) + '">View details &rarr;</a>';
+            });
+            layer.bindPopup(popupHtml, { maxWidth: 280, className: 'map-classification-popup' });
+          }
+        }
+      }).addTo(map);
+    }
+
+    function renderLegend() {
+      var legendEl = document.getElementById('maps-legend');
+      if (displayMode === 'severity') {
+        legendEl.innerHTML =
+          '<span style="font-size:0.8rem;color:#555;font-weight:500;">Severity</span>' +
+          '<div style="display:flex;flex-direction:column;gap:2px;">' +
+            '<div class="legend-gradient-bar" style="background:linear-gradient(to right, #FFF4CC, #FFC72C, #F58220, #E52911);"></div>' +
+            '<div class="legend-gradient-labels"><span>0</span><span>3</span><span>6</span><span>10</span></div>' +
+          '</div>';
+      } else {
+        var stances = [
+          { label: 'Red', color: '#E52911' },
+          { label: 'Orange', color: '#F58220' },
+          { label: 'Yellow', color: '#FFC72C' },
+          { label: 'White', color: '#E9E9E9' }
+        ];
+        legendEl.innerHTML = stances.map(function(s) {
+          return '<div class="legend-item"><span class="legend-dot" style="background:' + s.color + ';"></span>' + s.label + '</div>';
+        }).join('');
+      }
+    }
+
+    // ── Master apply ──
+    function applyFilters() {
+      generateTitle();
+      renderMapLayer();
+      renderLegend();
+
+      // Region zoom
+      var bounds = REGION_BOUNDS[regionFilter];
+      if (bounds && map) {
+        map.fitBounds(bounds, { padding: [20, 20], animate: true });
+      } else if (map && regionFilter === 'all') {
+        map.setView([15, 20], 2, { animate: true });
+      }
+    }
+
+    // ── Filter event handlers ──
+
+    // Time period pills (single-select)
+    document.getElementById('time-pills').addEventListener('click', function(e) {
+      var btn = e.target.closest('.filter-pill');
+      if (!btn) return;
+      this.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      timePeriod = btn.getAttribute('data-period');
+      applyFilters();
+    });
+
+    // Type toggles (multi-select)
+    document.getElementById('type-toggles').addEventListener('click', function(e) {
+      var btn = e.target.closest('.toggle-btn');
+      if (!btn) return;
+      btn.classList.toggle('active');
+      selectedTypes = [];
+      this.querySelectorAll('.toggle-btn.active').forEach(function(b) {
+        selectedTypes.push(b.getAttribute('data-type'));
+      });
+      applyFilters();
+    });
+
+    // Stance toggles (multi-select)
+    document.getElementById('stance-toggles').addEventListener('click', function(e) {
+      var btn = e.target.closest('.toggle-btn');
+      if (!btn) return;
+      btn.classList.toggle('active');
+      selectedStances = [];
+      this.querySelectorAll('.toggle-btn.active').forEach(function(b) {
+        selectedStances.push(b.getAttribute('data-stance'));
+      });
+      applyFilters();
+    });
+
+    // Region select
+    document.getElementById('region-select').addEventListener('change', function() {
+      regionFilter = this.value;
+      applyFilters();
+    });
+
+    // Display mode
+    document.querySelectorAll('input[name="display-mode"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        displayMode = this.value;
+        applyFilters();
+      });
+    });
+
+    // Status pills (single-select)
+    document.getElementById('status-pills').addEventListener('click', function(e) {
+      var btn = e.target.closest('.filter-pill');
+      if (!btn) return;
+      this.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      statusFilter = btn.getAttribute('data-status');
+      applyFilters();
+    });
+
+    // ── PNG Export ──
+    document.getElementById('export-btn').addEventListener('click', function() {
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Exporting...';
+
+      var branded = document.getElementById('branding-toggle').checked;
+      var title = document.getElementById('map-title').textContent;
+      var filtered = getFilteredClassifications();
+
+      // Build offscreen wrapper
+      var wrapper = document.createElement('div');
+      wrapper.style.cssText = 'position:absolute;left:-9999px;top:0;width:1600px;background:#fff;padding:0;';
+      document.body.appendChild(wrapper);
+
+      // Branded header
+      if (branded) {
+        var header = document.createElement('div');
+        header.style.cssText = 'padding:32px 40px 16px;display:flex;align-items:center;gap:16px;';
+        var logo = document.createElement('img');
+        logo.src = IRC.IRC_LOGO_DATA_URI;
+        logo.style.cssText = 'width:48px;height:48px;';
+        header.appendChild(logo);
+        var titleEl = document.createElement('div');
+        titleEl.style.cssText = 'font-size:24px;font-weight:600;color:#1a1a1a;';
+        titleEl.textContent = title;
+        header.appendChild(titleEl);
+        wrapper.appendChild(header);
+        var sep = document.createElement('div');
+        sep.style.cssText = 'height:1px;background:#e5e5e5;margin:0 40px;';
+        wrapper.appendChild(sep);
+      }
+
+      // Clone map container for export
+      var mapContainer = document.getElementById('maps-container');
+      var mapClone = document.createElement('div');
+      mapClone.style.cssText = 'width:1600px;height:800px;background:#f7f7f7;position:relative;';
+
+      // Create a temporary export map
+      var exportMap = L.map(mapClone, {
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+        minZoom: 2,
+        maxZoom: 7,
+        zoomControl: false,
+        attributionControl: false,
+        preferCanvas: true,
+        dragging: false,
+        touchZoom: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false
+      });
+
+      // Add GeoJSON layer only (no tiles for clean export)
+      var exportFiltered = getFilteredClassifications();
+      var exportByCountry = getCountryMap(exportFiltered);
+
+      L.geoJSON(geoData, {
+        style: function(feature) {
+          var name = feature.properties.name;
+          var items = matchGeoToClassification(name, exportByCountry);
+          if (!items) return { fillColor: '#f0f0f0', fillOpacity: 0.3, color: '#ccc', weight: 0.5, opacity: 0.6 };
+          var fillColor;
+          if (displayMode === 'severity') {
+            var totalSev = 0, sevCount = 0;
+            items.forEach(function(c) {
+              if (c.severity !== null && c.severity !== undefined) { totalSev += Number(c.severity); sevCount++; }
+            });
+            fillColor = getSeverityColor(sevCount > 0 ? totalSev / sevCount : 0);
+          } else {
+            fillColor = stanceColor(getHighestStance(items));
+          }
+          return { fillColor: fillColor, fillOpacity: 0.7, color: '#999', weight: 0.5, opacity: 0.6 };
+        }
+      }).addTo(exportMap);
+
+      wrapper.appendChild(mapClone);
+
+      // Legend clone
+      var legendClone = document.getElementById('maps-legend').cloneNode(true);
+      legendClone.style.cssText = 'padding:12px 40px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;';
+      wrapper.appendChild(legendClone);
+
+      // Branded footer
+      if (branded) {
+        var footer = document.createElement('div');
+        var today = new Date().toISOString().split('T')[0];
+        footer.style.cssText = 'padding:12px 40px 24px;font-size:12px;color:#999;border-top:1px solid #e5e5e5;margin-top:8px;';
+        footer.textContent = 'Generated ' + today + ' | IRC Emergency Classification System | ' + filtered.length + ' classifications shown';
+        wrapper.appendChild(footer);
+      }
+
+      // Wait for export map to render, then capture
+      setTimeout(function() {
+        html2canvas(wrapper, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
+          var link = document.createElement('a');
+          var today = new Date().toISOString().split('T')[0];
+          link.download = 'irc-classification-map-' + today + '.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        }).catch(function(err) {
+          console.error('Export failed:', err);
+          // Fallback: manually draw onto canvas
+          fallbackExport(wrapper, exportByCountry, filtered, branded, title);
+        }).finally(function() {
+          exportMap.remove();
+          document.body.removeChild(wrapper);
+          btn.disabled = false;
+          btn.textContent = 'Export PNG';
+        });
+      }, 500);
+    });
+
+    function fallbackExport(wrapper, byCountry, filtered, branded, title) {
+      var canvas = document.createElement('canvas');
+      canvas.width = 3200;
+      canvas.height = 1800;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 3200, 1800);
+      ctx.fillStyle = '#1a1a1a';
+      ctx.font = '32px sans-serif';
+      ctx.fillText(title, 80, 80);
+
+      // Draw each country from GeoJSON
+      if (geoData && geoData.features) {
+        geoData.features.forEach(function(feature) {
+          var name = feature.properties.name;
+          var items = matchGeoToClassification(name, byCountry);
+          var fillColor = '#f0f0f0';
+          if (items) {
+            if (displayMode === 'severity') {
+              var totalSev = 0, sevCount = 0;
+              items.forEach(function(c) {
+                if (c.severity !== null && c.severity !== undefined) { totalSev += Number(c.severity); sevCount++; }
+              });
+              fillColor = getSeverityColor(sevCount > 0 ? totalSev / sevCount : 0);
+            } else {
+              fillColor = stanceColor(getHighestStance(items));
+            }
+          }
+
+          ctx.fillStyle = fillColor;
+          ctx.strokeStyle = '#999';
+          ctx.lineWidth = 0.5;
+
+          var geom = feature.geometry;
+          var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
+          polys.forEach(function(poly) {
+            poly.forEach(function(ring) {
+              ctx.beginPath();
+              ring.forEach(function(coord, i) {
+                // Simple equirectangular projection
+                var x = (coord[0] + 180) / 360 * 2800 + 200;
+                var y = (90 - coord[1]) / 180 * 1400 + 150;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+              });
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            });
+          });
+        });
+      }
+
+      // Footer
+      if (branded) {
+        ctx.fillStyle = '#999';
+        ctx.font = '24px sans-serif';
+        var today = new Date().toISOString().split('T')[0];
+        ctx.fillText('Generated ' + today + ' | IRC Emergency Classification System | ' + filtered.length + ' classifications shown', 80, 1740);
+      }
+
+      var link = document.createElement('a');
+      var today = new Date().toISOString().split('T')[0];
+      link.download = 'irc-classification-map-' + today + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // ── Init ──
+    initMap();
+  </script>
+</body>
+</html>
