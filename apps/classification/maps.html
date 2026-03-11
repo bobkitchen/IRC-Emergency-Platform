@@ -44,13 +44,16 @@
 
     /* ── Middle: sidebar + map side by side ── */
     .maps-body {
-      display: flex;
+      position: relative;
     }
 
-    /* ── Slim sidebar (220px) ── */
+    /* ── Slim sidebar (positioned within map row, scrolls if taller) ── */
     .maps-sidebar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
       width: 220px;
-      min-width: 220px;
       background: #fff;
       border-right: 1px solid #e5e5e5;
       padding: 16px;
@@ -58,6 +61,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      z-index: 10;
     }
     .filter-group {
       display: flex;
@@ -143,11 +147,9 @@
       border-top: 1px solid #eee;
     }
 
-    /* ── Map area — 2:1 landscape ── */
+    /* ── Map area — 2:1 landscape, offset by sidebar width ── */
     .maps-map-wrap {
-      flex: 1;
-      min-width: 0;
-      align-self: flex-start;
+      margin-left: 220px;
     }
     #maps-container {
       width: 100%;
@@ -390,12 +392,9 @@
     }
 
     @media (max-width: 768px) {
-      .maps-body {
-        flex-direction: column;
-      }
       .maps-sidebar {
+        position: static;
         width: 100%;
-        min-width: 0;
         border-right: none;
         border-bottom: 1px solid #e5e5e5;
         flex-direction: row;
@@ -403,7 +402,7 @@
         padding: 10px 12px;
         gap: 10px;
       }
-      .filter-group { min-width: 0; }
+      .maps-map-wrap { margin-left: 0; }
       #maps-container { min-height: 300px; }
       .maps-ai-bar {
         flex-wrap: wrap;
