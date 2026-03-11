@@ -588,6 +588,12 @@
     var CLASS_TO_GEO = {};
     Object.keys(GEO_TO_CLASS).forEach(function(k) { CLASS_TO_GEO[GEO_TO_CLASS[k]] = k; });
 
+    // Display name overrides (data stays unchanged, only affects labels/tooltips/exports)
+    var DISPLAY_NAMES = {
+      'State of Palestine': 'Occupied Palestinian Territory'
+    };
+    function displayName(name) { return DISPLAY_NAMES[name] || name; }
+
     // ── Type icons (same as dashboard) ──
     var typeIcons = {
       'conflict': '<svg viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m58 308.5c-15.439 0-28 12.561-28 28 0 6.763 2.41 12.973 6.417 17.818.058.074 59.793 70.911 59.986 71.096 9.632 11.068 23.806 18.086 39.597 18.086h240c15.798 0 29.977-7.024 39.61-18.102.188-.181 59.915-71.007 59.973-71.081 4.007-4.844 6.417-11.054 6.417-17.817 0-15.439-12.561-28-28-28zm0 15c7.168 0 13 5.832 13 13s-5.832 13-13 13-13-5.832-13-13 5.832-13 13-13zm40.5 67.5c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5zm120 0c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5z"/></svg>',
@@ -859,10 +865,10 @@
         onEachFeature: function(feature, layer) {
           var name = feature.properties.name;
           var items = matchGeoToClassification(name, byCountry);
-          var displayName = items ? (items[0].country || name) : name;
+          var countryLabel = displayName(items ? (items[0].country || name) : name);
 
           // Tooltip
-          var tipHtml = '<div class="map-tip-name">' + displayName + '</div>';
+          var tipHtml = '<div class="map-tip-name">' + countryLabel + '</div>';
           if (items) {
             var topStance = getHighestStance(items);
             var stanceLabel = topStance.charAt(0).toUpperCase() + topStance.slice(1);
@@ -908,7 +914,7 @@
 
           // Popup for countries with data
           if (items) {
-            var popupHtml = '<div class="map-popup-title">' + displayName + '</div>';
+            var popupHtml = '<div class="map-popup-title">' + countryLabel + '</div>';
             items.forEach(function(c, idx) {
               if (idx > 0) popupHtml += '<div class="map-popup-multi"></div>';
               var stance = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : 'White';
@@ -1215,7 +1221,7 @@
           var cx = projectLng(centroid[0], mapX, mapW, lngMin, lngMax);
           var cy = projectLat(centroid[1], mapY, mapH, latMin, latMax);
           if (cx > padding && cx < W - padding && cy > mapY + 30 && cy < mapY + mapH - 30) {
-            var label = items[0].country || name;
+            var label = displayName(items[0].country || name);
             var tw = ctx.measureText(label).width;
             var stance = getHighestStance(items);
             labelCandidates.push({
@@ -1591,7 +1597,7 @@
             var cx = pLng(centroid[0]);
             var cy = pLat(centroid[1]);
             if (cx > padding && cx < W - padding && cy > mapY + 15 && cy < mapY + mapH - 15) {
-              var label = (items[0].country || name).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+              var label = displayName(items[0].country || name).replace(/&/g, '&amp;').replace(/</g, '&lt;');
               var stance = getHighestStance(items);
               // Approximate text width: ~8px per char at font-size 14
               svgLabelCands.push({
