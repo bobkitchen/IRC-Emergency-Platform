@@ -8,171 +8,234 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
+    /* ── Full-width layout: toolbar above, map below ── */
     .maps-layout {
       display: flex;
+      flex-direction: column;
       min-height: calc(100vh - 180px);
-      gap: 0;
     }
-    .maps-sidebar {
-      width: 280px;
-      min-width: 280px;
+
+    /* ── Filter toolbar (horizontal, above map) ── */
+    .maps-toolbar {
       background: #fff;
-      border-right: 1px solid #e5e5e5;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .maps-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-    .maps-title-bar {
-      padding: 16px 24px;
       border-bottom: 1px solid #e5e5e5;
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+    }
+    .maps-toolbar .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .maps-toolbar .filter-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #999;
+      white-space: nowrap;
+    }
+    .toolbar-sep {
+      width: 1px;
+      height: 24px;
+      background: #e5e5e5;
+      flex-shrink: 0;
+    }
+    .toolbar-summary {
+      font-size: 0.78rem;
+      color: #666;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    /* ── Title bar ── */
+    .maps-title-bar {
+      padding: 10px 20px;
       background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .maps-title {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 600;
       color: #1a1a1a;
       margin: 0;
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 6px;
       border: 1px solid transparent;
       transition: border-color 0.2s;
+      flex: 1;
     }
-    .maps-title:hover {
-      border-color: #ddd;
-    }
-    .maps-title:focus {
-      outline: none;
-      border-color: #FFC72C;
-      background: #FFFDF5;
-    }
+    .maps-title:hover { border-color: #ddd; }
+    .maps-title:focus { outline: none; border-color: #FFC72C; background: #FFFDF5; }
     .maps-title-hint {
-      font-size: 0.75rem;
-      color: #999;
-      margin-top: 4px;
-      padding-left: 8px;
+      font-size: 0.7rem;
+      color: #bbb;
+    }
+
+    /* ── Map container (fills remaining height) ── */
+    .maps-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     #maps-container {
       flex: 1;
-      min-height: 400px;
+      min-height: 340px;
       background: #f0f0f0;
     }
-    .maps-legend {
-      padding: 12px 24px;
+
+    /* ── Bottom bar: legend + export + AI builder ── */
+    .maps-bottom-bar {
       background: #fff;
       border-top: 1px solid #e5e5e5;
+      padding: 10px 20px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .maps-legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
       flex-wrap: wrap;
     }
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
+      gap: 5px;
+      font-size: 0.78rem;
       color: #555;
     }
     .legend-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       border: 1px solid rgba(0,0,0,0.15);
     }
     .legend-gradient-bar {
-      width: 200px;
-      height: 14px;
+      width: 160px;
+      height: 12px;
       border-radius: 3px;
       border: 1px solid #ddd;
     }
     .legend-gradient-labels {
       display: flex;
       justify-content: space-between;
-      width: 200px;
-      font-size: 0.7rem;
+      width: 160px;
+      font-size: 0.65rem;
       color: #888;
     }
-
-    /* Sidebar filter styles */
-    .filter-group {
+    .bottom-sep {
+      width: 1px;
+      height: 24px;
+      background: #e5e5e5;
+      flex-shrink: 0;
+    }
+    .bottom-export {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 8px;
     }
-    .filter-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #888;
-    }
-    .pill-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .filter-pill {
-      padding: 5px 12px;
-      border-radius: 20px;
-      border: 1px solid #ddd;
-      background: #fff;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      color: #555;
-      font-family: inherit;
-    }
-    .filter-pill:hover {
-      border-color: #bbb;
-      background: #f9f9f9;
-    }
-    .filter-pill.active {
-      background: #1a1a1a;
-      color: #fff;
-      border-color: #1a1a1a;
-    }
-    .toggle-btn {
-      padding: 5px 10px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #fff;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      color: #555;
+    .export-checkbox {
       display: flex;
       align-items: center;
       gap: 5px;
+      font-size: 0.75rem;
+      color: #555;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .export-checkbox input { accent-color: #1a1a1a; }
+    .export-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .export-btn:hover { background: #333; }
+    .export-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* ── AI builder (inline in bottom bar) ── */
+    .ai-builder-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    .ai-builder-inline .ai-sparkle { font-size: 0.85rem; }
+    .ai-builder-inline input {
+      width: 280px;
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      color: #333;
+    }
+    .ai-builder-inline input:focus {
+      outline: none;
+      border-color: #FFC72C;
+      box-shadow: 0 0 0 2px rgba(255,199,44,0.15);
+    }
+    .ai-builder-inline input::placeholder { color: #aaa; }
+
+    /* ── Shared control styles ── */
+    .filter-pill {
+      padding: 4px 10px;
+      border-radius: 16px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #555;
       font-family: inherit;
     }
-    .toggle-btn:hover {
-      border-color: #bbb;
+    .filter-pill:hover { border-color: #bbb; background: #f9f9f9; }
+    .filter-pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .toggle-btn {
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 0.73rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #555;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
     }
-    .toggle-btn.active {
-      background: #f0f0f0;
-      border-color: #999;
-      color: #1a1a1a;
-      font-weight: 500;
-    }
+    .toggle-btn:hover { border-color: #bbb; }
+    .toggle-btn.active { background: #f0f0f0; border-color: #999; color: #1a1a1a; font-weight: 500; }
     .toggle-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       border: 1px solid rgba(0,0,0,0.15);
     }
     .filter-select {
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 4px 8px;
+      border-radius: 5px;
       border: 1px solid #ddd;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-family: inherit;
       background: #fff;
       color: #333;
@@ -180,162 +243,65 @@
     }
     .radio-group {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      gap: 10px;
     }
     .radio-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: #555;
-      cursor: pointer;
-    }
-    .radio-item input[type="radio"] {
-      accent-color: #1a1a1a;
-    }
-
-    .sidebar-summary {
-      font-size: 0.85rem;
-      color: #666;
-      padding: 8px 0;
-      border-top: 1px solid #eee;
-    }
-    .sidebar-export {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .export-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: #555;
-      cursor: pointer;
-    }
-    .export-checkbox input {
-      accent-color: #1a1a1a;
-    }
-    .export-btn {
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: none;
-      background: #1a1a1a;
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s;
-      font-family: inherit;
-    }
-    .export-btn:hover {
-      background: #333;
-    }
-    .export-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-    .export-format-row {
-      display: flex;
-      gap: 8px;
-    }
-    .export-format-row .export-btn {
-      flex: 1;
-      font-size: 0.8rem;
-      padding: 9px 12px;
-    }
-
-    /* AI Map Builder */
-    .ai-builder {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      border-top: 1px solid #eee;
-      padding-top: 16px;
-    }
-    .ai-builder-label {
+      gap: 4px;
       font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #888;
+      color: #555;
+      cursor: pointer;
+    }
+    .radio-item input[type="radio"] { accent-color: #1a1a1a; }
+    .pill-group {
       display: flex;
-      align-items: center;
-      gap: 6px;
+      flex-wrap: wrap;
+      gap: 4px;
     }
-    .ai-builder-label .ai-sparkle {
-      font-size: 0.85rem;
-    }
-    .ai-builder-input {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-family: inherit;
-      resize: vertical;
-      min-height: 56px;
-      max-height: 120px;
-      color: #333;
-      box-sizing: border-box;
-    }
-    .ai-builder-input:focus {
-      outline: none;
-      border-color: #FFC72C;
-      box-shadow: 0 0 0 2px rgba(255,199,44,0.15);
-    }
-    .ai-builder-input::placeholder {
-      color: #aaa;
-    }
+
+    /* AI builder go button */
     .ai-builder-go {
-      padding: 8px 14px;
-      border-radius: 8px;
+      padding: 6px 14px;
+      border-radius: 6px;
       border: 1px solid #FFC72C;
       background: #FFFDF5;
       color: #1a1a1a;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 500;
       cursor: pointer;
       font-family: inherit;
       transition: all 0.15s;
+      white-space: nowrap;
     }
-    .ai-builder-go:hover {
-      background: #FFC72C;
-    }
-    .ai-builder-go:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    .ai-builder-go:hover { background: #FFC72C; }
+    .ai-builder-go:disabled { opacity: 0.5; cursor: not-allowed; }
     .ai-builder-status {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: #888;
-      min-height: 1em;
     }
-    .ai-builder-status.error {
-      color: #E52911;
-    }
+    .ai-builder-status.error { color: #E52911; }
+
+    /* Filter chip */
     .ai-filter-chip {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 16px;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 14px;
       background: #FFF8E1;
       border: 1px solid #FFC72C;
-      font-size: 0.78rem;
+      font-size: 0.73rem;
       color: #1a1a1a;
     }
     .ai-filter-chip-x {
       cursor: pointer;
       font-weight: bold;
       color: #999;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       line-height: 1;
     }
-    .ai-filter-chip-x:hover {
-      color: #E52911;
-    }
+    .ai-filter-chip-x:hover { color: #E52911; }
 
     /* Map tooltip styles (same as dashboard) */
     .map-country-tooltip {
@@ -414,20 +380,15 @@
     }
 
     @media (max-width: 768px) {
-      .maps-layout {
-        flex-direction: column;
+      .maps-toolbar {
+        gap: 8px;
+        padding: 8px 12px;
       }
-      .maps-sidebar {
-        width: 100%;
-        min-width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #e5e5e5;
-        max-height: 320px;
-        overflow-y: auto;
-      }
-      #maps-container {
-        min-height: 400px;
-      }
+      .toolbar-sep { display: none; }
+      .ai-builder-inline { width: 100%; margin-left: 0; }
+      .ai-builder-inline input { flex: 1; width: auto; }
+      .maps-bottom-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      #maps-container { min-height: 300px; }
     }
   </style>
 </head>
@@ -436,21 +397,19 @@
   <main>
     <div id="nav-mount"></div>
     <div class="maps-layout">
-      <!-- Sidebar -->
-      <div class="maps-sidebar">
-        <!-- Time Period -->
+      <!-- Filter toolbar (horizontal, above map) -->
+      <div class="maps-toolbar">
         <div class="filter-group">
-          <div class="filter-label">Time Period</div>
+          <span class="filter-label">Time</span>
           <div class="pill-group" id="time-pills">
             <button class="filter-pill active" data-period="all">All time</button>
             <button class="filter-pill" data-period="fy" id="fy-pill">FY26</button>
-            <button class="filter-pill" data-period="12m">Last 12 months</button>
+            <button class="filter-pill" data-period="12m">Last 12 mo</button>
           </div>
         </div>
-
-        <!-- Emergency Type -->
+        <span class="toolbar-sep"></span>
         <div class="filter-group">
-          <div class="filter-label">Emergency Type</div>
+          <span class="filter-label">Type</span>
           <div class="pill-group" id="type-toggles">
             <button class="toggle-btn" data-type="conflict">Conflict</button>
             <button class="toggle-btn" data-type="outbreak">Outbreak</button>
@@ -459,10 +418,9 @@
             <button class="toggle-btn" data-type="complex">Complex</button>
           </div>
         </div>
-
-        <!-- Stance -->
+        <span class="toolbar-sep"></span>
         <div class="filter-group">
-          <div class="filter-label">Stance</div>
+          <span class="filter-label">Stance</span>
           <div class="pill-group" id="stance-toggles">
             <button class="toggle-btn" data-stance="red"><span class="toggle-dot" style="background:#E52911;"></span> Red</button>
             <button class="toggle-btn" data-stance="orange"><span class="toggle-dot" style="background:#F58220;"></span> Orange</button>
@@ -470,71 +428,66 @@
             <button class="toggle-btn" data-stance="white"><span class="toggle-dot" style="background:#E9E9E9;"></span> White</button>
           </div>
         </div>
-
-        <!-- Region -->
+        <span class="toolbar-sep"></span>
         <div class="filter-group">
-          <div class="filter-label">Region</div>
+          <span class="filter-label">Region</span>
           <select class="filter-select" id="region-select">
-            <option value="all">All Regions</option>
+            <option value="all">All</option>
             <option value="asia">Asia</option>
             <option value="east africa">East Africa</option>
             <option value="latam">LatAm</option>
             <option value="mena">MENA</option>
             <option value="rai">RAI</option>
-            <option value="west and central africa">West & Central Africa</option>
+            <option value="west and central africa">W&C Africa</option>
           </select>
         </div>
-
-        <!-- Display Mode -->
+        <span class="toolbar-sep"></span>
         <div class="filter-group">
-          <div class="filter-label">Display Mode</div>
+          <span class="filter-label">Display</span>
           <div class="radio-group">
-            <label class="radio-item"><input type="radio" name="display-mode" value="stance" checked> Stance color</label>
-            <label class="radio-item"><input type="radio" name="display-mode" value="severity"> Severity heatmap</label>
+            <label class="radio-item"><input type="radio" name="display-mode" value="stance" checked> Stance</label>
+            <label class="radio-item"><input type="radio" name="display-mode" value="severity"> Severity</label>
           </div>
         </div>
-
-        <!-- Status -->
+        <span class="toolbar-sep"></span>
         <div class="filter-group">
-          <div class="filter-label">Status</div>
+          <span class="filter-label">Status</span>
           <div class="pill-group" id="status-pills">
-            <button class="filter-pill active" data-status="active">Active only</button>
+            <button class="filter-pill active" data-status="active">Active</button>
             <button class="filter-pill" data-status="all">All</button>
           </div>
         </div>
-
-        <!-- Summary -->
-        <div id="ai-filter-chip-wrap"></div>
-        <div class="sidebar-summary" id="filter-summary">0 classifications shown</div>
-
-        <!-- Export -->
-        <div class="sidebar-export">
-          <label class="export-checkbox">
-            <input type="checkbox" id="branding-toggle" checked> IRC branding
-          </label>
-          <div class="export-format-row">
-            <button class="export-btn" id="export-btn">Export PNG</button>
-            <button class="export-btn" id="export-svg-btn" style="background:#fff;color:#1a1a1a;border:1px solid #1a1a1a;">Export SVG</button>
-          </div>
-        </div>
-
-        <!-- AI Map Builder -->
-        <div class="ai-builder">
-          <div class="ai-builder-label"><span class="ai-sparkle">&#10024;</span> Describe Your Map</div>
-          <textarea class="ai-builder-input" id="ai-builder-input" placeholder="e.g. Show me all red conflict classifications in East Africa from the last 12 months"></textarea>
-          <button class="ai-builder-go" id="ai-builder-go">Build Map</button>
-          <div class="ai-builder-status" id="ai-builder-status"></div>
-        </div>
+        <span id="ai-filter-chip-wrap"></span>
+        <span class="toolbar-summary" id="filter-summary">0 shown</span>
       </div>
 
-      <!-- Main map area -->
+      <!-- Title bar -->
+      <div class="maps-title-bar">
+        <h2 class="maps-title" id="map-title" contenteditable="true" spellcheck="false">Active Classifications</h2>
+        <span class="maps-title-hint">Click to edit</span>
+      </div>
+
+      <!-- Map (full width, landscape) -->
       <div class="maps-main">
-        <div class="maps-title-bar">
-          <h2 class="maps-title" id="map-title" contenteditable="true" spellcheck="false">Active Classifications</h2>
-          <div class="maps-title-hint">Click to edit title</div>
-        </div>
         <div id="maps-container"></div>
+      </div>
+
+      <!-- Bottom bar: legend + export + AI builder -->
+      <div class="maps-bottom-bar">
         <div class="maps-legend" id="maps-legend"></div>
+        <span class="bottom-sep"></span>
+        <div class="bottom-export">
+          <label class="export-checkbox"><input type="checkbox" id="branding-toggle" checked> Branded</label>
+          <button class="export-btn" id="export-btn">PNG</button>
+          <button class="export-btn" id="export-svg-btn" style="background:#fff;color:#1a1a1a;border:1px solid #1a1a1a;">SVG</button>
+        </div>
+        <span class="bottom-sep"></span>
+        <div class="ai-builder-inline">
+          <span class="ai-sparkle">&#10024;</span>
+          <input type="text" id="ai-builder-input" placeholder="Describe a map, e.g. &quot;red conflicts in East Africa last 12 months&quot;">
+          <button class="ai-builder-go" id="ai-builder-go">Build</button>
+          <span class="ai-builder-status" id="ai-builder-status"></span>
+        </div>
       </div>
     </div>
   </main>
@@ -821,10 +774,14 @@
         pane: 'overlayPane'
       }).addTo(map);
 
+      // Ensure Leaflet measures the full-width container correctly
+      setTimeout(function() { map.invalidateSize(); }, 100);
+
       fetch('countries-simplified.json')
         .then(function(res) { return res.json(); })
         .then(function(data) {
           geoData = data;
+          map.invalidateSize();
           applyFilters();
         })
         .catch(function(err) {
@@ -842,7 +799,7 @@
       var byCountry = getCountryMap(filtered);
 
       // Update summary
-      document.getElementById('filter-summary').textContent = filtered.length + ' classification' + (filtered.length !== 1 ? 's' : '') + ' shown';
+      document.getElementById('filter-summary').textContent = filtered.length + ' shown';
 
       geoLayer = L.geoJSON(geoData, {
         style: function(feature) {
@@ -1819,9 +1776,9 @@
       });
     });
 
-    // Allow Enter to submit (Shift+Enter for newline)
+    // Enter to submit AI builder
     document.getElementById('ai-builder-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === 'Enter') {
         e.preventDefault();
         document.getElementById('ai-builder-go').click();
       }
