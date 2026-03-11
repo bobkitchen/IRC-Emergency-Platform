@@ -695,6 +695,18 @@
       </div>
 
       <div class="settings-card" style="margin-top:16px;">
+        <h3>SharePoint Sync</h3>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="syncNowBtn" onclick="triggerSync()">Sync Now</button>
+          <span class="hint" id="syncStatus">Syncs classification data from the master SharePoint spreadsheet.</span>
+        </div>
+        <div id="syncResult" style="display:none;margin-top:12px;padding:12px 16px;border-radius:8px;font-size:0.8125rem;"></div>
+        <div style="margin-top:8px;">
+          <span class="hint" id="lastSyncTime"></span>
+        </div>
+      </div>
+
+      <div class="settings-card" style="margin-top:16px;">
         <h3>Quick Links</h3>
         <div class="app-links" id="dashAppLinks"></div>
       </div>
@@ -2181,6 +2193,86 @@
       }
       var kb = Math.round(totalBytes / 1024);
       document.getElementById('aboutStorage').textContent = kb + ' KB across ' + keyCount + ' keys';
+    }
+
+    // ══════════════════════════════════════════════
+    // SharePoint Sync
+    // ══════════════════════════════════════════════
+    var SYNC_URL = SUPABASE_URL + '/functions/v1/sync-classifications';
+
+    window.triggerSync = function() {
+      var btn = document.getElementById('syncNowBtn');
+      var status = document.getElementById('syncStatus');
+      var resultDiv = document.getElementById('syncResult');
+
+      btn.disabled = true;
+      btn.textContent = 'Syncing...';
+      status.textContent = 'Downloading and parsing spreadsheet...';
+      resultDiv.style.display = 'none';
+
+      fetch(SYNC_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}'
+      })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          btn.disabled = false;
+          btn.textContent = 'Sync Now';
+
+          if (data.error) {
+            status.textContent = 'Sync failed';
+            resultDiv.style.display = 'block';
+            resultDiv.style.background = '#FFEBEE';
+            resultDiv.style.color = '#C62828';
+            resultDiv.textContent = 'Error: ' + data.error;
+            return;
+          }
+
+          var duration = (data.duration / 1000).toFixed(1);
+          status.textContent = 'Last sync: ' + new Date().toLocaleString();
+          localStorage.setItem('irc_last_sync', new Date().toISOString());
+          localStorage.setItem('irc_last_sync_result', JSON.stringify(data));
+
+          resultDiv.style.display = 'block';
+          resultDiv.style.background = '#E8F5E9';
+          resultDiv.style.color = '#2E7D32';
+          var summary = data.totalRows + ' rows processed in ' + duration + 's — ';
+          summary += data.inserted + ' new, ' + data.updated + ' updated, ' + data.unchanged + ' unchanged';
+          if (data.errors > 0) summary += ', ' + data.errors + ' errors';
+          resultDiv.textContent = summary;
+
+          // Refresh dashboard stats
+          refreshDashboard();
+          // Reload classification cache
+          IRC.db.load().then(function() { DATA.refreshDataTable(); });
+        })
+        .catch(function(err) {
+          btn.disabled = false;
+          btn.textContent = 'Sync Now';
+          status.textContent = 'Sync failed';
+          resultDiv.style.display = 'block';
+          resultDiv.style.background = '#FFEBEE';
+          resultDiv.style.color = '#C62828';
+          resultDiv.textContent = 'Network error: ' + err.message;
+        });
+    };
+
+    // Show last sync time on load
+    var lastSync = localStorage.getItem('irc_last_sync');
+    if (lastSync) {
+      document.getElementById('lastSyncTime').textContent = 'Last sync: ' + new Date(lastSync).toLocaleString();
+      var lastResult = localStorage.getItem('irc_last_sync_result');
+      if (lastResult) {
+        try {
+          var lr = JSON.parse(lastResult);
+          var resultDiv2 = document.getElementById('syncResult');
+          resultDiv2.style.display = 'block';
+          resultDiv2.style.background = '#E8F5E9';
+          resultDiv2.style.color = '#2E7D32';
+          resultDiv2.textContent = lr.totalRows + ' rows — ' + lr.inserted + ' new, ' + lr.updated + ' updated, ' + lr.unchanged + ' unchanged';
+        } catch (e) { /* ignore */ }
+      }
     }
 
     // ══════════════════════════════════════════════
