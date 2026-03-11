@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     .maps-layout {
       display: flex;
@@ -491,10 +490,10 @@
 
     // ── Type icons (same as dashboard) ──
     var typeIcons = {
-      'conflict': '<svg viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m58 308.5c-15.439 0-28 12.561-28 28 0 6.763 2.41 12.973 6.417 17.818.058.074 59.793 70.911 59.986 71.096 9.632 11.068 23.806 18.086 39.597 18.086h240c15.798 0 29.977-7.024 39.61-18.102.188-.181 59.915-71.007 59.973-71.081 4.007-4.844 6.417-11.054 6.417-17.817 0-15.439-12.561-28-28-28zm0 15c7.168 0 13 5.832 13 13s-5.832 13-13 13-13-5.832-13-13 5.832-13 13-13zm40.5 67.5c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5zm120 0c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5zm74.192 37.5c9.745-9.537 15.808-22.821 15.808-37.5 0-28.949-23.552-52.5-52.5-52.5s-52.5 23.551-52.5 52.5c0 14.679 6.063 27.963 15.808 37.5h-46.616c9.745-9.537 15.808-22.821 15.808-37.5 0-28.949-23.552-52.5-52.5-52.5-27.636 0-50.337 21.469-52.34 48.602l-19.617-23.266c12.543-2.771 21.957-13.972 21.957-27.336 0-4.691-1.165-9.112-3.212-13h346.425c-2.047 3.888-3.212 8.309-3.212 13 0 13.364 9.414 24.565 21.957 27.336l-19.617 23.265c-2.005-27.133-24.706-48.601-52.341-48.601-28.948 0-52.5 23.551-52.5 52.5 0 14.679 6.063 27.963 15.808 37.5zm83.308 0c-20.678 0-37.5-16.822-37.5-37.5s16.822-37.5 37.5-37.5 37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5zm91-92c0 7.168-5.832 13-13 13s-13-5.832-13-13 5.832-13 13-13 13 5.832 13 13z"/><path d="m158.5 391c0-12.407-10.094-22.5-22.5-22.5s-22.5 10.093-22.5 22.5 10.094 22.5 22.5 22.5 22.5-10.093 22.5-22.5zm-30 0c0-4.136 3.364-7.5 7.5-7.5s7.5 3.364 7.5 7.5-3.364 7.5-7.5 7.5-7.5-3.364-7.5-7.5z"/><path d="m256 368.5c-12.406 0-22.5 10.093-22.5 22.5s10.094 22.5 22.5 22.5 22.5-10.093 22.5-22.5-10.094-22.5-22.5-22.5zm0 30c-4.136 0-7.5-3.364-7.5-7.5s3.364-7.5 7.5-7.5 7.5 3.364 7.5 7.5-3.364 7.5-7.5 7.5z"/><path d="m376 368.5c-12.406 0-22.5 10.093-22.5 22.5s10.094 22.5 22.5 22.5 22.5-10.093 22.5-22.5-10.094-22.5-22.5-22.5zm0 30c-4.136 0-7.5-3.364-7.5-7.5s3.364-7.5 7.5-7.5 7.5 3.364 7.5 7.5-3.364 7.5-7.5 7.5z"/><path d="m301 203.5c4.143 0 7.5-3.358 7.5-7.5v-7.5h196c4.143 0 7.5-3.358 7.5-7.5v-30c0-4.142-3.357-7.5-7.5-7.5h-196v-7.5c0-4.142-3.357-7.5-7.5-7.5h-67.5v-82.5c0-4.142-3.357-7.5-7.5-7.5s-7.5 3.358-7.5 7.5v82.5h-15v-22.5c0-4.142-3.357-7.5-7.5-7.5h-57.41c-20.678 0-37.5 16.822-37.5 37.5v60c0 4.142 3.357 7.5 7.5 7.5h22.5v15h-22.5c-2.211 0-4.309.975-5.733 2.666l-48.445 57.457c-30.316 1.86-54.412 27.102-54.412 57.877 0 13.651 4.848 26.921 13.651 37.366l59.288 70.331c15.741 18.622 38.725 29.303 63.061 29.303h240c24.352 0 47.335-10.685 63.059-29.316l59.343-70.367c8.769-10.446 13.598-23.699 13.598-37.317 0-30.775-24.096-56.017-54.411-57.878l-48.445-57.457c-1.425-1.69-3.522-2.666-5.733-2.666h-124.911v-15h22.5zm196-30h-45v-15h45zm-60-15v15h-128.5v-15zm-298.41-45h49.91v15h-71.12c3.096-8.729 11.433-15 21.21-15zm-26.514 120h76.424v45h-114.366zm384.924 103c0 10.096-3.582 19.924-10.076 27.66l-59.33 70.352c-12.866 15.244-31.671 23.988-51.594 23.988h-240c-19.911 0-38.721-8.743-51.598-23.979l-59.282-70.323c-6.526-7.742-10.12-17.579-10.12-27.698 0-23.71 19.29-43 43-43h396c23.71 0 43 19.29 43 43zm-59.134-58h-234.366v-45h196.424zm-174.366-60h-117.41v-22.5c0-4.142-3.357-7.5-7.5-7.5h-22.5v-45h177.41v45h-124.91c-4.143 0-7.5 3.358-7.5 7.5s3.357 7.5 7.5 7.5h94.91z"/></svg>',
-      'outbreak': '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M28.121,29.125a4.853,4.853,0,1,1,.184,0Zm.007-7.75c-.036,0-.073,0-.109,0A2.876,2.876,0,1,0,31,24.144h0a2.873,2.873,0,0,0-2.87-2.769Z"/><path d="M37.826,44.371a4.48,4.48,0,0,1-2.883-1.01,4.579,4.579,0,0,1-1.633-3.518A5.9,5.9,0,0,1,34.7,36c1.938-2.347,5.2-2.864,7.274-1.153s2.183,5.013.245,7.361h0A5.777,5.777,0,0,1,37.826,44.371Zm1.257-8.54a3.786,3.786,0,0,0-2.842,1.443,3.9,3.9,0,0,0-.931,2.533,2.607,2.607,0,0,0,.907,2.012c1.221,1.009,3.222.612,4.458-.884h0c1.236-1.5,1.247-3.537.025-4.546A2.5,2.5,0,0,0,39.083,35.831Z"/><path d="M41.486,30.319a3.583,3.583,0,0,1-1.657-.419,4.822,4.822,0,0,1-2.347-5.321,3.234,3.234,0,0,1,4.772-2.1,4.647,4.647,0,0,1,2.066,2.267c.941,2.133.236,4.518-1.571,5.315A3.131,3.131,0,0,1,41.486,30.319ZM40.6,24.054a1.12,1.12,0,0,0-.456.094,1.391,1.391,0,0,0-.726.944,2.825,2.825,0,0,0,1.338,3.035,1.4,1.4,0,0,0,1.187.1c.786-.346,1.037-1.573.549-2.679a2.687,2.687,0,0,0-1.161-1.3A1.621,1.621,0,0,0,40.6,24.054Z"/><path d="M22.8,39.559a4.9,4.9,0,0,1-1.822-.36,4.656,4.656,0,0,1-2.332-1.992A3.233,3.233,0,0,1,20.59,32.37a4.818,4.818,0,0,1,5.394,2.173,3.233,3.233,0,0,1-1.949,4.837A4.285,4.285,0,0,1,22.8,39.559Zm-.969-5.367a2.306,2.306,0,0,0-.661.093,1.244,1.244,0,0,0-.782,1.94,2.831,2.831,0,0,0,3.077,1.24,1.244,1.244,0,0,0,.782-1.94A2.692,2.692,0,0,0,22.9,34.407,2.906,2.906,0,0,0,21.826,34.192Z"/><path d="M35,64H29a3,3,0,0,1,0-6V50.757a18.909,18.909,0,0,1-8.138-3.376L19,49.243a3,3,0,0,1-4.243,4.243l-4.242-4.243a3,3,0,0,1,0-4.243,3.071,3.071,0,0,1,4.243,0l1.862-1.862A18.909,18.909,0,0,1,13.243,35H6a3,3,0,0,1-6,0V29a3,3,0,0,1,6,0h7.243a18.909,18.909,0,0,1,3.376-8.138L14.757,19a3,3,0,0,1-4.243-4.243l4.243-4.242A3,3,0,1,1,19,14.757h0l1.862,1.862A18.909,18.909,0,0,1,29,13.243V6a3,3,0,0,1,0-6h6a3,3,0,0,1,0,6v7.243a18.909,18.909,0,0,1,8.138,3.376L45,14.757a3,3,0,0,1,4.243-4.243l4.242,4.243A3,3,0,1,1,49.243,19h0l-1.862,1.862A18.909,18.909,0,0,1,50.757,29H58a3,3,0,0,1,6,0v6a3,3,0,0,1-6,0H50.757a18.909,18.909,0,0,1-3.376,8.138L49.243,45a3.07,3.07,0,0,1,4.242,0,3,3,0,0,1,0,4.243l-4.243,4.242A3,3,0,1,1,45,49.243h0l-1.862-1.862A18.909,18.909,0,0,1,35,50.757V58a3,3,0,0,1,0,6Z"/></svg>',
+      'conflict': '<svg viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m58 308.5c-15.439 0-28 12.561-28 28 0 6.763 2.41 12.973 6.417 17.818.058.074 59.793 70.911 59.986 71.096 9.632 11.068 23.806 18.086 39.597 18.086h240c15.798 0 29.977-7.024 39.61-18.102.188-.181 59.915-71.007 59.973-71.081 4.007-4.844 6.417-11.054 6.417-17.817 0-15.439-12.561-28-28-28zm0 15c7.168 0 13 5.832 13 13s-5.832 13-13 13-13-5.832-13-13 5.832-13 13-13zm40.5 67.5c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5zm120 0c0-20.678 16.822-37.5 37.5-37.5s37.5 16.822 37.5 37.5-16.822 37.5-37.5 37.5-37.5-16.822-37.5-37.5z"/></svg>',
+      'outbreak': '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M35,64H29a3,3,0,0,1,0-6V50.757a18.909,18.909,0,0,1-8.138-3.376L19,49.243a3,3,0,0,1-4.243,4.243l-4.242-4.243a3,3,0,0,1,0-4.243,3.071,3.071,0,0,1,4.243,0l1.862-1.862A18.909,18.909,0,0,1,13.243,35H6a3,3,0,0,1-6,0V29a3,3,0,0,1,6,0h7.243a18.909,18.909,0,0,1,3.376-8.138L14.757,19a3,3,0,0,1-4.243-4.243l4.243-4.242A3,3,0,1,1,19,14.757h0l1.862,1.862A18.909,18.909,0,0,1,29,13.243V6a3,3,0,0,1,0-6h6a3,3,0,0,1,0,6v7.243a18.909,18.909,0,0,1,8.138,3.376L45,14.757a3,3,0,0,1,4.243-4.243l4.242,4.243A3,3,0,1,1,49.243,19h0l-1.862,1.862A18.909,18.909,0,0,1,50.757,29H58a3,3,0,0,1,6,0v6a3,3,0,0,1-6,0H50.757a18.909,18.909,0,0,1-3.376,8.138L49.243,45a3.07,3.07,0,0,1,4.242,0,3,3,0,0,1,0,4.243l-4.243,4.242A3,3,0,1,1,45,49.243h0l-1.862-1.862A18.909,18.909,0,0,1,35,50.757V58a3,3,0,0,1,0,6Z"/></svg>',
       'food': '<svg viewBox="0 0 128 128" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m96.593 24.142c-.022-.38-.206-.732-.505-.969-9.253-7.291-20.354-11.145-32.103-11.145-28.658 0-51.973 23.314-51.973 51.972 0 11.749 3.854 22.85 11.146 32.103.236.299.589.483.969.505.026.002.052.003.078.003.353 0 .693-.14.943-.391l71.057-71.057c.27-.269.41-.641.388-1.021z"/></svg>',
-      'hazard': '<svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 267 267" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m181.966 139.367c-14.878-6.557-31.333-10.2-48.633-10.2-10.42 0-20.535 1.322-30.186 3.808z"/></svg>',
+      'hazard': '<svg viewBox="0 0 267 267" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m181.966 139.367c-14.878-6.557-31.333-10.2-48.633-10.2-10.42 0-20.535 1.322-30.186 3.808z"/></svg>',
       'complex': '<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'
     };
 
@@ -914,9 +913,25 @@
     });
 
     // ── PNG Export ──
-    // Strategy: capture the live on-screen map with html2canvas, then compose
-    // branding/legend onto a final canvas. Leaflet requires visible containers
-    // to render, so we can't create a map in an offscreen div.
+    // Renders GeoJSON polygons directly onto a high-res canvas using Web Mercator
+    // projection. No DOM capture, no external libraries — pixel-perfect at any
+    // resolution. Matches Leaflet's on-screen view bounds.
+
+    function latToMercY(lat) {
+      var rad = lat * Math.PI / 180;
+      return Math.log(Math.tan(Math.PI / 4 + rad / 2));
+    }
+
+    function projectLng(lng, mapX, mapW, lngMin, lngMax) {
+      return mapX + (lng - lngMin) / (lngMax - lngMin) * mapW;
+    }
+
+    function projectLat(lat, mapY, mapH, latMin, latMax) {
+      var yMin = latToMercY(latMin);
+      var yMax = latToMercY(latMax);
+      var y = latToMercY(lat);
+      return mapY + mapH - (y - yMin) / (yMax - yMin) * mapH;
+    }
 
     document.getElementById('export-btn').addEventListener('click', function() {
       var btn = this;
@@ -926,97 +941,221 @@
       var branded = document.getElementById('branding-toggle').checked;
       var title = document.getElementById('map-title').textContent;
       var filtered = getFilteredClassifications();
+      var byCountry = getCountryMap(filtered);
       var today = new Date().toISOString().split('T')[0];
 
-      // Temporarily hide Leaflet controls and tile layers for clean capture
-      var mapEl = document.getElementById('maps-container');
-      var controls = mapEl.querySelectorAll('.leaflet-control-container');
-      var tilePanes = mapEl.querySelectorAll('.leaflet-tile-pane');
-      controls.forEach(function(el) { el.style.display = 'none'; });
-      tilePanes.forEach(function(el) { el.style.display = 'none'; });
-      mapEl.style.background = '#f7f7f7';
-
-      html2canvas(mapEl, { scale: 2, useCORS: true, backgroundColor: '#f7f7f7' }).then(function(mapCanvas) {
-        // Restore hidden elements
-        controls.forEach(function(el) { el.style.display = ''; });
-        tilePanes.forEach(function(el) { el.style.display = ''; });
-        mapEl.style.background = '';
-
-        // Compose final image
-        composeExport(mapCanvas, branded, title, filtered, today);
-      }).catch(function(err) {
-        console.error('html2canvas failed, using fallback:', err);
-        // Restore
-        controls.forEach(function(el) { el.style.display = ''; });
-        tilePanes.forEach(function(el) { el.style.display = ''; });
-        mapEl.style.background = '';
-        // Fallback: draw GeoJSON manually
-        fallbackExport(filtered, branded, title, today);
-      }).finally(function() {
-        btn.disabled = false;
-        btn.textContent = 'Export PNG';
-      });
-    });
-
-    function composeExport(mapCanvas, branded, title, filtered, today) {
-      var W = 3200; // 1600 @ 2x
+      // Canvas dimensions (2x for retina/print quality)
+      var W = 3200;
       var padding = 80;
-      var headerH = branded ? 160 : 0;
-      var legendH = 80;
-      var footerH = branded ? 60 : 0;
-      var mapH = mapCanvas.height * (W / mapCanvas.width); // scale map to full width
+      var headerH = branded ? 180 : 0;
+      var mapH = 1600;
+      var legendH = 100;
+      var footerH = branded ? 80 : 0;
       var totalH = headerH + mapH + legendH + footerH;
+
+      // Use Leaflet's current view bounds for projection
+      var bounds = map.getBounds();
+      var lngMin = bounds.getWest();
+      var lngMax = bounds.getEast();
+      var latMin = Math.max(bounds.getSouth(), -85);
+      var latMax = Math.min(bounds.getNorth(), 85);
+
+      var mapX = 0;
+      var mapY = headerH;
+      var mapW = W;
 
       var canvas = document.createElement('canvas');
       canvas.width = W;
       canvas.height = totalH;
       var ctx = canvas.getContext('2d');
 
-      // White background
+      // White page background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, W, totalH);
 
-      var y = 0;
+      // Map area background (light gray like Leaflet)
+      ctx.fillStyle = '#f0f0f0';
+      ctx.fillRect(mapX, mapY, mapW, mapH);
 
-      // Branded header
+      // Clip map rendering to map area
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(mapX, mapY, mapW, mapH);
+      ctx.clip();
+
+      // ── Pass 1: Unmatched countries (subtle background) ──
+      if (geoData && geoData.features) {
+        geoData.features.forEach(function(feature) {
+          var name = feature.properties.name;
+          var items = matchGeoToClassification(name, byCountry);
+          if (items) return;
+          drawFeature(ctx, feature, '#e2e2e2', 0.6, '#ccc', 0.5, 0.8);
+        });
+      }
+
+      // ── Pass 2: Matched countries (colored fills, drawn on top) ──
+      if (geoData && geoData.features) {
+        geoData.features.forEach(function(feature) {
+          var name = feature.properties.name;
+          var items = matchGeoToClassification(name, byCountry);
+          if (!items) return;
+
+          var fillColor;
+          if (displayMode === 'severity') {
+            var totalSev = 0, sevCount = 0;
+            items.forEach(function(c) {
+              if (c.severity !== null && c.severity !== undefined) { totalSev += Number(c.severity); sevCount++; }
+            });
+            fillColor = getSeverityColor(sevCount > 0 ? totalSev / sevCount : 0);
+          } else {
+            fillColor = stanceColor(getHighestStance(items));
+          }
+          drawFeature(ctx, feature, fillColor, 0.85, '#777', 0.8, 1);
+        });
+      }
+
+      // ── Pass 3: Crisp country borders on top of everything ──
+      ctx.globalAlpha = 0.6;
+      ctx.strokeStyle = '#aaa';
+      ctx.lineWidth = 1;
+      if (geoData && geoData.features) {
+        geoData.features.forEach(function(feature) {
+          drawFeatureStroke(ctx, feature);
+        });
+      }
+      ctx.globalAlpha = 1;
+
+      // ── Country labels for classified countries ──
+      ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      ctx.textAlign = 'center';
+      if (geoData && geoData.features) {
+        geoData.features.forEach(function(feature) {
+          var name = feature.properties.name;
+          var items = matchGeoToClassification(name, byCountry);
+          if (!items) return;
+          var centroid = getFeatureCentroid(feature);
+          var cx = projectLng(centroid[0], mapX, mapW, lngMin, lngMax);
+          var cy = projectLat(centroid[1], mapY, mapH, latMin, latMax);
+          if (cx > padding && cx < W - padding && cy > mapY + 30 && cy < mapY + mapH - 30) {
+            var label = items[0].country || name;
+            // White text shadow for readability
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            for (var dx = -1; dx <= 1; dx++) {
+              for (var dy = -1; dy <= 1; dy++) {
+                if (dx === 0 && dy === 0) continue;
+                ctx.fillText(label, cx + dx, cy + dy);
+              }
+            }
+            ctx.fillStyle = '#222';
+            ctx.fillText(label, cx, cy);
+          }
+        });
+      }
+      ctx.textAlign = 'start';
+
+      // Restore clipping
+      ctx.restore();
+
+      // ── Branded header (drawn on top of white background) ──
       if (branded) {
-        // IRC logo
+        // White header background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, W, headerH);
         var logoImg = new Image();
         logoImg.onload = function() {
           ctx.drawImage(logoImg, padding, 40, 96, 96);
           ctx.fillStyle = '#1a1a1a';
-          ctx.font = 'bold 48px sans-serif';
-          ctx.fillText(title, padding + 120, 100);
-          // Separator
+          ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+          ctx.fillText(title, padding + 130, 102);
           ctx.fillStyle = '#e5e5e5';
-          ctx.fillRect(padding, 148, W - padding * 2, 2);
-          drawMapAndLegend();
+          ctx.fillRect(padding, 158, W - padding * 2, 2);
+          drawLegendAndFooter();
+          downloadCanvas();
         };
         logoImg.onerror = function() {
           ctx.fillStyle = '#1a1a1a';
-          ctx.font = 'bold 48px sans-serif';
-          ctx.fillText(title, padding, 100);
+          ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+          ctx.fillText(title, padding, 102);
           ctx.fillStyle = '#e5e5e5';
-          ctx.fillRect(padding, 148, W - padding * 2, 2);
-          drawMapAndLegend();
+          ctx.fillRect(padding, 158, W - padding * 2, 2);
+          drawLegendAndFooter();
+          downloadCanvas();
         };
         logoImg.src = IRC.IRC_LOGO_DATA_URI;
       } else {
-        drawMapAndLegend();
+        drawLegendAndFooter();
+        downloadCanvas();
       }
 
-      function drawMapAndLegend() {
-        // Draw captured map
-        ctx.drawImage(mapCanvas, 0, headerH, W, mapH);
+      // ── Helper: draw filled + stroked polygons ──
+      function drawFeature(ctx, feature, fillColor, fillAlpha, strokeColor, strokeAlpha, lineW) {
+        var geom = feature.geometry;
+        var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
+        polys.forEach(function(poly) {
+          poly.forEach(function(ring) {
+            ctx.beginPath();
+            var started = false;
+            ring.forEach(function(coord) {
+              var x = projectLng(coord[0], mapX, mapW, lngMin, lngMax);
+              var y = projectLat(coord[1], mapY, mapH, latMin, latMax);
+              if (!started) { ctx.moveTo(x, y); started = true; }
+              else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.globalAlpha = fillAlpha;
+            ctx.fillStyle = fillColor;
+            ctx.fill();
+            ctx.globalAlpha = strokeAlpha;
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = lineW;
+            ctx.stroke();
+          });
+        });
+        ctx.globalAlpha = 1;
+      }
 
-        // Draw legend
-        var ly = headerH + mapH + 30;
+      // ── Helper: stroke only ──
+      function drawFeatureStroke(ctx, feature) {
+        var geom = feature.geometry;
+        var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
+        polys.forEach(function(poly) {
+          poly.forEach(function(ring) {
+            ctx.beginPath();
+            var started = false;
+            ring.forEach(function(coord) {
+              var x = projectLng(coord[0], mapX, mapW, lngMin, lngMax);
+              var y = projectLat(coord[1], mapY, mapH, latMin, latMax);
+              if (!started) { ctx.moveTo(x, y); started = true; }
+              else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.stroke();
+          });
+        });
+      }
+
+      // ── Helper: rough polygon centroid ──
+      function getFeatureCentroid(feature) {
+        var geom = feature.geometry;
+        var coords = geom.type === 'MultiPolygon' ? geom.coordinates[0][0] : geom.coordinates[0];
+        var sumLng = 0, sumLat = 0;
+        coords.forEach(function(c) { sumLng += c[0]; sumLat += c[1]; });
+        return [sumLng / coords.length, sumLat / coords.length];
+      }
+
+      // ── Legend + footer ──
+      function drawLegendAndFooter() {
+        // Legend background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, headerH + mapH, W, legendH + footerH);
+
+        var ly = headerH + mapH + 45;
+
         if (displayMode === 'severity') {
-          ctx.font = '500 28px sans-serif';
+          ctx.font = '500 28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
           ctx.fillStyle = '#555';
           ctx.fillText('Severity', padding, ly);
-          // Gradient bar
-          var gx = padding + 140;
+          var gx = padding + 160;
           var gw = 400;
           var gh = 28;
           var grad = ctx.createLinearGradient(gx, 0, gx + gw, 0);
@@ -1029,9 +1168,8 @@
           ctx.strokeStyle = '#ddd';
           ctx.lineWidth = 1;
           ctx.strokeRect(gx, ly - 20, gw, gh);
-          // Labels
           ctx.fillStyle = '#888';
-          ctx.font = '22px sans-serif';
+          ctx.font = '22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
           ctx.fillText('0', gx, ly + 30);
           ctx.fillText('3', gx + gw * 0.3, ly + 30);
           ctx.fillText('6', gx + gw * 0.6, ly + 30);
@@ -1044,131 +1182,41 @@
             { label: 'White', color: '#E9E9E9' }
           ];
           var lx = padding;
+          ctx.font = '28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
           stances.forEach(function(s) {
-            // Dot
             ctx.beginPath();
-            ctx.arc(lx + 12, ly - 6, 12, 0, Math.PI * 2);
+            ctx.arc(lx + 14, ly - 6, 14, 0, Math.PI * 2);
             ctx.fillStyle = s.color;
             ctx.fill();
             ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.5;
             ctx.stroke();
-            // Label
-            ctx.fillStyle = '#555';
-            ctx.font = '28px sans-serif';
-            ctx.fillText(s.label, lx + 32, ly);
-            lx += ctx.measureText(s.label).width + 80;
+            ctx.fillStyle = '#444';
+            ctx.fillText(s.label, lx + 38, ly);
+            lx += ctx.measureText(s.label).width + 100;
           });
         }
 
-        // Branded footer
         if (branded) {
-          var fy = totalH - 40;
+          var fy = totalH - 28;
           ctx.fillStyle = '#e5e5e5';
-          ctx.fillRect(padding, fy - 24, W - padding * 2, 1);
+          ctx.fillRect(padding, fy - 28, W - padding * 2, 1);
           ctx.fillStyle = '#999';
-          ctx.font = '24px sans-serif';
+          ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
           ctx.fillText('Generated ' + today + '  |  IRC Emergency Classification System  |  ' + filtered.length + ' classifications shown', padding, fy);
         }
+      }
 
-        // Download
+      // ── Download ──
+      function downloadCanvas() {
         var link = document.createElement('a');
         link.download = 'irc-classification-map-' + today + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
+        btn.disabled = false;
+        btn.textContent = 'Export PNG';
       }
-    }
-
-    function fallbackExport(filtered, branded, title, today) {
-      var byCountry = getCountryMap(filtered);
-      var W = 3200;
-      var headerH = branded ? 160 : 40;
-      var mapH = 1400;
-      var legendH = 80;
-      var footerH = branded ? 60 : 0;
-      var totalH = headerH + mapH + legendH + footerH + 40;
-
-      var canvas = document.createElement('canvas');
-      canvas.width = W;
-      canvas.height = totalH;
-      var ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, W, totalH);
-
-      // Title
-      if (branded) {
-        ctx.fillStyle = '#1a1a1a';
-        ctx.font = 'bold 48px sans-serif';
-        ctx.fillText(title, 80, 100);
-        ctx.fillStyle = '#e5e5e5';
-        ctx.fillRect(80, 148, W - 160, 2);
-      }
-
-      // Map background
-      ctx.fillStyle = '#f7f7f7';
-      ctx.fillRect(0, headerH, W, mapH);
-
-      // Draw each country polygon with equirectangular projection
-      // Use Leaflet's current bounds for projection if available
-      var center = map ? map.getCenter() : { lat: 15, lng: 20 };
-      var zoom = map ? map.getZoom() : 2;
-
-      if (geoData && geoData.features) {
-        geoData.features.forEach(function(feature) {
-          var name = feature.properties.name;
-          var items = matchGeoToClassification(name, byCountry);
-          var fillColor = '#e8e8e8';
-          var fillAlpha = 0.3;
-          if (items) {
-            fillAlpha = 1;
-            if (displayMode === 'severity') {
-              var totalSev = 0, sevCount = 0;
-              items.forEach(function(c) {
-                if (c.severity !== null && c.severity !== undefined) { totalSev += Number(c.severity); sevCount++; }
-              });
-              fillColor = getSeverityColor(sevCount > 0 ? totalSev / sevCount : 0);
-            } else {
-              fillColor = stanceColor(getHighestStance(items));
-            }
-          }
-
-          ctx.fillStyle = fillColor;
-          ctx.globalAlpha = fillAlpha;
-          ctx.strokeStyle = '#bbb';
-          ctx.lineWidth = 0.5;
-
-          var geom = feature.geometry;
-          var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
-          polys.forEach(function(poly) {
-            poly.forEach(function(ring) {
-              ctx.beginPath();
-              ring.forEach(function(coord, i) {
-                var x = (coord[0] + 180) / 360 * (W - 200) + 100;
-                var y = (90 - coord[1]) / 180 * mapH + headerH;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-              });
-              ctx.closePath();
-              ctx.fill();
-              ctx.stroke();
-            });
-          });
-          ctx.globalAlpha = 1;
-        });
-      }
-
-      // Footer
-      if (branded) {
-        ctx.fillStyle = '#999';
-        ctx.font = '24px sans-serif';
-        ctx.fillText('Generated ' + today + '  |  IRC Emergency Classification System  |  ' + filtered.length + ' classifications shown', 80, totalH - 40);
-      }
-
-      var link = document.createElement('a');
-      link.download = 'irc-classification-map-' + today + '.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    }
+    });
 
     // ── Init ──
     initMap();
