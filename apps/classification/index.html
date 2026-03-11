@@ -404,6 +404,15 @@
       padding-top: 6px;
       margin-top: 6px;
     }
+    .map-country-tooltip {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
   </style>
 
   <script src="irc-shared.iife.js"></script>
@@ -1066,16 +1075,32 @@
           onEachFeature: function(feature, layer) {
             var name = feature.properties.name;
             var items = matchGeoToClassification(name, byCountry);
+            var displayName = items ? (items[0].country || name) : name;
+
+            // Tooltip for ALL countries — shows name + stance summary on hover
+            var tipHtml = '<strong>' + displayName + '</strong>';
             if (items) {
-              var displayName = items[0].country || name;
+              items.forEach(function(c) {
+                var stance = c.stance ? c.stance.charAt(0).toUpperCase() + c.stance.slice(1) : 'White';
+                var color = stanceColor(c.stance);
+                var isRed = c.stance === 'red';
+                tipHtml += '<br><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:600;background:' + color + ';color:' + (isRed ? '#fff' : '#000') + ';">' + stance + '</span>';
+                if (c.emergencyName) tipHtml += ' ' + c.emergencyName;
+              });
+            }
+            layer.bindTooltip(tipHtml, { sticky: true, direction: 'top', offset: [0, -10], className: 'map-country-tooltip' });
+
+            // Hover highlight for ALL countries
+            layer.on('mouseover', function(e) {
+              this.setStyle({ weight: 2, color: '#333', fillOpacity: items ? 0.85 : 0.3 });
+              this.bringToFront();
+            });
+            layer.on('mouseout', function(e) {
+              geoLayer.resetStyle(this);
+            });
+
+            if (items) {
               layer.bindPopup(buildPopup(displayName, items), { maxWidth: 280, className: 'map-classification-popup' });
-              layer.on('mouseover', function(e) {
-                this.setStyle({ weight: 2, color: '#333', fillOpacity: 0.85 });
-                this.bringToFront();
-              });
-              layer.on('mouseout', function(e) {
-                geoLayer.resetStyle(this);
-              });
               layer.on('click', function(e) {
                 // Also filter the list below to this country
                 countryFilter = displayName;
