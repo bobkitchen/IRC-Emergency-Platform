@@ -200,7 +200,7 @@
       color: #888;
     }
 
-    /* Row 2: AI Map Builder */
+    /* Row 2: Ask Albert Map Builder */
     .maps-ai-bar {
       padding: 12px 20px;
       background: #FFFDF5;
@@ -510,10 +510,10 @@
         <div class="maps-legend" id="maps-legend"></div>
       </div>
 
-      <!-- Row 2: AI Map Builder -->
+      <!-- Row 2: Ask Albert Map Builder -->
       <div class="maps-ai-bar">
-        <span class="ai-bar-label"><span class="ai-sparkle">&#10024;</span> AI Map Builder</span>
-        <input class="ai-bar-input" type="text" id="ai-builder-input" placeholder="Describe a map, e.g. &quot;red conflicts in East Africa last 12 months&quot;">
+        <span class="ai-bar-label"><span class="ai-sparkle">&#10024;</span> Ask Albert</span>
+        <input class="ai-bar-input" type="text" id="ai-builder-input" placeholder="Ask Albert to build a map, e.g. &quot;red conflicts in East Africa last 12 months&quot;">
         <button class="ai-builder-go" id="ai-builder-go">Build Map</button>
         <span class="ai-builder-status" id="ai-builder-status"></span>
       </div>
@@ -1723,7 +1723,7 @@
       }
     });
 
-    // ── AI Map Builder ──
+    // ── Ask Albert Map Builder ──
     // Uses the Edge Function's mapBuilder mode with OpenRouter structured outputs
     // (JSON Schema enforcement) for guaranteed valid JSON. Exclusion logic (e.g.
     // "outside of Africa") is handled deterministically in JS, not by the LLM.
