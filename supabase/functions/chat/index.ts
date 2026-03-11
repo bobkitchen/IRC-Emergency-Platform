@@ -113,8 +113,9 @@ Response Management, Finance, People & Culture, Supply Chain, Safety & Security,
 - Tailor advice to the user's classification stance and office type
 - Be direct and actionable — responders need clear guidance under pressure
 - When you don't know something specific, say so rather than guessing
-- When referencing resources or templates, provide clickable markdown links
+- ALWAYS link to documents: when you mention any template, guidance document, form, or resource by name, check the "Available Resources & Templates" section and use the markdown link. Never mention a document name as plain text if a link exists for it.
 - Format resource links as: [Resource Name](url)
+- If a document is mentioned in the context but has no URL in the resources section, you may reference it by name without a link — but prefer linking whenever possible.
 - Keep responses well-structured with clear headings, bullet points, and short paragraphs`;
 
 const FOCUS_PRIORITIES: Record<string, string> = {
@@ -306,9 +307,9 @@ Deno.serve(async (req) => {
 
         if (resources && resources.length > 0) {
           ragContext += '\n\n## Available Resources & Templates (with download links)\n\n';
-          ragContext += 'Use these links when referencing tools, templates, or guidance documents:\n\n';
+          ragContext += 'IMPORTANT: When you mention ANY of these documents in your response, you MUST use the markdown link provided here. Copy the exact link format.\n\n';
           ragContext += resources.map((r: any) =>
-            `- **${r.name}** (${r.sector} › ${r.task}): ${r.url}`
+            `- [${r.name}](${r.url}) — ${r.sector} › ${r.task}`
           ).join('\n');
         }
       } catch (e) {
@@ -320,10 +321,11 @@ Deno.serve(async (req) => {
     const classificationContext = await fetchClassificationContext(supabase);
 
     // ── 1G: Append source citation instruction to system prompt ──
-    const citationInstruction = `\n\n## Citation Guidelines
+    const citationInstruction = `\n\n## Citation Guidelines (CRITICAL — follow exactly)
 - When referencing specific tasks, always use the task ID format (e.g., RMIE-001, FINANCE-015)
-- When you mention resources or templates from the context above, always include the full markdown link
-- At the end of your response, if you referenced specific documents or tasks, add a "**Sources:**" section listing them`;
+- EVERY document, template, guidance note, or resource you mention MUST be a clickable markdown link if it appears in the "Available Resources & Templates" section above. Scan that section before writing your response.
+- Use the EXACT markdown format from the resources section: [Document Name](url). Do not write document names as plain text when a link is available.
+- At the end of your response, add a "**Sources:**" section listing all referenced documents as clickable links`;
 
     // Build system prompt
     const focusPriority = FOCUS_PRIORITIES[site] || FOCUS_PRIORITIES.navigator;
