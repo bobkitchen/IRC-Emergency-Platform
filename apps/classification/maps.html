@@ -1057,31 +1057,48 @@
       ctx.restore();
 
       // ── Branded header (drawn on top of white background) ──
-      if (branded) {
-        // White header background
+      function finishHeader(withLogo, logoImg) {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, W, headerH);
-        var logoImg = new Image();
-        logoImg.onload = function() {
+        var titleX = padding;
+        if (withLogo && logoImg) {
           ctx.drawImage(logoImg, padding, 40, 96, 96);
-          ctx.fillStyle = '#1a1a1a';
-          ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-          ctx.fillText(title, padding + 130, 102);
-          ctx.fillStyle = '#e5e5e5';
-          ctx.fillRect(padding, 158, W - padding * 2, 2);
-          drawLegendAndFooter();
-          downloadCanvas();
-        };
-        logoImg.onerror = function() {
-          ctx.fillStyle = '#1a1a1a';
-          ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-          ctx.fillText(title, padding, 102);
-          ctx.fillStyle = '#e5e5e5';
-          ctx.fillRect(padding, 158, W - padding * 2, 2);
-          drawLegendAndFooter();
-          downloadCanvas();
-        };
-        logoImg.src = IRCShared.IRC_LOGO_DATA_URI;
+          titleX = padding + 130;
+        }
+        ctx.fillStyle = '#1a1a1a';
+        ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillText(title, titleX, 102);
+        ctx.fillStyle = '#e5e5e5';
+        ctx.fillRect(padding, 158, W - padding * 2, 2);
+        drawLegendAndFooter();
+        downloadCanvas();
+      }
+
+      if (branded) {
+        var logoDataUri = (typeof IRCShared !== 'undefined' && IRCShared.IRC_LOGO_DATA_URI) || '';
+        if (!logoDataUri) {
+          finishHeader(false, null);
+        } else {
+          var logoImg = new Image();
+          var logoHandled = false;
+          logoImg.onload = function() {
+            if (logoHandled) return;
+            logoHandled = true;
+            finishHeader(true, logoImg);
+          };
+          logoImg.onerror = function() {
+            if (logoHandled) return;
+            logoHandled = true;
+            finishHeader(false, null);
+          };
+          // Safety timeout — if neither fires within 2s, proceed without logo
+          setTimeout(function() {
+            if (logoHandled) return;
+            logoHandled = true;
+            finishHeader(false, null);
+          }, 2000);
+          logoImg.src = logoDataUri;
+        }
       } else {
         drawLegendAndFooter();
         downloadCanvas();
