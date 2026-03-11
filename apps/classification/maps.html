@@ -964,14 +964,9 @@
       var latMin = Math.max(bounds.getSouth(), -85);
       var latMax = Math.min(bounds.getNorth(), 85);
 
-      // Calculate map height from Mercator aspect ratio of current view
-      var mercYMin = latToMercY(latMin);
-      var mercYMax = latToMercY(latMax);
-      var lngSpan = lngMax - lngMin;
-      var mercSpan = mercYMax - mercYMin;
-      var mapH = Math.round(W * (mercSpan / (lngSpan * Math.PI / 180) * (Math.PI / 180)));
-      // Clamp to reasonable range
-      mapH = Math.max(800, Math.min(mapH, 2400));
+      // Match the on-screen map's aspect ratio exactly
+      var mapEl = document.getElementById('maps-container');
+      var mapH = Math.round(W * (mapEl.offsetHeight / mapEl.offsetWidth));
 
       var totalH = headerH + mapH + legendH + footerH;
 
