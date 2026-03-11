@@ -914,6 +914,10 @@
     });
 
     // ── PNG Export ──
+    // Strategy: capture the live on-screen map with html2canvas, then compose
+    // branding/legend onto a final canvas. Leaflet requires visible containers
+    // to render, so we can't create a map in an offscreen div.
+
     document.getElementById('export-btn').addEventListener('click', function() {
       var btn = this;
       btn.disabled = true;
@@ -922,128 +926,201 @@
       var branded = document.getElementById('branding-toggle').checked;
       var title = document.getElementById('map-title').textContent;
       var filtered = getFilteredClassifications();
+      var today = new Date().toISOString().split('T')[0];
 
-      // Build offscreen wrapper
-      var wrapper = document.createElement('div');
-      wrapper.style.cssText = 'position:absolute;left:-9999px;top:0;width:1600px;background:#fff;padding:0;';
-      document.body.appendChild(wrapper);
+      // Temporarily hide Leaflet controls and tile layers for clean capture
+      var mapEl = document.getElementById('maps-container');
+      var controls = mapEl.querySelectorAll('.leaflet-control-container');
+      var tilePanes = mapEl.querySelectorAll('.leaflet-tile-pane');
+      controls.forEach(function(el) { el.style.display = 'none'; });
+      tilePanes.forEach(function(el) { el.style.display = 'none'; });
+      mapEl.style.background = '#f7f7f7';
+
+      html2canvas(mapEl, { scale: 2, useCORS: true, backgroundColor: '#f7f7f7' }).then(function(mapCanvas) {
+        // Restore hidden elements
+        controls.forEach(function(el) { el.style.display = ''; });
+        tilePanes.forEach(function(el) { el.style.display = ''; });
+        mapEl.style.background = '';
+
+        // Compose final image
+        composeExport(mapCanvas, branded, title, filtered, today);
+      }).catch(function(err) {
+        console.error('html2canvas failed, using fallback:', err);
+        // Restore
+        controls.forEach(function(el) { el.style.display = ''; });
+        tilePanes.forEach(function(el) { el.style.display = ''; });
+        mapEl.style.background = '';
+        // Fallback: draw GeoJSON manually
+        fallbackExport(filtered, branded, title, today);
+      }).finally(function() {
+        btn.disabled = false;
+        btn.textContent = 'Export PNG';
+      });
+    });
+
+    function composeExport(mapCanvas, branded, title, filtered, today) {
+      var W = 3200; // 1600 @ 2x
+      var padding = 80;
+      var headerH = branded ? 160 : 0;
+      var legendH = 80;
+      var footerH = branded ? 60 : 0;
+      var mapH = mapCanvas.height * (W / mapCanvas.width); // scale map to full width
+      var totalH = headerH + mapH + legendH + footerH;
+
+      var canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = totalH;
+      var ctx = canvas.getContext('2d');
+
+      // White background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, totalH);
+
+      var y = 0;
 
       // Branded header
       if (branded) {
-        var header = document.createElement('div');
-        header.style.cssText = 'padding:32px 40px 16px;display:flex;align-items:center;gap:16px;';
-        var logo = document.createElement('img');
-        logo.src = IRC.IRC_LOGO_DATA_URI;
-        logo.style.cssText = 'width:48px;height:48px;';
-        header.appendChild(logo);
-        var titleEl = document.createElement('div');
-        titleEl.style.cssText = 'font-size:24px;font-weight:600;color:#1a1a1a;';
-        titleEl.textContent = title;
-        header.appendChild(titleEl);
-        wrapper.appendChild(header);
-        var sep = document.createElement('div');
-        sep.style.cssText = 'height:1px;background:#e5e5e5;margin:0 40px;';
-        wrapper.appendChild(sep);
+        // IRC logo
+        var logoImg = new Image();
+        logoImg.onload = function() {
+          ctx.drawImage(logoImg, padding, 40, 96, 96);
+          ctx.fillStyle = '#1a1a1a';
+          ctx.font = 'bold 48px sans-serif';
+          ctx.fillText(title, padding + 120, 100);
+          // Separator
+          ctx.fillStyle = '#e5e5e5';
+          ctx.fillRect(padding, 148, W - padding * 2, 2);
+          drawMapAndLegend();
+        };
+        logoImg.onerror = function() {
+          ctx.fillStyle = '#1a1a1a';
+          ctx.font = 'bold 48px sans-serif';
+          ctx.fillText(title, padding, 100);
+          ctx.fillStyle = '#e5e5e5';
+          ctx.fillRect(padding, 148, W - padding * 2, 2);
+          drawMapAndLegend();
+        };
+        logoImg.src = IRC.IRC_LOGO_DATA_URI;
+      } else {
+        drawMapAndLegend();
       }
 
-      // Clone map container for export
-      var mapContainer = document.getElementById('maps-container');
-      var mapClone = document.createElement('div');
-      mapClone.style.cssText = 'width:1600px;height:800px;background:#f7f7f7;position:relative;';
+      function drawMapAndLegend() {
+        // Draw captured map
+        ctx.drawImage(mapCanvas, 0, headerH, W, mapH);
 
-      // Create a temporary export map
-      var exportMap = L.map(mapClone, {
-        center: map.getCenter(),
-        zoom: map.getZoom(),
-        minZoom: 2,
-        maxZoom: 7,
-        zoomControl: false,
-        attributionControl: false,
-        preferCanvas: true,
-        dragging: false,
-        touchZoom: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false
-      });
-
-      // Add GeoJSON layer only (no tiles for clean export)
-      var exportFiltered = getFilteredClassifications();
-      var exportByCountry = getCountryMap(exportFiltered);
-
-      L.geoJSON(geoData, {
-        style: function(feature) {
-          var name = feature.properties.name;
-          var items = matchGeoToClassification(name, exportByCountry);
-          if (!items) return { fillColor: '#f0f0f0', fillOpacity: 0.3, color: '#ccc', weight: 0.5, opacity: 0.6 };
-          var fillColor;
-          if (displayMode === 'severity') {
-            var totalSev = 0, sevCount = 0;
-            items.forEach(function(c) {
-              if (c.severity !== null && c.severity !== undefined) { totalSev += Number(c.severity); sevCount++; }
-            });
-            fillColor = getSeverityColor(sevCount > 0 ? totalSev / sevCount : 0);
-          } else {
-            fillColor = stanceColor(getHighestStance(items));
-          }
-          return { fillColor: fillColor, fillOpacity: 0.7, color: '#999', weight: 0.5, opacity: 0.6 };
+        // Draw legend
+        var ly = headerH + mapH + 30;
+        if (displayMode === 'severity') {
+          ctx.font = '500 28px sans-serif';
+          ctx.fillStyle = '#555';
+          ctx.fillText('Severity', padding, ly);
+          // Gradient bar
+          var gx = padding + 140;
+          var gw = 400;
+          var gh = 28;
+          var grad = ctx.createLinearGradient(gx, 0, gx + gw, 0);
+          grad.addColorStop(0, '#FFF4CC');
+          grad.addColorStop(0.3, '#FFC72C');
+          grad.addColorStop(0.6, '#F58220');
+          grad.addColorStop(1, '#E52911');
+          ctx.fillStyle = grad;
+          ctx.fillRect(gx, ly - 20, gw, gh);
+          ctx.strokeStyle = '#ddd';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(gx, ly - 20, gw, gh);
+          // Labels
+          ctx.fillStyle = '#888';
+          ctx.font = '22px sans-serif';
+          ctx.fillText('0', gx, ly + 30);
+          ctx.fillText('3', gx + gw * 0.3, ly + 30);
+          ctx.fillText('6', gx + gw * 0.6, ly + 30);
+          ctx.fillText('10', gx + gw - 10, ly + 30);
+        } else {
+          var stances = [
+            { label: 'Red', color: '#E52911' },
+            { label: 'Orange', color: '#F58220' },
+            { label: 'Yellow', color: '#FFC72C' },
+            { label: 'White', color: '#E9E9E9' }
+          ];
+          var lx = padding;
+          stances.forEach(function(s) {
+            // Dot
+            ctx.beginPath();
+            ctx.arc(lx + 12, ly - 6, 12, 0, Math.PI * 2);
+            ctx.fillStyle = s.color;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            // Label
+            ctx.fillStyle = '#555';
+            ctx.font = '28px sans-serif';
+            ctx.fillText(s.label, lx + 32, ly);
+            lx += ctx.measureText(s.label).width + 80;
+          });
         }
-      }).addTo(exportMap);
 
-      wrapper.appendChild(mapClone);
+        // Branded footer
+        if (branded) {
+          var fy = totalH - 40;
+          ctx.fillStyle = '#e5e5e5';
+          ctx.fillRect(padding, fy - 24, W - padding * 2, 1);
+          ctx.fillStyle = '#999';
+          ctx.font = '24px sans-serif';
+          ctx.fillText('Generated ' + today + '  |  IRC Emergency Classification System  |  ' + filtered.length + ' classifications shown', padding, fy);
+        }
 
-      // Legend clone
-      var legendClone = document.getElementById('maps-legend').cloneNode(true);
-      legendClone.style.cssText = 'padding:12px 40px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;';
-      wrapper.appendChild(legendClone);
-
-      // Branded footer
-      if (branded) {
-        var footer = document.createElement('div');
-        var today = new Date().toISOString().split('T')[0];
-        footer.style.cssText = 'padding:12px 40px 24px;font-size:12px;color:#999;border-top:1px solid #e5e5e5;margin-top:8px;';
-        footer.textContent = 'Generated ' + today + ' | IRC Emergency Classification System | ' + filtered.length + ' classifications shown';
-        wrapper.appendChild(footer);
+        // Download
+        var link = document.createElement('a');
+        link.download = 'irc-classification-map-' + today + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
       }
+    }
 
-      // Wait for export map to render, then capture
-      setTimeout(function() {
-        html2canvas(wrapper, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
-          var link = document.createElement('a');
-          var today = new Date().toISOString().split('T')[0];
-          link.download = 'irc-classification-map-' + today + '.png';
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-        }).catch(function(err) {
-          console.error('Export failed:', err);
-          // Fallback: manually draw onto canvas
-          fallbackExport(wrapper, exportByCountry, filtered, branded, title);
-        }).finally(function() {
-          exportMap.remove();
-          document.body.removeChild(wrapper);
-          btn.disabled = false;
-          btn.textContent = 'Export PNG';
-        });
-      }, 500);
-    });
+    function fallbackExport(filtered, branded, title, today) {
+      var byCountry = getCountryMap(filtered);
+      var W = 3200;
+      var headerH = branded ? 160 : 40;
+      var mapH = 1400;
+      var legendH = 80;
+      var footerH = branded ? 60 : 0;
+      var totalH = headerH + mapH + legendH + footerH + 40;
 
-    function fallbackExport(wrapper, byCountry, filtered, branded, title) {
       var canvas = document.createElement('canvas');
-      canvas.width = 3200;
-      canvas.height = 1800;
+      canvas.width = W;
+      canvas.height = totalH;
       var ctx = canvas.getContext('2d');
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 3200, 1800);
-      ctx.fillStyle = '#1a1a1a';
-      ctx.font = '32px sans-serif';
-      ctx.fillText(title, 80, 80);
+      ctx.fillRect(0, 0, W, totalH);
 
-      // Draw each country from GeoJSON
+      // Title
+      if (branded) {
+        ctx.fillStyle = '#1a1a1a';
+        ctx.font = 'bold 48px sans-serif';
+        ctx.fillText(title, 80, 100);
+        ctx.fillStyle = '#e5e5e5';
+        ctx.fillRect(80, 148, W - 160, 2);
+      }
+
+      // Map background
+      ctx.fillStyle = '#f7f7f7';
+      ctx.fillRect(0, headerH, W, mapH);
+
+      // Draw each country polygon with equirectangular projection
+      // Use Leaflet's current bounds for projection if available
+      var center = map ? map.getCenter() : { lat: 15, lng: 20 };
+      var zoom = map ? map.getZoom() : 2;
+
       if (geoData && geoData.features) {
         geoData.features.forEach(function(feature) {
           var name = feature.properties.name;
           var items = matchGeoToClassification(name, byCountry);
-          var fillColor = '#f0f0f0';
+          var fillColor = '#e8e8e8';
+          var fillAlpha = 0.3;
           if (items) {
+            fillAlpha = 1;
             if (displayMode === 'severity') {
               var totalSev = 0, sevCount = 0;
               items.forEach(function(c) {
@@ -1056,7 +1133,8 @@
           }
 
           ctx.fillStyle = fillColor;
-          ctx.strokeStyle = '#999';
+          ctx.globalAlpha = fillAlpha;
+          ctx.strokeStyle = '#bbb';
           ctx.lineWidth = 0.5;
 
           var geom = feature.geometry;
@@ -1065,9 +1143,8 @@
             poly.forEach(function(ring) {
               ctx.beginPath();
               ring.forEach(function(coord, i) {
-                // Simple equirectangular projection
-                var x = (coord[0] + 180) / 360 * 2800 + 200;
-                var y = (90 - coord[1]) / 180 * 1400 + 150;
+                var x = (coord[0] + 180) / 360 * (W - 200) + 100;
+                var y = (90 - coord[1]) / 180 * mapH + headerH;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
               });
@@ -1076,6 +1153,7 @@
               ctx.stroke();
             });
           });
+          ctx.globalAlpha = 1;
         });
       }
 
@@ -1083,12 +1161,10 @@
       if (branded) {
         ctx.fillStyle = '#999';
         ctx.font = '24px sans-serif';
-        var today = new Date().toISOString().split('T')[0];
-        ctx.fillText('Generated ' + today + ' | IRC Emergency Classification System | ' + filtered.length + ' classifications shown', 80, 1740);
+        ctx.fillText('Generated ' + today + '  |  IRC Emergency Classification System  |  ' + filtered.length + ' classifications shown', 80, totalH - 40);
       }
 
       var link = document.createElement('a');
-      var today = new Date().toISOString().split('T')[0];
       link.download = 'irc-classification-map-' + today + '.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
