@@ -84,24 +84,17 @@ export const COUNTRIES: [string, number, number, number][] = [
   ["Zambia", 20569737, 3, 0], ["Zimbabwe", 16665409, 3, 2],
 ];
 
-/** Common aliases for country names that differ between COUNTRIES array and Supabase data */
-const COUNTRY_ALIASES: Record<string, string> = {
-  'Syria': 'Syrian Arab Republic',
-  'Bolivia': 'Bolivia (Plurinational State of)',
-  'Iran': 'Iran (Islamic Republic of)',
-  'Laos': "Lao People's Democratic Republic",
-  'Moldova': 'Moldova (Republic of)',
-  'North Korea': "Democratic People's Republic of Korea",
-  'DRC': 'Democratic Republic of the Congo',
-  'DR Congo': 'Democratic Republic of the Congo',
-  'Palestine': 'State of Palestine',
-  'Tanzania': 'United Republic of Tanzania',
-  'Venezuela': 'Venezuela (Bolivarian Republic of)',
-  'Vietnam': 'Viet Nam',
-  'USA': 'United States of America',
-  'UK': 'United Kingdom',
-  'Micronesia': 'Micronesia (Federated States of)',
-};
+/** Country aliases — derived from canonical source in @irc/shared (packages/shared/src/data.js) */
+import { COUNTRY_ALIASES as SHARED_ALIASES } from '@irc/shared';
+
+// Build Title-case alias map from the shared lowercase map for local use
+const COUNTRY_ALIASES: Record<string, string> = Object.fromEntries(
+  Object.entries(SHARED_ALIASES as Record<string, string>).map(([alias, canonical]) => {
+    // Title-case the alias key for backward-compatible local usage
+    const titleCase = alias.replace(/\b\w/g, c => c.toUpperCase());
+    return [titleCase, canonical];
+  })
+);
 
 /** Extract just the country names for quick access */
 export const COUNTRY_NAMES = COUNTRIES.map(c => c[0]);

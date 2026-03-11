@@ -39,6 +39,39 @@ export const THRESHOLDS = {
   }
 };
 
+// COUNTRY_ALIASES — lowercase alias → canonical country name
+// Single source of truth for all country name normalization across the platform
+export const COUNTRY_ALIASES = {
+  'car': 'Central African Republic',
+  'drc': 'Democratic Republic of the Congo',
+  'dr congo': 'Democratic Republic of the Congo',
+  'iran': 'Iran (Islamic Republic of)',
+  'palestine': 'State of Palestine',
+  'syria': 'Syrian Arab Republic',
+  'tanzania': 'United Republic of Tanzania',
+  'usa': 'United States of America',
+  'venezuela': 'Venezuela (Bolivarian Republic of)',
+  'vietnam': 'Viet Nam',
+  'republic of moldova': 'Moldova (Republic of)',
+  'moldova': 'Moldova (Republic of)',
+  'congo': 'Congo',
+  'barbuda': 'Antigua and Barbuda',
+  'turkey': 'Turkey',
+  'taiwan': 'Taiwan',
+  'laos': "Lao People's Democratic Republic",
+  'north korea': "Democratic People's Republic of Korea",
+  'uk': 'United Kingdom',
+  'micronesia': 'Micronesia (Federated States of)',
+  'bolivia': 'Bolivia (Plurinational State of)',
+};
+
+// Normalize a raw country string to its canonical name via COUNTRY_ALIASES
+export function normalizeCountry(raw) {
+  if (!raw) return raw;
+  const trimmed = raw.trim();
+  return COUNTRY_ALIASES[trimmed.toLowerCase()] || trimmed;
+}
+
 // METRIC_CONFIGS — form field configurations for each crisis type
 export const METRIC_CONFIGS = {
   conflict: [

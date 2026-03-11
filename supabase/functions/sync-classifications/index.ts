@@ -132,9 +132,11 @@ function normalizeType(raw: string | null): string {
   return map[s] || 'other';
 }
 
+// Canonical source: packages/shared/src/data.js — keep in sync when adding aliases
 const COUNTRY_ALIASES: Record<string, string> = {
   car: 'Central African Republic',
   drc: 'Democratic Republic of the Congo',
+  'dr congo': 'Democratic Republic of the Congo',
   iran: 'Iran (Islamic Republic of)',
   palestine: 'State of Palestine',
   syria: 'Syrian Arab Republic',
@@ -148,6 +150,11 @@ const COUNTRY_ALIASES: Record<string, string> = {
   barbuda: 'Antigua and Barbuda',
   turkey: 'Turkey',
   taiwan: 'Taiwan',
+  laos: "Lao People's Democratic Republic",
+  'north korea': "Democratic People's Republic of Korea",
+  uk: 'United Kingdom',
+  micronesia: 'Micronesia (Federated States of)',
+  bolivia: 'Bolivia (Plurinational State of)',
 };
 
 function normalizeCountry(raw: string | null): string {

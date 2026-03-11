@@ -130,23 +130,16 @@ export function isExpired(expirationDate: string | null): boolean {
   return new Date(expirationDate) < new Date();
 }
 
-/** Aliases: Supabase may store short names like "Syria" while COUNTRIES uses "Syrian Arab Republic" */
-const COUNTRY_NAME_ALIASES: Record<string, string[]> = {
-  'Syrian Arab Republic': ['Syria'],
-  'Bolivia (Plurinational State of)': ['Bolivia'],
-  'Iran (Islamic Republic of)': ['Iran'],
-  "Lao People's Democratic Republic": ['Laos'],
-  'Moldova (Republic of)': ['Moldova'],
-  "Democratic People's Republic of Korea": ['North Korea'],
-  'Democratic Republic of the Congo': ['DRC', 'DR Congo'],
-  'State of Palestine': ['Palestine'],
-  'United Republic of Tanzania': ['Tanzania'],
-  'Venezuela (Bolivarian Republic of)': ['Venezuela'],
-  'Viet Nam': ['Vietnam'],
-  'United States of America': ['USA'],
-  'United Kingdom': ['UK'],
-  'Micronesia (Federated States of)': ['Micronesia'],
-};
+/** Reverse alias map: canonical → alias arrays. Derived from @irc/shared (packages/shared/src/data.js) */
+import { COUNTRY_ALIASES as SHARED_ALIASES } from '@irc/shared';
+
+const COUNTRY_NAME_ALIASES: Record<string, string[]> = {};
+for (const [alias, canonical] of Object.entries(SHARED_ALIASES as Record<string, string>)) {
+  if (!COUNTRY_NAME_ALIASES[canonical]) COUNTRY_NAME_ALIASES[canonical] = [];
+  // Title-case the alias for display (e.g. 'drc' → 'DRC', 'syria' → 'Syria')
+  const display = alias.replace(/\b\w/g, c => c.toUpperCase());
+  COUNTRY_NAME_ALIASES[canonical].push(display);
+}
 
 /** Build reverse map: alias → canonical, and canonical → canonical */
 function countryMatches(selectedCountry: string, classificationCountry: string): boolean {

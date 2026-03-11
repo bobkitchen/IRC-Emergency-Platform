@@ -6,7 +6,7 @@
  */
 
 // Classification data
-export { STANCE_MATRIX, COUNTRIES, THRESHOLDS, METRIC_CONFIGS } from './data.js';
+export { STANCE_MATRIX, COUNTRIES, THRESHOLDS, METRIC_CONFIGS, COUNTRY_ALIASES, normalizeCountry } from './data.js';
 
 // Supabase config & helpers
 export {
