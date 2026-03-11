@@ -393,13 +393,20 @@ async function syncClassifications(): Promise<SyncResult> {
     }
   }
 
-  console.log(`[sync] To upsert: ${toUpsert.length} (${result.inserted} new, ${result.updated} updated, ${result.unchanged} unchanged, ${result.errors} errors)`);
+  // Deduplicate: if multiple spreadsheet rows resolve to the same DB id, keep the last one
+  const deduped = new Map<string, Record<string, unknown>>();
+  for (const rec of toUpsert) {
+    deduped.set(rec.id as string, rec);
+  }
+  const finalUpsert = Array.from(deduped.values());
+
+  console.log(`[sync] To upsert: ${finalUpsert.length} (${result.inserted} new, ${result.updated} updated, ${result.unchanged} unchanged, ${result.errors} errors)`);
 
   // 7. Batch upsert
-  if (toUpsert.length > 0) {
+  if (finalUpsert.length > 0) {
     const BATCH_SIZE = 200;
-    for (let i = 0; i < toUpsert.length; i += BATCH_SIZE) {
-      const batch = toUpsert.slice(i, i + BATCH_SIZE);
+    for (let i = 0; i < finalUpsert.length; i += BATCH_SIZE) {
+      const batch = finalUpsert.slice(i, i + BATCH_SIZE);
       const { error: upsertError } = await supabase
         .from('classifications')
         .upsert(batch, { onConflict: 'id' });
