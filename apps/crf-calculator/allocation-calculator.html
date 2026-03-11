@@ -1343,20 +1343,20 @@
 
         <div class="coverage-buttons" id="coverage-buttons">
           <button class="coverage-btn selected" data-coverage="1" type="button">
-            <div class="coverage-btn-num">⅓</div>
+            <div class="coverage-btn-num">1%</div>
             <div class="coverage-btn-label">of IRC target</div>
           </button>
           <button class="coverage-btn" data-coverage="2" type="button">
-            <div class="coverage-btn-num">⅔</div>
+            <div class="coverage-btn-num">2%</div>
             <div class="coverage-btn-label">of IRC target</div>
           </button>
           <button class="coverage-btn" data-coverage="3" type="button">
-            <div class="coverage-btn-num">3/3</div>
+            <div class="coverage-btn-num">3%</div>
             <div class="coverage-btn-label">of IRC target</div>
           </button>
         </div>
         <p id="coverage-guidance" style="font-size:0.75rem; color:#666; margin:-20px 0 20px; line-height:1.5;">
-          <strong>1</strong> — one-third of IRC target &nbsp;|&nbsp; <strong>2</strong> — two-thirds of IRC target &nbsp;|&nbsp; <strong>3</strong> — full IRC target
+          <strong>1%</strong> — standard initial allocation &nbsp;|&nbsp; <strong>2%</strong> — scaled response for high-severity &nbsp;|&nbsp; <strong>3%</strong> — maximum for large-scale emergencies
         </p>
 
         <!-- Split bar -->
@@ -1437,9 +1437,9 @@
           adjustable based on operational access and feasibility.
         </p>
         <p>
-          Coverage tiers represent what fraction of the IRC target population CRF funds directly:
-          one-third, two-thirds, or the full target. The remaining gap represents
-          the additional fundraising required.
+          Coverage options represent the percentage of the IRC target population that CRF funds directly,
+          from <strong>1%</strong> up to <strong>3%</strong> of the target. The remaining gap represents
+          the external fundraising required to reach the full IRC target.
           All figures are rounded to the nearest $25,000.
         </p>
       </div>
@@ -1849,9 +1849,8 @@
       // ── Update allocation display ──
       function updateAllocation() {
         if (totalCost <= 0) return;
-        // selectedCoverage is 1, 2, or 3 — percentage tiers of the IRC target pop
-        // CRF covers a fraction of the target; the rest is the funding gap
-        var crfPeople = Math.round(targetPop * selectedCoverage / 3);
+        // selectedCoverage is 1, 2, or 3 (percent of IRC target pop)
+        var crfPeople = Math.round(targetPop * selectedCoverage / 100);
         var gapPeople = Math.max(0, targetPop - crfPeople);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
         var gapAmount = Math.max(0, totalCost - crfAmount);
@@ -2292,7 +2291,7 @@
       var MAX_SCENARIOS = 3;
 
       function captureCurrentScenario() {
-        var crfPeople = Math.round(targetPop * selectedCoverage / 3);
+        var crfPeople = Math.round(targetPop * selectedCoverage / 100);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
         var gapPeople = Math.max(0, targetPop - crfPeople);
         var gapAmount = Math.max(0, totalCost - crfAmount);
