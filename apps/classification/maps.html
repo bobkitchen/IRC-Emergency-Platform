@@ -969,18 +969,66 @@
       }
     }
 
+    // ── Compute bounding box of matched (shaded) countries ──
+    function getMatchedBounds(byCountry) {
+      if (!geoData || !geoData.features) return null;
+      var minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+      var hasMatch = false;
+
+      geoData.features.forEach(function(feature) {
+        var name = feature.properties.name;
+        var items = matchGeoToClassification(name, byCountry);
+        if (!items) return;
+        var geom = feature.geometry;
+        if (!geom) return;
+
+        hasMatch = true;
+        var polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
+        polys.forEach(function(poly) {
+          poly.forEach(function(ring) {
+            ring.forEach(function(coord) {
+              if (coord[1] < minLat) minLat = coord[1];
+              if (coord[1] > maxLat) maxLat = coord[1];
+              if (coord[0] < minLng) minLng = coord[0];
+              if (coord[0] > maxLng) maxLng = coord[0];
+            });
+          });
+        });
+      });
+
+      if (!hasMatch) return null;
+
+      // If the bounds span most of the world, don't zoom (would look odd)
+      var lngSpan = maxLng - minLng;
+      var latSpan = maxLat - minLat;
+      if (lngSpan > 300 || latSpan > 130) return null;
+
+      return [[minLat, minLng], [maxLat, maxLng]];
+    }
+
     // ── Master apply ──
     function applyFilters() {
       generateTitle();
       renderMapLayer();
       renderLegend();
 
-      // Region zoom
-      var bounds = REGION_BOUNDS[regionFilter];
-      if (bounds && map) {
-        map.fitBounds(bounds, { padding: [20, 20], animate: true });
-      } else if (map && regionFilter === 'all') {
-        map.setView([15, 20], 2, { animate: true });
+      if (!map) return;
+
+      // Priority: explicit region dropdown > auto-fit to matched countries
+      var regionBounds = REGION_BOUNDS[regionFilter];
+      if (regionBounds) {
+        map.fitBounds(regionBounds, { padding: [20, 20], animate: true });
+      } else {
+        // Auto-zoom to the extent of shaded countries
+        var filtered = getFilteredClassifications();
+        var byCountry = getCountryMap(filtered);
+        var dataBounds = getMatchedBounds(byCountry);
+
+        if (dataBounds) {
+          map.fitBounds(dataBounds, { padding: [40, 40], maxZoom: 6, animate: true });
+        } else {
+          map.setView([15, 20], 2, { animate: true });
+        }
       }
     }
 
