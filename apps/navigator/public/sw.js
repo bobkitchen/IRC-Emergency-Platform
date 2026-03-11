@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ern-v1';
+const CACHE_NAME = 'ern-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
