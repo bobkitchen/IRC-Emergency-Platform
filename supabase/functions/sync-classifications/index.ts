@@ -274,16 +274,25 @@ async function syncClassifications(): Promise<SyncResult> {
   // 5. Fetch existing records from DB (for diff)
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-  // Fetch all existing unique_ids for fast lookup
-  const { data: existingRows, error: fetchError } = await supabase
-    .from('classifications')
-    .select('id, unique_id, classification_id, reclassification_number, stance, severity, type, emergency_name, date');
-
-  if (fetchError) throw new Error(`DB fetch failed: ${fetchError.message}`);
+  // Fetch ALL existing records (paginated — Supabase default limit is 1000)
+  const existingRows: Record<string, unknown>[] = [];
+  let offset = 0;
+  const PAGE_SIZE = 1000;
+  while (true) {
+    const { data, error } = await supabase
+      .from('classifications')
+      .select('id, unique_id, classification_id, reclassification_number, stance, severity, type, emergency_name, date')
+      .range(offset, offset + PAGE_SIZE - 1);
+    if (error) throw new Error(`DB fetch failed: ${error.message}`);
+    if (!data || data.length === 0) break;
+    existingRows.push(...data);
+    if (data.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
 
   // Build lookup indexes
-  const byUniqueId: Record<string, typeof existingRows[0]> = {};
-  const byClassReclass: Record<string, typeof existingRows[0]> = {};
+  const byUniqueId: Record<string, Record<string, unknown>> = {};
+  const byClassReclass: Record<string, Record<string, unknown>> = {};
   for (const row of existingRows || []) {
     if (row.unique_id) byUniqueId[row.unique_id] = row;
     if (row.classification_id) {
