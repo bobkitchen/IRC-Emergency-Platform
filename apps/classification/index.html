@@ -105,7 +105,6 @@
 
         <!-- Filter/Sort Toolbar -->
         <div class="recent-toolbar">
-          <!-- Top row: Stance left, Sort right -->
           <div class="toolbar-row">
             <div class="toolbar-group">
               <div class="toolbar-label">Stance:</div>
@@ -127,19 +126,8 @@
                 <button class="status-pill" data-status="expiring">Expiring Soon</button>
               </div>
             </div>
-
-            <div class="toolbar-group toolbar-sort">
-              <label for="sort-select">Sort:</label>
-              <select id="sort-select" class="toolbar-select">
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="severity-high">Severity high→low</option>
-                <option value="country">Country A→Z</option>
-              </select>
-            </div>
           </div>
 
-          <!-- Bottom row: Type icons left, Country search right -->
           <div class="toolbar-row">
             <div class="toolbar-group">
               <div class="toolbar-label">Type:</div>
@@ -158,6 +146,17 @@
                 <input type="text" id="country-search-input" class="country-search-input" placeholder="Search country..." autocomplete="off">
                 <div id="country-search-dropdown" class="country-search-dropdown" style="display:none;"></div>
               </div>
+            </div>
+
+            <div class="toolbar-group toolbar-sort">
+              <div class="toolbar-label">Sort:</div>
+              <select id="sort-select" class="toolbar-select">
+                <option value="date-desc">Date (Newest)</option>
+                <option value="date-asc">Date (Oldest)</option>
+                <option value="severity-desc">Severity (Highest)</option>
+                <option value="severity-asc">Severity (Lowest)</option>
+                <option value="country-asc">Country (A-Z)</option>
+              </select>
             </div>
           </div>
         </div>
@@ -300,32 +299,6 @@
       padding: 2px 8px;
       border-radius: 10px;
       cursor: pointer;
-    }
-
-    /* ── Status Filter Pills ── */
-    .status-pills {
-      display: flex;
-      gap: 6px;
-    }
-    .status-pill {
-      padding: 6px 14px;
-      border: 2px solid var(--gray-e9, #E9E9E9);
-      border-radius: 8px;
-      background: #fff;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--mid-gray, #666);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .status-pill:hover:not(.active) {
-      border-color: var(--dark-gray, #333);
-      color: var(--dark-gray, #333);
-    }
-    .status-pill.active {
-      background: var(--irc-yellow, #FFC72C);
-      border-color: var(--black, #000);
-      color: var(--black, #000);
     }
 
     /* ── Map Section ── */

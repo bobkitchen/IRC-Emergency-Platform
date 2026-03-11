@@ -674,7 +674,7 @@ textarea:focus { outline: none; border-color: var(--irc-yellow); background: var
 .toolbar-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -683,7 +683,7 @@ textarea:focus { outline: none; border-color: var(--irc-yellow); background: var
   font-weight: 600;
   color: var(--dark-gray);
   white-space: nowrap;
-  min-width: 50px;
+  min-width: 60px;
 }
 
 .toolbar-group label {
@@ -691,7 +691,7 @@ textarea:focus { outline: none; border-color: var(--irc-yellow); background: var
   font-weight: 600;
   color: var(--dark-gray);
   white-space: nowrap;
-  min-width: 50px;
+  min-width: 60px;
 }
 
 .stance-pills {
@@ -750,6 +750,39 @@ textarea:focus { outline: none; border-color: var(--irc-yellow); background: var
   color: var(--black);
 }
 
+/* Status filter pills */
+.status-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  padding: 6px 14px;
+  border: 2px solid var(--gray-e9);
+  border-radius: 8px;
+  background: var(--white);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.status-pill:hover:not(.active) {
+  border-color: var(--dark-gray);
+  color: var(--dark-gray);
+}
+
+.status-pill.active {
+  background: var(--irc-yellow);
+  border-color: var(--black);
+  color: var(--black);
+  font-weight: 700;
+}
+
 /* Type filter icon buttons */
 .type-filter-icons {
   display: flex;
@@ -791,30 +824,24 @@ textarea:focus { outline: none; border-color: var(--irc-yellow); background: var
 }
 
 .toolbar-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
+  flex-wrap: wrap;
 }
 
 .toolbar-sort {
-  justify-self: stretch;
-}
-
-.toolbar-sort label {
-  min-width: 65px;
+  flex: 0 0 auto;
+  align-self: center;
 }
 
 .toolbar-sort .toolbar-select {
-  flex: 1;
+  min-width: 150px;
 }
 
 .toolbar-country-search {
-  justify-self: stretch;
-}
-
-.toolbar-country-search .toolbar-label {
-  min-width: 65px;
+  flex: 0 1 220px;
+  align-self: center;
 }
 
 .country-search-wrapper {
@@ -1687,8 +1714,9 @@ footer {
   .recent-list { grid-template-columns: 1fr; }
   .page-nav a { padding: 10px 12px; font-size: 0.75rem; }
   .recent-toolbar { flex-direction: column; }
-  .toolbar-row { grid-template-columns: 1fr; }
+  .toolbar-row { flex-direction: column; align-items: stretch; gap: 12px; }
   .toolbar-group { flex-direction: column; align-items: flex-start; }
+  .toolbar-country-search { flex: 1 1 100%; }
   .card-header-row { flex-direction: column; gap: 4px; }
   .card-subline { flex-direction: column; gap: 2px; }
   .card-separator { display: none; }
