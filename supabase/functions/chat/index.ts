@@ -321,11 +321,26 @@ Deno.serve(async (req) => {
     const classificationContext = await fetchClassificationContext(supabase);
 
     // ── 1G: Append source citation instruction to system prompt ──
+    const NAV_BASE = 'https://bobkitchen.github.io/emergency-response-navigator';
+
     const citationInstruction = `\n\n## Citation Guidelines (CRITICAL — follow exactly)
-- When referencing specific tasks, always use the task ID format (e.g., RMIE-001, FINANCE-015)
+
+### Task ID Links
+When you reference a task ID, ALWAYS make it a clickable link to the Navigator using this format:
+[TASK_ID](${NAV_BASE}/navigator/SECTOR_ID?highlight=TASK_ID)
+
+Use this mapping from task ID prefix to sector ID:
+RMIE/RESPONSE_MGMT → rmie | FINANCE → finance | PEOPLE_CULTURE/PCIE → people_culture | SUPPLY_CHAIN → supply_chain | SAFETY_SECURITY → safety_security | SAFEGUARDING → safeguarding | TECHNICAL_PROGRAMS → technical_programs | MEAL → meal | GRANTS → grants | PARTNERSHIPS → partnerships | INTEGRA → integra
+
+Examples:
+- [FINANCE-015](${NAV_BASE}/navigator/finance?highlight=FINANCE-015)
+- [RMIE-001](${NAV_BASE}/navigator/rmie?highlight=RMIE-001)
+- [SUPPLY_CHAIN-003](${NAV_BASE}/navigator/supply_chain?highlight=SUPPLY_CHAIN-003)
+
+### Document Links
 - EVERY document, template, guidance note, or resource you mention MUST be a clickable markdown link if it appears in the "Available Resources & Templates" section above. Scan that section before writing your response.
 - Use the EXACT markdown format from the resources section: [Document Name](url). Do not write document names as plain text when a link is available.
-- At the end of your response, add a "**Sources:**" section listing all referenced documents as clickable links`;
+- At the end of your response, add a "**Sources:**" section listing all referenced documents and tasks as clickable links`;
 
     // Build system prompt
     const focusPriority = FOCUS_PRIORITIES[site] || FOCUS_PRIORITIES.navigator;
