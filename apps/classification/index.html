@@ -115,7 +115,6 @@
                 <button class="stance-pill stance-pill-orange" data-stance="orange">Orange</button>
                 <button class="stance-pill stance-pill-yellow" data-stance="yellow">Yellow</button>
                 <button class="stance-pill stance-pill-white" data-stance="white">White</button>
-                <button class="stance-pill stance-pill-expiring" data-stance="expiring">Expiring Soon</button>
               </div>
             </div>
 
@@ -125,6 +124,7 @@
                 <button class="status-pill active" data-status="active">Active</button>
                 <button class="status-pill" data-status="all">All</button>
                 <button class="status-pill" data-status="expired">Expired</button>
+                <button class="status-pill" data-status="expiring">Expiring Soon</button>
               </div>
             </div>
 
@@ -595,10 +595,14 @@
 
       // Apply status, stance, type, country filters on deduplicated set
       var filtered = deduplicated.filter(function(c) {
-        // Status filter (active/expired/all)
+        // Status filter (active/expired/expiring/all)
         if (statusFilter === 'active' && IRC.isExpired(c.expirationDate)) return false;
         if (statusFilter === 'expired' && !IRC.isExpired(c.expirationDate)) return false;
-        var stanceMatch = stanceFilter === 'all' || c.stance === stanceFilter || (stanceFilter === 'expiring' && IRC.daysUntilExpiration(c.expirationDate) !== null && IRC.daysUntilExpiration(c.expirationDate) >= 0 && IRC.daysUntilExpiration(c.expirationDate) <= 7);
+        if (statusFilter === 'expiring') {
+          var _days = IRC.daysUntilExpiration(c.expirationDate);
+          if (_days === null || _days < 0 || _days > 7) return false;
+        }
+        var stanceMatch = stanceFilter === 'all' || c.stance === stanceFilter;
         var typeMatch = typeFilter === 'all' || c.type === typeFilter;
         var countryMatch = countryFilter === 'all' || c.country === countryFilter;
         return stanceMatch && typeMatch && countryMatch;
@@ -942,16 +946,15 @@
         var byCountry = {};
         latest.forEach(function(c) {
           if (!c.country) return;
-          // Apply status filter (active/expired/all) — same as card list
+          // Apply status filter (active/expired/expiring/all) — same as card list
           if (statusFilter === 'active' && IRC.isExpired(c.expirationDate)) return;
           if (statusFilter === 'expired' && !IRC.isExpired(c.expirationDate)) return;
-          // Apply stance filter
-          if (stanceFilter !== 'all') {
-            if (stanceFilter === 'expiring') {
-              var days = IRC.daysUntilExpiration(c.expirationDate);
-              if (days === null || days < 0 || days > 7) return;
-            } else if (c.stance !== stanceFilter) return;
+          if (statusFilter === 'expiring') {
+            var _d = IRC.daysUntilExpiration(c.expirationDate);
+            if (_d === null || _d < 0 || _d > 7) return;
           }
+          // Apply stance filter
+          if (stanceFilter !== 'all' && c.stance !== stanceFilter) return;
           // Apply type filter
           if (typeFilter !== 'all' && c.type !== typeFilter) return;
           // Apply country filter
