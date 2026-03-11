@@ -315,6 +315,27 @@
     .ai-builder-status.error {
       color: #E52911;
     }
+    .ai-filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 16px;
+      background: #FFF8E1;
+      border: 1px solid #FFC72C;
+      font-size: 0.78rem;
+      color: #1a1a1a;
+    }
+    .ai-filter-chip-x {
+      cursor: pointer;
+      font-weight: bold;
+      color: #999;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+    .ai-filter-chip-x:hover {
+      color: #E52911;
+    }
 
     /* Map tooltip styles (same as dashboard) */
     .map-country-tooltip {
@@ -483,6 +504,7 @@
         </div>
 
         <!-- Summary -->
+        <div id="ai-filter-chip-wrap"></div>
         <div class="sidebar-summary" id="filter-summary">0 classifications shown</div>
 
         <!-- Export -->
@@ -536,6 +558,16 @@
     var regionFilter = 'all';
     var displayMode = 'stance';
     var titleEdited = false;
+    var countryFilter = [];    // empty = all; set by AI builder
+
+    // Continent → country name mappings (used by AI builder for geographic queries)
+    var CONTINENT_COUNTRIES = {
+      africa: ['Algeria','Angola','Benin','Botswana','Burkina Faso','Burundi','Cameroon','Cape Verde','Central African Republic','Chad','Comoros','Congo','Democratic Republic of the Congo','Djibouti','Egypt','Equatorial Guinea','Eritrea','Eswatini','Ethiopia','Gabon','Gambia','Ghana','Guinea','Guinea-Bissau','Ivory Coast','Kenya','Lesotho','Liberia','Libya','Madagascar','Malawi','Mali','Mauritania','Mauritius','Morocco','Mozambique','Namibia','Niger','Nigeria','Rwanda','Senegal','Sierra Leone','Somalia','South Africa','South Sudan','Sudan','Tanzania','Togo','Tunisia','Uganda','Zambia','Zimbabwe'],
+      asia: ['Afghanistan','Bangladesh','Bhutan','Brunei','Cambodia','China','India','Indonesia','Iran (Islamic Republic of)','Iraq','Japan','Kazakhstan','Kyrgyzstan','Lao PDR','Malaysia','Maldives','Mongolia','Myanmar','Nepal','North Korea','Pakistan','Philippines','South Korea','Sri Lanka','Tajikistan','Thailand','Timor-Leste','Turkmenistan','Uzbekistan','Viet Nam'],
+      europe: ['Albania','Armenia','Austria','Azerbaijan','Belarus','Belgium','Bosnia and Herzegovina','Bulgaria','Croatia','Cyprus','Czech Republic','Denmark','Estonia','Finland','France','Georgia','Germany','Greece','Hungary','Iceland','Ireland','Italy','Kosovo','Latvia','Lithuania','Luxembourg','Moldova (Republic of)','Montenegro','Netherlands','North Macedonia','Norway','Poland','Portugal','Romania','Russia','Serbia','Slovakia','Slovenia','Spain','Sweden','Switzerland','Turkey','Ukraine','United Kingdom'],
+      americas: ['Argentina','Belize','Bolivia','Brazil','Canada','Chile','Colombia','Costa Rica','Cuba','Dominican Republic','Ecuador','El Salvador','Guatemala','Haiti','Honduras','Jamaica','Mexico','Nicaragua','Panama','Paraguay','Peru','Trinidad and Tobago','United States','Uruguay','Venezuela (Bolivarian Republic of)'],
+      middleeast: ['Bahrain','Iran (Islamic Republic of)','Iraq','Israel','Jordan','Kuwait','Lebanon','Oman','State of Palestine','Qatar','Saudi Arabia','Syrian Arab Republic','Turkey','United Arab Emirates','Yemen']
+    };
 
     // Fiscal year
     var now = new Date();
@@ -687,6 +719,16 @@
         if (selectedStances.length > 0) {
           var s = (c.stance || 'white').toLowerCase();
           if (selectedStances.indexOf(s) === -1) return false;
+        }
+
+        // Country filter (set by AI builder; empty = all)
+        if (countryFilter.length > 0 && c.country) {
+          var normCountry = IRC.normalizeCountry(c.country).toLowerCase();
+          var match = false;
+          for (var ci = 0; ci < countryFilter.length; ci++) {
+            if (countryFilter[ci].toLowerCase() === normCountry) { match = true; break; }
+          }
+          if (!match) return false;
         }
 
         return true;
@@ -1577,14 +1619,18 @@
         '- timePeriod: "all" | "fy" | "12m"\n' +
         '- selectedTypes: array of zero or more of ["conflict","outbreak","food","hazard","complex"] (empty = all types)\n' +
         '- selectedStances: array of zero or more of ["red","orange","yellow","white"] (empty = all stances)\n' +
-        '- regionFilter: "all" | "asia" | "east africa" | "latam" | "mena" | "rai" | "west and central africa"\n' +
+        '- regionFilter: "all" | "asia" | "east africa" | "latam" | "mena" | "rai" | "west and central africa" (this is an IRC organizational region for map zoom only)\n' +
         '- displayMode: "stance" | "severity"\n' +
         '- statusFilter: "active" | "all"\n' +
-        '- title: a short descriptive title for this map (optional)\n\n' +
+        '- continent: (OPTIONAL) to filter by geographic continent, use one of: "africa" | "asia" | "europe" | "americas" | "middleeast". This FILTERS the data to only show countries on that continent. Use this when the user mentions a continent or large geographic area.\n' +
+        '- countries: (OPTIONAL) array of specific country names to include. Use this for requests about specific countries.\n' +
+        '- title: a short descriptive title for this map\n\n' +
+        'IMPORTANT: regionFilter only controls map zoom (IRC organizational regions). To actually FILTER data to a geographic area like "Africa" or "Europe", you MUST use the "continent" field. For example, "Africa" requires continent:"africa" — do NOT just set regionFilter.\n\n' +
         'Current fiscal year: ' + fyLabel + ' (Oct ' + (currentFY - 1) + ' – Sep ' + currentFY + ').\n' +
         'Examples:\n' +
         '"Show red conflicts" → {"timePeriod":"all","selectedTypes":["conflict"],"selectedStances":["red"],"regionFilter":"all","displayMode":"stance","statusFilter":"active","title":"Active Red Conflict Classifications"}\n' +
-        '"Severity heatmap of East Africa in the last 12 months" → {"timePeriod":"12m","selectedTypes":[],"selectedStances":[],"regionFilter":"east africa","displayMode":"severity","statusFilter":"active","title":"East Africa Severity Heatmap — Last 12 Months"}\n' +
+        '"All classifications in Africa last 12 months" → {"timePeriod":"12m","selectedTypes":[],"selectedStances":[],"regionFilter":"all","displayMode":"stance","statusFilter":"active","continent":"africa","title":"African Classifications — Last 12 Months"}\n' +
+        '"Severity heatmap of East Africa" → {"timePeriod":"all","selectedTypes":[],"selectedStances":[],"regionFilter":"east africa","displayMode":"severity","statusFilter":"active","continent":"africa","title":"East Africa Severity Heatmap"}\n' +
         'Return ONLY the JSON object.';
 
       fetch(AI_SUPABASE_URL + '/chat', {
@@ -1678,7 +1724,7 @@
         });
       }
 
-      // Region
+      // Region (zoom only)
       if (config.regionFilter) {
         regionFilter = config.regionFilter;
         document.getElementById('region-select').value = regionFilter;
@@ -1700,13 +1746,44 @@
         });
       }
 
+      // Continent → country filter
+      var chipLabel = '';
+      if (config.continent && CONTINENT_COUNTRIES[config.continent]) {
+        countryFilter = CONTINENT_COUNTRIES[config.continent].slice();
+        var continentLabels = { africa: 'Africa', asia: 'Asia', europe: 'Europe', americas: 'Americas', middleeast: 'Middle East' };
+        chipLabel = continentLabels[config.continent] || config.continent;
+      } else if (Array.isArray(config.countries) && config.countries.length > 0) {
+        countryFilter = config.countries.slice();
+        chipLabel = config.countries.length <= 3 ? config.countries.join(', ') : config.countries.length + ' countries';
+      } else {
+        countryFilter = [];
+      }
+
+      // Show/hide the filter chip
+      updateCountryFilterChip(chipLabel);
+
       // Title
       if (config.title) {
         document.getElementById('map-title').textContent = config.title;
-        titleEdited = true; // Prevent auto-overwrite
+        titleEdited = true;
       }
 
       applyFilters();
+    }
+
+    function updateCountryFilterChip(label) {
+      var wrap = document.getElementById('ai-filter-chip-wrap');
+      if (!label) {
+        wrap.innerHTML = '';
+        return;
+      }
+      wrap.innerHTML = '<span class="ai-filter-chip">&#127758; ' + label +
+        ' <span class="ai-filter-chip-x" id="clear-country-filter">&times;</span></span>';
+      document.getElementById('clear-country-filter').addEventListener('click', function() {
+        countryFilter = [];
+        wrap.innerHTML = '';
+        applyFilters();
+      });
     }
 
     // ── Init ──
