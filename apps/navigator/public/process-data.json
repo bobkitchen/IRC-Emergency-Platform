@@ -469,13 +469,7 @@
           "timeline": "Week 5",
           "responsible": "",
           "subtasks": [],
-          "resources": [
-            {
-              "name": "Report a Wrongdoing Factsheet",
-              "url": "https://rescue.app.box.com/s/rjjmh07kghtzm43e23jvs441elnbvvk4/folder/242444483275",
-              "type": "suggested"
-            }
-          ],
+          "resources": [],
           "section": "ADMINISTRATION & MANAGEMENT"
         },
         {
@@ -534,8 +528,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "EN_Measurement Box Protocol",
+              "url": "https://rescue.app.box.com/s/obqaild0gggkzbemncbu4x5j81nwnmz1",
               "type": "suggested"
             }
           ],
@@ -563,11 +557,6 @@
               "type": "tool"
             },
             {
-              "name": "Scenario Planning Guidance and Template",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1130954674429",
-              "type": "suggested"
-            },
-            {
               "name": "National Level Scenario - Example",
               "url": "https://rescue.app.box.com/s/zicl0xfwrluzoq5fdzi8e5orzzmffef3",
               "type": "suggested"
@@ -575,6 +564,11 @@
             {
               "name": "Scenario Exercise - Facilitators Guide",
               "url": "https://rescue.app.box.com/s/aiepk2jgwzsrmdf9yfrmb7ok1fvk3mhr",
+              "type": "suggested"
+            },
+            {
+              "name": "Scenario Exercise - Participants Guide",
+              "url": "https://rescue.app.box.com/s/j1kj0aookry4vrlee1fwe4pklare17o4",
               "type": "suggested"
             }
           ],
@@ -840,11 +834,6 @@
           "subtasks": [],
           "resources": [
             {
-              "name": "Sample Operating Budget Template",
-              "url": "https://rescue.box.com/s/pqh97dd02g4j334ejbq797sg2yxaa62v",
-              "type": "suggested"
-            },
-            {
               "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
               "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
               "type": "suggested"
@@ -852,6 +841,11 @@
             {
               "name": "(66) CRRD Budget Tools (blank) | Powered by Box",
               "url": "https://rescue.app.box.com/folder/149783156120?s=nnhkvuhaode85ep20fiowe0nz1lgbo6e",
+              "type": "suggested"
+            },
+            {
+              "name": "ERT Deployment Budget Scenarios - Sample",
+              "url": "https://rescue.box.com/s/kk6bachhc9piztonww39dmmkvclkb260",
               "type": "suggested"
             }
           ],
@@ -1555,11 +1549,6 @@
               "name": "Strategy 100 - Country Program Structure Guidance",
               "url": "https://rescue.app.box.com/s/shrtn6av3d2ndadrcgmtbvgc5ccec4ns",
               "type": "suggested"
-            },
-            {
-              "name": "Regional Preparedness Plan Template",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1095965624027",
-              "type": "suggested"
             }
           ]
         },
@@ -1708,8 +1697,8 @@
               "type": "suggested"
             },
             {
-              "name": "Integra: Procurement for Approvers",
-              "url": "https://kayaconnect.org/course/info.php?id=4204",
+              "name": "Procurement Policies & Procedures",
+              "url": "https://rescuenet.rescue.org/page/7334",
               "type": "suggested"
             }
           ]
@@ -1859,8 +1848,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Monthend Checklist",
+              "url": "https://rescue.box.com/s/3gbutzvz7fmrpaaorhuk9u5vkj7beyo1",
               "type": "suggested"
             }
           ]
@@ -1892,8 +1881,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -1940,11 +1929,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         },
@@ -1972,11 +1956,6 @@
             {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
               "type": "suggested"
             }
           ]
@@ -2088,18 +2067,8 @@
           ],
           "resources": [
             {
-              "name": "Preparedness & Early Action Framework (English)",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093033142548",
-              "type": "suggested"
-            },
-            {
               "name": "Preparedness & Early Action Framework (Francais)",
               "url": "https://rescue.app.box.com/s/9dicrey9r2m366yj0qlgi1lqbimhzoo6",
-              "type": "suggested"
-            },
-            {
-              "name": "Emergency Preparedness & Early Action Framework FAQs",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1169573265918",
               "type": "suggested"
             }
           ]
@@ -2187,18 +2156,13 @@
           ],
           "resources": [
             {
-              "name": "Preparedness & Early Action Framework (English)",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093033142548",
-              "type": "suggested"
-            },
-            {
               "name": "Preparedness & Early Action Framework (Francais)",
               "url": "https://rescue.app.box.com/s/9dicrey9r2m366yj0qlgi1lqbimhzoo6",
               "type": "suggested"
             },
             {
-              "name": "Emergency Preparedness & Early Action Framework FAQs",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1169573265918",
+              "name": "Financial Dimension codes or change Operating Unit (D4) ownership",
+              "url": "https://rescuenet.rescue.org/page/13687?SearchId=9026220",
               "type": "suggested"
             }
           ]
@@ -2237,13 +2201,13 @@
               "type": "suggested"
             },
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
+              "name": "Integra Incident - Employee Center",
+              "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
               "type": "suggested"
             },
             {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
+              "name": "Integra Reporting via Power BI - RescueNet",
+              "url": "https://rescuenet.rescue.org/page/14033",
               "type": "suggested"
             }
           ]
@@ -2403,8 +2367,8 @@
               "type": "suggested"
             },
             {
-              "name": "1. Client Responsiveness Toolkit For Emergencies_EN.pdf | Powered by Box 2. 6. CR Tools for Partners | Powered by Box",
-              "url": "https://rescue.app.box.com/s/kb2vr5rxhg7rcm9d65vsms5mssa4q9il/file/1417822336569",
+              "name": "UG_Accounts Payable.pdf | Powered by Box",
+              "url": "https://rescue.app.box.com/s/zjm4c66s8sntty734yn8kooom02r5doy",
               "type": "suggested"
             }
           ]
@@ -2668,8 +2632,8 @@
               "type": "suggested"
             },
             {
-              "name": "Emergency Cash Readiness Checklist",
-              "url": "https://rescue.app.box.com/folder/287401417955",
+              "name": "Initial Decision for Cash checklist",
+              "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
               "type": "suggested"
             }
           ]
@@ -2762,8 +2726,8 @@
               "type": "suggested"
             },
             {
-              "name": "Emergency Cash Readiness Checklist",
-              "url": "https://rescue.app.box.com/folder/287401417955",
+              "name": "Initial Decision for Cash checklist",
+              "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
               "type": "suggested"
             }
           ]
@@ -2817,8 +2781,8 @@
               "type": "suggested"
             },
             {
-              "name": "Emergency Cash Readiness Checklist",
-              "url": "https://rescue.app.box.com/folder/287401417955",
+              "name": "Initial Decision for Cash checklist",
+              "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
               "type": "suggested"
             }
           ]
@@ -3205,13 +3169,13 @@
               "type": "suggested"
             },
             {
-              "name": "1. Client Responsiveness Toolkit For Emergencies_EN.pdf | Powered by Box 2. 6. CR Tools for Partners | Powered by Box",
-              "url": "https://rescue.app.box.com/s/kb2vr5rxhg7rcm9d65vsms5mssa4q9il/file/1417822336569",
+              "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
+              "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
               "type": "suggested"
             },
             {
-              "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
+              "name": "2. IRC Policy - Cash and Banking .pdf | Powered by Box",
+              "url": "https://rescue.app.box.com/s/5w03cf18fhexoqtu2c1d0j9hdrnwtzh1",
               "type": "suggested"
             }
           ]
@@ -3468,11 +3432,6 @@
           ],
           "resources": [
             {
-              "name": "Analytical package - June 2024 KV.xlsx | Powered by Box",
-              "url": "https://rescue.app.box.com/s/93gotklsrqp01aggz9zykg33yhge94lx/file/1598166822071",
-              "type": "suggested"
-            },
-            {
               "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
               "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
               "type": "suggested"
@@ -3480,6 +3439,11 @@
             {
               "name": "Dimension Guide (v11).pdf | Powered by Box",
               "url": "https://rescue.app.box.com/s/kdi6a1qgu3hwjwn9b65tyynrtjqvvktf",
+              "type": "suggested"
+            },
+            {
+              "name": "(66) CRRD Budget Tools (blank) | Powered by Box",
+              "url": "https://rescue.app.box.com/folder/149783156120?s=nnhkvuhaode85ep20fiowe0nz1lgbo6e",
               "type": "suggested"
             }
           ]
@@ -3612,8 +3576,8 @@
               "type": "suggested"
             },
             {
-              "name": "Emergency Cash Readiness Checklist",
-              "url": "https://rescue.app.box.com/folder/287401417955",
+              "name": "Initial Decision for Cash checklist",
+              "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
               "type": "suggested"
             }
           ]
@@ -3753,13 +3717,7 @@
           "timeline": "",
           "responsible": "",
           "subtasks": [],
-          "resources": [
-            {
-              "name": "Integra: Processing Purchase Requisitions - HQ",
-              "url": "https://kayaconnect.org/course/info.php?id=4450",
-              "type": "suggested"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-035",
@@ -3865,11 +3823,6 @@
           ],
           "resources": [
             {
-              "name": "Integra: Processing Purchase Requisitions - HQ",
-              "url": "https://kayaconnect.org/course/info.php?id=4450",
-              "type": "suggested"
-            },
-            {
               "name": "Template - National Employee Handbook",
               "url": "https://rescue.box.com/s/ofy1w6w85zytgyfup93xsxoft7mw3cij",
               "type": "suggested"
@@ -3877,6 +3830,11 @@
             {
               "name": "National Level Scenario - Example",
               "url": "https://rescue.app.box.com/s/zicl0xfwrluzoq5fdzi8e5orzzmffef3",
+              "type": "suggested"
+            },
+            {
+              "name": "National Level Scenario Planning - Example PPT",
+              "url": "https://rescue.app.box.com/s/fbj6x5rw6aizml0g9uv7gemny6wqq96t",
               "type": "suggested"
             }
           ]
@@ -3982,11 +3940,6 @@
           ],
           "resources": [
             {
-              "name": "Analytical package - June 2024 KV.xlsx | Powered by Box",
-              "url": "https://rescue.app.box.com/s/93gotklsrqp01aggz9zykg33yhge94lx/file/1598166822071",
-              "type": "suggested"
-            },
-            {
               "name": "Integra Reporting via Power BI - RescueNet",
               "url": "https://rescuenet.rescue.org/page/14033",
               "type": "suggested"
@@ -3994,6 +3947,11 @@
             {
               "name": "PowerBI Access Request",
               "url": "https://rescuenet.rescue.org/page/14033?SearchId=0",
+              "type": "suggested"
+            },
+            {
+              "name": "MSNA Dashboard",
+              "url": "https://app.powerbi.com/links/4bCWIJ0PrU?ctid=05f1318c-6783-4326-b729-bf537a761db8&pbi_source=linkShare",
               "type": "suggested"
             }
           ]
@@ -4521,18 +4479,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Regional Preparedness Plan Template",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1095965624027",
-              "type": "suggested"
-            },
-            {
-              "name": "Regional Preparedness Plan Use Guide",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093037558918",
-              "type": "suggested"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-054",
@@ -4669,11 +4616,6 @@
           ],
           "resources": [
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
-            },
-            {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
@@ -4681,6 +4623,11 @@
             {
               "name": "Monthend Checklist",
               "url": "https://rescue.box.com/s/3gbutzvz7fmrpaaorhuk9u5vkj7beyo1",
+              "type": "suggested"
+            },
+            {
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -5144,13 +5091,13 @@
               "type": "suggested"
             },
             {
-              "name": "Emergency Monitoring Handbook",
-              "url": "https://rescue.app.box.com/file/775682615620",
+              "name": "HR Partnership Assessment Guidance",
+              "url": "https://rescue.box.com/s/xtlmspplbtrtsfi474hvn23i0dwkjkq2",
               "type": "suggested"
             },
             {
-              "name": "HR Partnership Assessment Guidance",
-              "url": "https://rescue.box.com/s/xtlmspplbtrtsfi474hvn23i0dwkjkq2",
+              "name": "IRC Partnership Excellence for Equality and Results (PEER) System",
+              "url": "https://rescue.app.box.com/s/7sxpitlfcy4dvxcd9z8a4rb76shbla9d",
               "type": "suggested"
             }
           ]
@@ -5253,11 +5200,6 @@
           ],
           "resources": [
             {
-              "name": "Proof of Life Form",
-              "url": "https://rescue.app.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci/file/668301029543",
-              "type": "suggested"
-            },
-            {
               "name": "Integra Incident - Employee Center",
               "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
               "type": "suggested"
@@ -5265,6 +5207,11 @@
             {
               "name": "Template - National Employee Handbook",
               "url": "https://rescue.box.com/s/ofy1w6w85zytgyfup93xsxoft7mw3cij",
+              "type": "suggested"
+            },
+            {
+              "name": "New Employee Setup & Account Creation",
+              "url": "https://rescuenet.rescue.org/page/17961?SearchId=0",
               "type": "suggested"
             }
           ]
@@ -5358,18 +5305,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "HR Partnership Assessment Guidance",
               "url": "https://rescue.box.com/s/xtlmspplbtrtsfi474hvn23i0dwkjkq2",
+              "type": "suggested"
+            },
+            {
+              "name": "IRC Partnership Excellence for Equality and Results (PEER) System",
+              "url": "https://rescue.app.box.com/s/7sxpitlfcy4dvxcd9z8a4rb76shbla9d",
+              "type": "suggested"
+            },
+            {
+              "name": "Partnership Capacity Analysis (PCA) tool",
+              "url": "https://rescue.app.box.com/s/i5i8mkm37806ellp9qmagttcdg3uymuk",
               "type": "suggested"
             }
           ]
@@ -5395,18 +5342,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "PEOPLE_CULTURE-017",
@@ -5456,18 +5392,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "ERT Deployment Budget Scenarios - Sample",
               "url": "https://rescue.box.com/s/kk6bachhc9piztonww39dmmkvclkb260",
+              "type": "suggested"
+            },
+            {
+              "name": "Deployment Terms and Conditions- 2023",
+              "url": "https://rescue.box.com/s/6vh3hpn35dmktvrviiuctmm5ohuc97db",
+              "type": "suggested"
+            },
+            {
+              "name": "Duty of Care Site",
+              "url": "https://doc.rescue.org/",
               "type": "suggested"
             }
           ]
@@ -5596,11 +5532,6 @@
               "name": "IRC MEAL Handbook",
               "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
               "type": "suggested"
-            },
-            {
-              "name": "Emergency Monitoring Handbook",
-              "url": "https://rescue.app.box.com/file/775682615620",
-              "type": "suggested"
             }
           ]
         },
@@ -5628,11 +5559,6 @@
             {
               "name": "IRC MEAL Handbook",
               "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
-              "type": "suggested"
-            },
-            {
-              "name": "Emergency Monitoring Handbook",
-              "url": "https://rescue.app.box.com/file/775682615620",
               "type": "suggested"
             }
           ]
@@ -5663,13 +5589,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "PEOPLE_CULTURE-023",
@@ -5693,18 +5613,13 @@
               "type": "tool"
             },
             {
-              "name": "Report a Wrongdoing Poster",
-              "url": "https://rescue.app.box.com/s/scsyixe002hwm9mgtn866gfprmywrjn6/folder/237584279483",
-              "type": "suggested"
-            },
-            {
               "name": "Information, Education, and Communication materials for IRC Country Programs to adapt for Communication with Communities on Safeguarding.",
               "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
               "type": "suggested"
             },
             {
-              "name": "Safeguarding Posters",
-              "url": "https://rescue.app.box.com/s/6nsvw0fguew0gustrvgxzcebs1fqzk2v/folder/297929361249",
+              "name": "safeguarding",
+              "url": "https://rescue.app.box.com/s/vzsh3kv7fbwm1xlmpjl335bp7mhduqx9",
               "type": "suggested"
             }
           ]
@@ -5731,11 +5646,6 @@
               "type": "guidance"
             },
             {
-              "name": "Opt_partners Client Feedback Channels Assessment",
-              "url": "https://rescue.app.box.com/file/1808728220953",
-              "type": "suggested"
-            },
-            {
               "name": "Assessment report template",
               "url": "https://rescue.box.com/s/5qc8z0hgzrddte9hfhojib62qj0ogi4o",
               "type": "suggested"
@@ -5743,6 +5653,11 @@
             {
               "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
               "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+              "type": "suggested"
+            },
+            {
+              "name": "MSNA tools",
+              "url": "https://rescuenet.rescue.org/page/18569",
               "type": "suggested"
             }
           ]
@@ -5851,11 +5766,6 @@
               "type": "guidance"
             },
             {
-              "name": "Safeguarding Posters",
-              "url": "https://rescue.app.box.com/s/6nsvw0fguew0gustrvgxzcebs1fqzk2v/folder/297929361249",
-              "type": "suggested"
-            },
-            {
               "name": "Information, Education, and Communication materials for IRC Country Programs to adapt for Communication with Communities on Safeguarding.",
               "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
               "type": "suggested"
@@ -5863,6 +5773,11 @@
             {
               "name": "safeguarding",
               "url": "https://rescue.app.box.com/s/vzsh3kv7fbwm1xlmpjl335bp7mhduqx9",
+              "type": "suggested"
+            },
+            {
+              "name": "IRC Beneficiary Counting Guidelines",
+              "url": "https://rescue.app.box.com/s/t0qxx7inh2qnxxm0potmortcn2smbzzo?",
               "type": "suggested"
             }
           ]
@@ -5978,11 +5893,6 @@
           "subtasks": [],
           "resources": [
             {
-              "name": "Safeguarding Posters",
-              "url": "https://rescue.app.box.com/s/6nsvw0fguew0gustrvgxzcebs1fqzk2v/folder/297929361249",
-              "type": "suggested"
-            },
-            {
               "name": "Information, Education, and Communication materials for IRC Country Programs to adapt for Communication with Communities on Safeguarding.",
               "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
               "type": "suggested"
@@ -5990,6 +5900,11 @@
             {
               "name": "safeguarding",
               "url": "https://rescue.app.box.com/s/vzsh3kv7fbwm1xlmpjl335bp7mhduqx9",
+              "type": "suggested"
+            },
+            {
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             }
           ]
@@ -6253,8 +6168,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -6301,11 +6216,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         },
@@ -6333,11 +6243,6 @@
             {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
               "type": "suggested"
             }
           ]
@@ -6558,18 +6463,18 @@
               "type": "tool"
             },
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
+              "name": "Preparedness & Early Action Framework (Francais)",
+              "url": "https://rescue.app.box.com/s/9dicrey9r2m366yj0qlgi1lqbimhzoo6",
               "type": "suggested"
             },
             {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
+              "name": "(EN) UG_Procure to Confirm - GLOBAL.pdf | Powered by Box",
+              "url": "https://rescue.app.box.com/s/44js15eg0wloyt0790ckl59v02acmeka",
               "type": "suggested"
             },
             {
-              "name": "Preparedness & Early Action Framework (English)",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093033142548",
+              "name": "Monthend Checklist",
+              "url": "https://rescue.box.com/s/3gbutzvz7fmrpaaorhuk9u5vkj7beyo1",
               "type": "suggested"
             }
           ]
@@ -7038,18 +6943,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "Crisis response activation call TOR",
               "url": "https://rescue.box.com/s/m6s7ybmenf7d6rxzvykt09ke812sd85r",
+              "type": "suggested"
+            },
+            {
+              "name": "Generic TOR Library",
+              "url": "https://rescue.box.com/s/8sju5hsq02x3w0fmc5u0yo8x0v3wd00r",
+              "type": "suggested"
+            },
+            {
+              "name": "T25 - IRC Recruitment Request Form T25b - IRC Job Description Template T25c - TOR HASM",
+              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
               "type": "suggested"
             }
           ]
@@ -7209,8 +7114,8 @@
               "type": "suggested"
             },
             {
-              "name": "Rapid Guide for setting up client feedback mechanisms",
-              "url": "https://rescue.app.box.com/s/4pg02ie4qwyletj8n9u65rlp621yyjbq/folder/287441395131",
+              "name": "Fleet & Logistics Policies & Procedures",
+              "url": "https://rescuenet.rescue.org/page/7510",
               "type": "suggested"
             }
           ]
@@ -7301,18 +7206,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "Integra Incident - Employee Center",
               "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
+              "type": "suggested"
+            },
+            {
+              "name": "MDMT Consolidated Request - Integra Self-Service (service-now.com)",
+              "url": "https://nethope.service-now.com/integra?id=sc_cat_item_guide&sys_id=bf0d6d4ddb481090658c7bedae9619ba&sysparm_category=4d9761f41b87091083121173b24bcb7e",
+              "type": "suggested"
+            },
+            {
+              "name": "Integra Reporting via Power BI - RescueNet",
+              "url": "https://rescuenet.rescue.org/page/14033",
               "type": "suggested"
             }
           ]
@@ -7556,8 +7461,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -7604,11 +7509,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         },
@@ -7636,11 +7536,6 @@
             {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
               "type": "suggested"
             }
           ]
@@ -7697,8 +7592,8 @@
               "type": "suggested"
             },
             {
-              "name": "SAP Revision and Emergency Preparedness Framework - PPT",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1197866861642",
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             }
           ]
@@ -7787,8 +7682,8 @@
               "type": "suggested"
             },
             {
-              "name": "Rapid Guide for setting up client feedback mechanisms",
-              "url": "https://rescue.app.box.com/s/4pg02ie4qwyletj8n9u65rlp621yyjbq/folder/287441395131",
+              "name": "T30 - SOP 21 - Information Security - All Staff T30b - SOP 22 - Phishing Attack - All staff",
+              "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
               "type": "suggested"
             }
           ]
@@ -7867,11 +7762,6 @@
           ],
           "resources": [
             {
-              "name": "Proof of Life Form",
-              "url": "https://rescue.app.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci/file/668301029543",
-              "type": "suggested"
-            },
-            {
               "name": "T30 - SOP 21 - Information Security - All Staff T30b - SOP 22 - Phishing Attack - All staff",
               "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
               "type": "suggested"
@@ -7879,6 +7769,11 @@
             {
               "name": "T15 - Pre Arrival Briefing - All Staff",
               "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+              "type": "suggested"
+            },
+            {
+              "name": "T46b - 10 CP - Armed Robbery - All Staff T46 - 10 CP - Armed Robbery - SMT",
+              "url": "https://rescue.box.com/s/2uh77zitbr4u8hwk8fqesli2wwlx414m",
               "type": "suggested"
             }
           ]
@@ -7967,8 +7862,8 @@
               "type": "suggested"
             },
             {
-              "name": "Proof of Life Form",
-              "url": "https://rescue.app.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci/file/668301029543",
+              "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
+              "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
               "type": "suggested"
             }
           ]
@@ -8310,16 +8205,6 @@
               "name": "Information, Education, and Communication materials for IRC Country Programs to adapt for Communication with Communities on Safeguarding.",
               "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
               "type": "suggested"
-            },
-            {
-              "name": "Regional Preparedness Plan Template",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1095965624027",
-              "type": "suggested"
-            },
-            {
-              "name": "Regional Preparedness Plan Use Guide",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093037558918",
-              "type": "suggested"
             }
           ]
         },
@@ -8352,11 +8237,6 @@
           ],
           "resources": [
             {
-              "name": "Emergency Response Contact List and Tracker",
-              "url": "https://rescue.app.box.com/file/1662615261155",
-              "type": "suggested"
-            },
-            {
               "name": "People Management at the IRC",
               "url": "https://rescuenet.rescue.org/page/17201?SearchId=8169074",
               "type": "suggested"
@@ -8364,6 +8244,11 @@
             {
               "name": "HR Operations Forms",
               "url": "https://rescuenet.rescue.org/page/17445",
+              "type": "suggested"
+            },
+            {
+              "name": "Establishing New and Closing Operations",
+              "url": "https://rescue.app.box.com/s/mi9szd66zhkp8vc7x02lrnro013s1x90",
               "type": "suggested"
             }
           ]
@@ -8582,13 +8467,13 @@
               "type": "suggested"
             },
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
+              "name": "T30 - SOP 21 - Information Security - All Staff T30b - SOP 22 - Phishing Attack - All staff",
+              "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
               "type": "suggested"
             },
             {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             }
           ]
@@ -8622,18 +8507,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "Sample Standard Authorization Matrix",
               "url": "https://rescue.box.com/s/uiszlfrobo2bl5zjttd7s267dqa94bju",
+              "type": "suggested"
+            },
+            {
+              "name": "Sample Expanded Authorization Matrix",
+              "url": "https://rescue.box.com/s/ytlond4fuhoge17rapjtwxxdmre3rlvy",
+              "type": "suggested"
+            },
+            {
+              "name": "See here the Terms of Reference for the Crisis Coordination Calls.",
+              "url": "https://rescue.box.com/s/1rwmtgk6spaxxcvwni31as2qvkpvi0uo",
               "type": "suggested"
             }
           ]
@@ -8677,8 +8562,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             }
           ]
@@ -9176,18 +9061,13 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
               "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+              "type": "suggested"
+            },
+            {
+              "name": "T30 - SOP 21 - Information Security - All Staff T30b - SOP 22 - Phishing Attack - All staff",
+              "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
               "type": "suggested"
             }
           ]
@@ -9231,8 +9111,8 @@
               "type": "suggested"
             },
             {
-              "name": "Emergency Cash Readiness Checklist",
-              "url": "https://rescue.app.box.com/folder/287401417955",
+              "name": "Initial Decision for Cash checklist",
+              "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
               "type": "suggested"
             }
           ]
@@ -9321,8 +9201,8 @@
               "type": "suggested"
             },
             {
-              "name": "Integra: Procurement for Approvers",
-              "url": "https://kayaconnect.org/course/info.php?id=4204",
+              "name": "Procurement Policies & Procedures",
+              "url": "https://rescuenet.rescue.org/page/7334",
               "type": "suggested"
             }
           ]
@@ -9480,13 +9360,13 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             },
             {
-              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
-              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+              "name": "T30 - SOP 21 - Information Security - All Staff T30b - SOP 22 - Phishing Attack - All staff",
+              "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
               "type": "suggested"
             }
           ]
@@ -9559,8 +9439,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             }
           ]
@@ -9602,11 +9482,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         }
@@ -9639,11 +9514,6 @@
             }
           ],
           "resources": [
-            {
-              "name": "Safeguarding Posters",
-              "url": "https://rescue.app.box.com/s/6nsvw0fguew0gustrvgxzcebs1fqzk2v/folder/297929361249",
-              "type": "suggested"
-            },
             {
               "name": "Information, Education, and Communication materials for IRC Country Programs to adapt for Communication with Communities on Safeguarding.",
               "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
@@ -9839,13 +9709,13 @@
               "type": "suggested"
             },
             {
-              "name": "Opt_partners Client Feedback Channels Assessment",
-              "url": "https://rescue.app.box.com/file/1808728220953",
+              "name": "Assessment report template",
+              "url": "https://rescue.box.com/s/5qc8z0hgzrddte9hfhojib62qj0ogi4o",
               "type": "suggested"
             },
             {
-              "name": "Assessment report template",
-              "url": "https://rescue.box.com/s/5qc8z0hgzrddte9hfhojib62qj0ogi4o",
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             }
           ]
@@ -9877,8 +9747,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -9925,11 +9795,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         },
@@ -9957,11 +9822,6 @@
             {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
               "type": "suggested"
             }
           ]
@@ -10140,18 +10000,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "(EN) Userguide_Procurement Reviews and Approvals.pdf | Powered by Box",
               "url": "https://rescue.app.box.com/s/rxhib9edm5i66gph24q5io0828kdzp5n",
               "type": "suggested"
             },
             {
-              "name": "Integra: Procurement for Approvers",
-              "url": "https://kayaconnect.org/course/info.php?id=4204",
+              "name": "Procurement Policies & Procedures",
+              "url": "https://rescuenet.rescue.org/page/7334",
+              "type": "suggested"
+            },
+            {
+              "name": "Financial Dimension codes or change Operating Unit (D4) ownership",
+              "url": "https://rescuenet.rescue.org/page/13687?SearchId=9026220",
               "type": "suggested"
             }
           ]
@@ -10443,11 +10303,6 @@
               "type": "tool"
             },
             {
-              "name": "Emergency Cash Readiness Checklist",
-              "url": "https://rescue.app.box.com/folder/287401417955",
-              "type": "suggested"
-            },
-            {
               "name": "Initial Decision for Cash checklist",
               "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
               "type": "suggested"
@@ -10455,6 +10310,11 @@
             {
               "name": "UG_Cash_and_Bank_Management.pdf | Powered by Box",
               "url": "https://rescue.app.box.com/s/8lzhw34zf74qq7kzjqaya4t20f41rocg",
+              "type": "suggested"
+            },
+            {
+              "name": "2. IRC Policy - Cash and Banking .pdf | Powered by Box",
+              "url": "https://rescue.app.box.com/s/5w03cf18fhexoqtu2c1d0j9hdrnwtzh1",
               "type": "suggested"
             }
           ]
@@ -10491,8 +10351,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Determine Scale Targets for Orange and Red classified emergencies",
+              "url": "https://rescue.box.com/s/kfqohgw6l7aoe89suubg1e14umxbkojg",
               "type": "suggested"
             }
           ]
@@ -10625,8 +10485,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "IRC responds to needs caused by conflict",
+              "url": "https://rescue.box.com/s/auqqynfl7zs21n0szgvtjklw27a1wtfp",
               "type": "suggested"
             }
           ]
@@ -10689,8 +10549,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -10735,11 +10595,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         },
@@ -10766,11 +10621,6 @@
             {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
               "type": "suggested"
             }
           ]
@@ -11166,8 +11016,8 @@
               "type": "suggested"
             },
             {
-              "name": "MEAL and CRA JD",
-              "url": "https://rescue.app.box.com/s/49ytlqeoobwk9ze9q11c1xegiclm1gbm/folder/133651937133",
+              "name": "MEAL Onboarding",
+              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=15294",
               "type": "suggested"
             }
           ]
@@ -11233,13 +11083,13 @@
               "type": "suggested"
             },
             {
-              "name": "MEAL and CRA JD",
-              "url": "https://rescue.app.box.com/s/49ytlqeoobwk9ze9q11c1xegiclm1gbm/folder/133651937133",
+              "name": "IRC MEAL Plan Template",
+              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
               "type": "suggested"
             },
             {
-              "name": "IRC MEAL Plan Template",
-              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
+              "name": "MEAL Onboarding",
+              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=15294",
               "type": "suggested"
             }
           ]
@@ -11350,13 +11200,13 @@
               "type": "suggested"
             },
             {
-              "name": "Opt_partners Client Feedback Channels Assessment",
-              "url": "https://rescue.app.box.com/file/1808728220953",
+              "name": "IRC MEAL Plan Template",
+              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
               "type": "suggested"
             },
             {
-              "name": "IRC MEAL Plan Template",
-              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
+              "name": "IRC MEAL Handbook",
+              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
               "type": "suggested"
             }
           ]
@@ -11489,11 +11339,6 @@
           ],
           "resources": [
             {
-              "name": "1. Client Responsiveness Toolkit For Emergencies_EN.pdf | Powered by Box 2. 6. CR Tools for Partners | Powered by Box",
-              "url": "https://rescue.app.box.com/s/kb2vr5rxhg7rcm9d65vsms5mssa4q9il/file/1417822336569",
-              "type": "suggested"
-            },
-            {
               "name": "HR Partnership Assessment Guidance",
               "url": "https://rescue.box.com/s/xtlmspplbtrtsfi474hvn23i0dwkjkq2",
               "type": "suggested"
@@ -11501,6 +11346,11 @@
             {
               "name": "MSNA tools",
               "url": "https://rescuenet.rescue.org/page/18569",
+              "type": "suggested"
+            },
+            {
+              "name": "Assessment report template",
+              "url": "https://rescue.box.com/s/5qc8z0hgzrddte9hfhojib62qj0ogi4o",
               "type": "suggested"
             }
           ]
@@ -11594,18 +11444,18 @@
           ],
           "resources": [
             {
-              "name": "Opt_partners Client Feedback Channels Assessment",
-              "url": "https://rescue.app.box.com/file/1808728220953",
+              "name": "Program Indicator Dashboard (PID)",
+              "url": "https://rescuenet.rescue.org/page/18506?SearchId=8928631",
               "type": "suggested"
             },
             {
-              "name": "1. Client Responsiveness Toolkit For Emergencies_EN.pdf | Powered by Box 2. 6. CR Tools for Partners | Powered by Box",
-              "url": "https://rescue.app.box.com/s/kb2vr5rxhg7rcm9d65vsms5mssa4q9il/file/1417822336569",
+              "name": "Program Indicator Dashboard Version 3.0",
+              "url": "https://rescuenet.rescue.org/page/18515",
               "type": "suggested"
             },
             {
-              "name": "Rapid Guide for setting up client feedback mechanisms",
-              "url": "https://rescue.app.box.com/s/4pg02ie4qwyletj8n9u65rlp621yyjbq/folder/287441395131",
+              "name": "Integra Reporting via Power BI - RescueNet",
+              "url": "https://rescuenet.rescue.org/page/14033",
               "type": "suggested"
             }
           ]
@@ -11664,13 +11514,13 @@
               "type": "suggested"
             },
             {
-              "name": "Client Feedback Registry Toolkit v2- Configuration Matrix",
-              "url": "https://rescue.app.box.com/s/kgv08tuofjdgyknhrdpbafvmu8t9o43s/folder/184578603237",
+              "name": "ERT Deployment Budget Scenarios - Sample",
+              "url": "https://rescue.box.com/s/kk6bachhc9piztonww39dmmkvclkb260",
               "type": "suggested"
             },
             {
-              "name": "Opt_partners Client Feedback Channels Assessment",
-              "url": "https://rescue.app.box.com/file/1808728220953",
+              "name": "Deployment Terms and Conditions- 2023",
+              "url": "https://rescue.box.com/s/6vh3hpn35dmktvrviiuctmm5ohuc97db",
               "type": "suggested"
             }
           ]
@@ -11751,13 +11601,13 @@
               "type": "suggested"
             },
             {
-              "name": "MEAL and CRA JD",
-              "url": "https://rescue.app.box.com/s/49ytlqeoobwk9ze9q11c1xegiclm1gbm/folder/133651937133",
+              "name": "IRC MEAL Plan Template",
+              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
               "type": "suggested"
             },
             {
-              "name": "IRC MEAL Plan Template",
-              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
+              "name": "IRC MEAL Handbook",
+              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
               "type": "suggested"
             }
           ]
@@ -11990,8 +11840,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Initial Decision for Cash checklist",
+              "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
               "type": "suggested"
             }
           ]
@@ -12258,8 +12108,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -12306,11 +12156,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         },
@@ -12338,11 +12183,6 @@
             {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
               "type": "suggested"
             }
           ]
@@ -12387,8 +12227,8 @@
               "type": "suggested"
             },
             {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+              "name": "Labor Law Checklist for New Country Program",
+              "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
               "type": "suggested"
             }
           ]
@@ -12435,11 +12275,6 @@
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
               "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
-              "type": "suggested"
             }
           ]
         },
@@ -12467,11 +12302,6 @@
             {
               "name": "T31 - Handover template",
               "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "suggested"
-            },
-            {
-              "name": "Plan for transition",
-              "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
               "type": "suggested"
             }
           ]
@@ -12511,18 +12341,8 @@
           "subtasks": [],
           "resources": [
             {
-              "name": "Preparedness & Early Action Framework (English)",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093033142548",
-              "type": "suggested"
-            },
-            {
               "name": "Preparedness & Early Action Framework (Francais)",
               "url": "https://rescue.app.box.com/s/9dicrey9r2m366yj0qlgi1lqbimhzoo6",
-              "type": "suggested"
-            },
-            {
-              "name": "Emergency Preparedness & Early Action Framework FAQs",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1169573265918",
               "type": "suggested"
             }
           ],
@@ -12613,18 +12433,13 @@
           "subtasks": [],
           "resources": [
             {
-              "name": "Preparedness & Early Action Framework (English)",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093033142548",
-              "type": "suggested"
-            },
-            {
               "name": "Preparedness & Early Action Framework (Francais)",
               "url": "https://rescue.app.box.com/s/9dicrey9r2m366yj0qlgi1lqbimhzoo6",
               "type": "suggested"
             },
             {
-              "name": "Emergency Preparedness & Early Action Framework FAQs",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1169573265918",
+              "name": "Financial Dimension codes or change Operating Unit (D4) ownership",
+              "url": "https://rescuenet.rescue.org/page/13687?SearchId=9026220",
               "type": "suggested"
             }
           ],
@@ -12653,18 +12468,13 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "(EN) Programs User Guide - Item Forecast, Quality Inspection, and Picking.pdf | Powered by Box",
               "url": "https://rescue.app.box.com/s/nenm958rwbcvtcdtwv50aqg2uona66b0",
+              "type": "suggested"
+            },
+            {
+              "name": "Information, Education, and Communication materials for IRC Country Programs to adapt for Communication with Communities on Safeguarding.",
+              "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
               "type": "suggested"
             }
           ],
@@ -12783,13 +12593,7 @@
           "timeline": "First 2 weeks post-launch",
           "responsible": "DDF & DDO",
           "subtasks": [],
-          "resources": [
-            {
-              "name": "Integra: Procurement for Approvers",
-              "url": "https://kayaconnect.org/course/info.php?id=4204",
-              "type": "suggested"
-            }
-          ],
+          "resources": [],
           "section": "Vendor Set-up"
         },
         {
@@ -12815,18 +12619,13 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "(EN) Userguide_Item Forecasting to Purchase Order Creation.pdf | Powered by Box",
               "url": "https://rescue.app.box.com/s/4twt369oe61j9i1epk07b4ojk34cz75n",
+              "type": "suggested"
+            },
+            {
+              "name": "New Employee Setup & Account Creation",
+              "url": "https://rescuenet.rescue.org/page/17961?SearchId=0",
               "type": "suggested"
             }
           ],
@@ -12984,18 +12783,18 @@
           ],
           "resources": [
             {
-              "name": "Integra: Processing Purchase Requisitions - HQ",
-              "url": "https://kayaconnect.org/course/info.php?id=4450",
-              "type": "suggested"
-            },
-            {
               "name": "Introduction to Integra Master Data",
               "url": "https://kayaconnect.org/c/introduction-to-integra-master-data",
               "type": "suggested"
             },
             {
-              "name": "Integra: Procurement for Approvers",
-              "url": "https://kayaconnect.org/course/info.php?id=4204",
+              "name": "Integra Overview and Navigation",
+              "url": "https://kayaconnect.org/c/integra-overview-and-navigation",
+              "type": "suggested"
+            },
+            {
+              "name": "Sample Standard Authorization Matrix",
+              "url": "https://rescue.box.com/s/uiszlfrobo2bl5zjttd7s267dqa94bju",
               "type": "suggested"
             }
           ],
@@ -13144,18 +12943,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "Integra Incident - Employee Center",
               "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
+              "type": "suggested"
+            },
+            {
+              "name": "MDMT Consolidated Request - Integra Self-Service (service-now.com)",
+              "url": "https://nethope.service-now.com/integra?id=sc_cat_item_guide&sys_id=bf0d6d4ddb481090658c7bedae9619ba&sysparm_category=4d9761f41b87091083121173b24bcb7e",
+              "type": "suggested"
+            },
+            {
+              "name": "Integra Reporting via Power BI - RescueNet",
+              "url": "https://rescuenet.rescue.org/page/14033",
               "type": "suggested"
             }
           ],
@@ -13183,13 +12982,13 @@
               "type": "suggested"
             },
             {
-              "name": "Integra: Procurement for Approvers",
-              "url": "https://kayaconnect.org/course/info.php?id=4204",
+              "name": "Finance Staff Sample JD",
+              "url": "https://rescue.box.com/s/6s9hw7yc8decsfs0jg45pvmc2o9043uj",
               "type": "suggested"
             },
             {
-              "name": "Finance Staff Sample JD",
-              "url": "https://rescue.box.com/s/6s9hw7yc8decsfs0jg45pvmc2o9043uj",
+              "name": "Integra Incident - Employee Center",
+              "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
               "type": "suggested"
             }
           ],
@@ -13223,13 +13022,13 @@
               "type": "suggested"
             },
             {
-              "name": "Integra: Procurement for Approvers",
-              "url": "https://kayaconnect.org/course/info.php?id=4204",
+              "name": "Integra Incident - Employee Center",
+              "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
               "type": "suggested"
             },
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
+              "name": "MDMT Consolidated Request - Integra Self-Service (service-now.com)",
+              "url": "https://nethope.service-now.com/integra?id=sc_cat_item_guide&sys_id=bf0d6d4ddb481090658c7bedae9619ba&sysparm_category=4d9761f41b87091083121173b24bcb7e",
               "type": "suggested"
             }
           ],
@@ -13292,18 +13091,18 @@
           ],
           "resources": [
             {
-              "name": "Supply Chain in Emergencies - Early Action Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "suggested"
-            },
-            {
-              "name": "Supply Chain in Emergencies - Preparedness Checklist",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
-              "type": "suggested"
-            },
-            {
               "name": "ERT Deployment Budget Scenarios - Sample",
               "url": "https://rescue.box.com/s/kk6bachhc9piztonww39dmmkvclkb260",
+              "type": "suggested"
+            },
+            {
+              "name": "Deployment Terms and Conditions- 2023",
+              "url": "https://rescue.box.com/s/6vh3hpn35dmktvrviiuctmm5ohuc97db",
+              "type": "suggested"
+            },
+            {
+              "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
               "type": "suggested"
             }
           ],
