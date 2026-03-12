@@ -1,0 +1,1014 @@
+{
+  "checked_at": "2026-03-12",
+  "summary": {
+    "working": 52,
+    "needs_verification": 33,
+    "broken": 115
+  },
+  "working": [
+    {
+      "name": "Emergency Classification System",
+      "url": "https://rescuenet.rescue.org/page/9865",
+      "sector": "Response Management"
+    },
+    {
+      "name": "Code Request Forms - RescueNet",
+      "url": "https://rescuenet.rescue.org/page/13687",
+      "sector": "Finance"
+    },
+    {
+      "name": "Financial Dimension codes or change Operating Unit (D4) ownership",
+      "url": "https://rescuenet.rescue.org/page/13687?SearchId=9026220",
+      "sector": "Finance"
+    },
+    {
+      "name": "Integra Incident - Employee Center",
+      "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
+      "sector": "Finance"
+    },
+    {
+      "name": "MDMT Consolidated Request - Integra Self-Service (service-now.com)",
+      "url": "https://nethope.service-now.com/integra?id=sc_cat_item_guide&sys_id=bf0d6d4ddb481090658c7bedae9619ba&sysparm_category=4d9761f41b87091083121173b24bcb7e",
+      "sector": "Finance"
+    },
+    {
+      "name": "Integra Reporting via Power BI - RescueNet",
+      "url": "https://rescuenet.rescue.org/page/14033",
+      "sector": "Finance"
+    },
+    {
+      "name": "Integra Access",
+      "url": "https://rescue.service-now.com/esc?id=sc_cat_item&table=sc_cat_item&sys_id=1330137d87d04a100c4184cd0ebb3518&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=1330137d87d04a100c4184cd0ebb3518",
+      "sector": "Finance"
+    },
+    {
+      "name": "CRRD Integra Training & Adoption - RescueNet",
+      "url": "https://rescuenet.rescue.org/page/IntegraCRRD",
+      "sector": "Finance"
+    },
+    {
+      "name": "Bank Account Form Request",
+      "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=7183023e1b882210a853a970604bcbeb",
+      "sector": "Finance"
+    },
+    {
+      "name": "Signatory Authority and Delegation Policy - RescueNet",
+      "url": "https://rescuenet.rescue.org/page/4120?SearchId=8079033",
+      "sector": "Finance"
+    },
+    {
+      "name": "Finance Policies",
+      "url": "https://rescuenet.rescue.org/page/14266",
+      "sector": "Finance"
+    },
+    {
+      "name": "Bank Account Form | ServiceNow NetHope Service Desk (service-now.com)",
+      "url": "https://nethope.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1%26sysparm_id%3Da5e2f0dc1bbba51083121173b24bcb1f%26sysparm_link_parent%3D703d3aa8dbbf4050658c7bedae9619a8%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dcatalog_default",
+      "sector": "Finance"
+    },
+    {
+      "name": "Link to Integra BVA",
+      "url": "https://app.powerbi.com/groups/me/apps/40d074fe-1782-40de-afd0-93ba57c14bdd/reports/5f45480e-7bd1-469c-97dc-2294a444d3ff/ReportSection796a91e71cb8c5ad2b21?experience=power-bi",
+      "sector": "Finance"
+    },
+    {
+      "name": "Integra Overview and Navigation",
+      "url": "https://kayaconnect.org/c/integra-overview-and-navigation",
+      "sector": "Integra Launch"
+    },
+    {
+      "name": "PowerBI Access Request",
+      "url": "https://rescuenet.rescue.org/page/14033?SearchId=0",
+      "sector": "Integra Launch"
+    },
+    {
+      "name": "Introduction to Integra Master Data",
+      "url": "https://kayaconnect.org/c/introduction-to-integra-master-data",
+      "sector": "Integra Launch"
+    },
+    {
+      "name": "Template Org. Chart (please use \"Save As\" before editing)",
+      "url": "https://intrescue-my.sharepoint.com/:u:/g/personal/maia_kirch_rescue_org/Ecp7IfGCciBDg2EOGvS2SssB7dwxd86JH3lzM32zzTETjA?e=kuaYRt",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "DMS Request Form",
+      "url": "https://nethope.service-now.com/sp?id=sc_cat_item&sys_id=f2ea0c4b1b257c5083121173b24bcb50",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Rest and Relaxation Page Rescuenet",
+      "url": "https://rescuenet.rescue.org/page/17271?SearchId=8167871",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "New Employee Setup & Account Creation",
+      "url": "https://rescuenet.rescue.org/page/17961?SearchId=0",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "HR Operations Forms",
+      "url": "https://rescuenet.rescue.org/page/17445",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Duty of Care Site",
+      "url": "https://doc.rescue.org/",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "IRC Investigation Guidelines",
+      "url": "https://rescuenet.rescue.org/Utilities/Uploads/Handler/Uploader.ashx?area=composer&filename=ECU+Investigation+Guidelines+FINAL+4_30_2020+4.pdf&fileguid=d27bfaed-9efe-4265-bc2a-4b80ff52235a",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Organizational Policies",
+      "url": "https://rescuenet.rescue.org/page/7766?SearchId=7735590",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Project Design Meeting",
+      "url": "https://rescuenet.rescue.org/page/17527",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "P&C RescueNet Page",
+      "url": "https://rescuenet.rescue.org/interact/Pages/Section/Default.aspx?Section=16046",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "People Management at the IRC",
+      "url": "https://rescuenet.rescue.org/page/17201?SearchId=8169074",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Procurement Policies & Procedures",
+      "url": "https://rescuenet.rescue.org/page/7334",
+      "sector": "Supply Chain"
+    },
+    {
+      "name": "https://lca.logcluster.org/",
+      "url": "https://lca.logcluster.org/",
+      "sector": "Supply Chain"
+    },
+    {
+      "name": "Fleet & Logistics Policies & Procedures",
+      "url": "https://rescuenet.rescue.org/page/7510",
+      "sector": "Supply Chain"
+    },
+    {
+      "name": "Asset & Inventory Policies & Procedures",
+      "url": "https://rescuenet.rescue.org/page/7356?SearchId=0",
+      "sector": "Supply Chain"
+    },
+    {
+      "name": "Pharmaceutical Policies & Procedures",
+      "url": "https://rescuenet.rescue.org/page/7527",
+      "sector": "Supply Chain"
+    },
+    {
+      "name": "MSNA tools",
+      "url": "https://rescuenet.rescue.org/page/18569",
+      "sector": "MEAL"
+    },
+    {
+      "name": "MSNA Dashboard",
+      "url": "https://app.powerbi.com/links/4bCWIJ0PrU?ctid=05f1318c-6783-4326-b729-bf537a761db8&pbi_source=linkShare",
+      "sector": "MEAL"
+    },
+    {
+      "name": "IRC MEAL Handbook",
+      "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
+      "sector": "MEAL"
+    },
+    {
+      "name": "MEAL Budget",
+      "url": "https://rescuenet.rescue.org/page/13776",
+      "sector": "MEAL"
+    },
+    {
+      "name": "IRC Client Responsiveness and Accountability to Affected Populations",
+      "url": "https://kayaconnect.org/course/view.php?id=2162",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Client Feedback Registry Toolkit (version 2)",
+      "url": "https://rescuenet.rescue.org/page/18426",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Client-Centered Programming",
+      "url": "https://rescuenet.rescue.org/page/17277",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Client Satisfaction Survey Toolkit (version 2)",
+      "url": "https://rescuenet.rescue.org/page/18335?SearchId=7364267",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Program Indicator Dashboard (PID)",
+      "url": "https://rescuenet.rescue.org/page/18506?SearchId=8928631",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Program Indicator Dashboard Version 3.0",
+      "url": "https://rescuenet.rescue.org/page/18515",
+      "sector": "MEAL"
+    },
+    {
+      "name": "MEAL Onboarding",
+      "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=15294",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Crisis Response Fund",
+      "url": "https://rescuenet.rescue.org/page/2518",
+      "sector": "Emergency Unit"
+    },
+    {
+      "name": "Global Crisis Analysis Support",
+      "url": "https://rescuenet.rescue.org/Utilities/Uploads/Handler/Uploader.ashx?area=composer&filename=Menu+of+CA+support+options.pdf&fileguid=fe306a9b-bed8-4a72-9acf-10160eda4b3e",
+      "sector": "Emergency Unit"
+    },
+    {
+      "name": "Request Prepositioned Stock",
+      "url": "https://rescuenet.rescue.org/page/5456",
+      "sector": "Emergency Unit"
+    },
+    {
+      "name": "ERPP",
+      "url": "https://rescuenet.rescue.org/page/15819?SearchId=0",
+      "sector": "Emergency Unit"
+    },
+    {
+      "name": "Anticipatory Action Team",
+      "url": "https://rescuenet.rescue.org/page/18845?SearchId=9187469",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Classification stances",
+      "url": "https://rescuenet.rescue.org/page/9865?SearchId=9397750",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Apply for an IRC emergency classification",
+      "url": "https://rescuenet.rescue.org/page/9865?SearchId=9242110",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Rescuenet Crisis Hub",
+      "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?Section=14898",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Request CRF funding",
+      "url": "https://airtable.com/app3O6viECRoBLOfS/pagPf2LKQq792GZsx/form",
+      "sector": "Guidelines"
+    }
+  ],
+  "needs_verification": [
+    {
+      "name": "Cost Allocation Policy",
+      "url": "https://rescue.app.box.com/file/1777915763352?s=h90gu2nmms3kvhjrc1cflm2bubhigrq9",
+      "sector": "Finance"
+    },
+    {
+      "name": "Analytical package - June 2024 KV.xlsx | Powered by Box",
+      "url": "https://rescue.app.box.com/s/93gotklsrqp01aggz9zykg33yhge94lx/file/1598166822071",
+      "sector": "Finance"
+    },
+    {
+      "name": "Report a Wrongdoing Factsheet",
+      "url": "https://rescue.app.box.com/s/rjjmh07kghtzm43e23jvs441elnbvvk4/folder/242444483275",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Safeguarding Posters",
+      "url": "https://rescue.app.box.com/s/6nsvw0fguew0gustrvgxzcebs1fqzk2v/folder/297929361249",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Proof of Life Form",
+      "url": "https://rescue.app.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci/file/668301029543",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Report a Wrongdoing Poster",
+      "url": "https://rescue.app.box.com/s/scsyixe002hwm9mgtn866gfprmywrjn6/folder/237584279483",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Emergency Cash Readiness Checklist",
+      "url": "https://rescue.app.box.com/folder/287401417955",
+      "sector": "Technical Programs"
+    },
+    {
+      "name": "Emergency Response Contact List and Tracker",
+      "url": "https://rescue.app.box.com/file/1662615261155",
+      "sector": "Technical Programs"
+    },
+    {
+      "name": "Initial Decision for Cash checklist",
+      "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
+      "sector": "Technical Programs"
+    },
+    {
+      "name": "Desk Review Template",
+      "url": "https://rescue.app.box.com/file/1149922570459",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Assessment Report Template",
+      "url": "https://rescue.app.box.com/file/1208605512937?s=5qc8z0hgzrddte9hfhojib62qj0ogi4o",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Emergency Monitoring Handbook",
+      "url": "https://rescue.app.box.com/file/775682615620",
+      "sector": "MEAL"
+    },
+    {
+      "name": "1. Client Responsiveness Toolkit For Emergencies_EN.pdf | Powered by Box 2. 6. CR Tools for Partners | Powered by Box",
+      "url": "https://rescue.app.box.com/s/kb2vr5rxhg7rcm9d65vsms5mssa4q9il/file/1417822336569",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Opt_partners Client Feedback Channels Assessment",
+      "url": "https://rescue.app.box.com/file/1808728220953",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Client Feedback Registry Toolkit v2- Configuration Matrix",
+      "url": "https://rescue.app.box.com/s/kgv08tuofjdgyknhrdpbafvmu8t9o43s/folder/184578603237",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Rapid Guide for setting up client feedback mechanisms",
+      "url": "https://rescue.app.box.com/s/4pg02ie4qwyletj8n9u65rlp621yyjbq/folder/287441395131",
+      "sector": "MEAL"
+    },
+    {
+      "name": "MEAL and CRA JD",
+      "url": "https://rescue.app.box.com/s/49ytlqeoobwk9ze9q11c1xegiclm1gbm/folder/133651937133",
+      "sector": "MEAL"
+    },
+    {
+      "name": "After Action Review guidance",
+      "url": "https://rescue.app.box.com/file/996081393005?s=3mjz7r2mqzdgq23t4ba4q1ings5mlr77",
+      "sector": "MEAL"
+    },
+    {
+      "name": "After Action Review Facilitation Guide",
+      "url": "https://rescue.app.box.com/file/775682703220?s=8bdtnd0me1cdo8glvwctxlxfp4lxsjxo",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Preparedness Menu of Support Options",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1142107147526",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Preparedness & Early Action Framework (English)",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093033142548",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Emergency Preparedness & Early Action Framework FAQs",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1169573265918",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Scenario Planning Guidance and Template",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1130954674429",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Regional Preparedness Plan Template",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1095965624027",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Regional Preparedness Plan Use Guide",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1093037558918",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Hazard Profile Guidance & Template",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1110425983885",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Hazard Profile Risk Rubric Template",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1110423617432",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "SAP IP & Emergency Preparedness Guidance Note",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1117084903422",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "SAP Revision and Emergency Preparedness Framework - PPT",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1197866861642",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "SAP Review & Revision Process - Guidance Note",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1214448583643",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Supply Chain in Emergencies - Early Action Checklist",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Supply Chain in Emergencies - Preparedness Checklist",
+      "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189848070632",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "partner mapping",
+      "url": "https://rescue.app.box.com/s/7sxpitlfcy4dvxcd9z8a4rb76shbla9d/file/1475545417884",
+      "sector": "Guidelines"
+    }
+  ],
+  "broken": [
+    {
+      "name": "Sitrep guidance",
+      "url": "https://rescue.box.com/s/bx6oc858q4wh54vi8al2mnj89usm7i5c",
+      "sector": "Response Management"
+    },
+    {
+      "name": "sitrep template",
+      "url": "https://rescue.box.com/s/5l7gitxjnyqv84rxaxu455h16rb6ou8t",
+      "sector": "Response Management"
+    },
+    {
+      "name": "Crisis response activation call TOR",
+      "url": "https://rescue.box.com/s/m6s7ybmenf7d6rxzvykt09ke812sd85r",
+      "sector": "Response Management"
+    },
+    {
+      "name": "Assessment report template",
+      "url": "https://rescue.box.com/s/5qc8z0hgzrddte9hfhojib62qj0ogi4o",
+      "sector": "Response Management"
+    },
+    {
+      "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
+      "sector": "Finance"
+    },
+    {
+      "name": "Dimension Guide (v11).pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/kdi6a1qgu3hwjwn9b65tyynrtjqvvktf",
+      "sector": "Finance"
+    },
+    {
+      "name": "(66) CRRD Budget Tools (blank) | Powered by Box",
+      "url": "https://rescue.app.box.com/folder/149783156120?s=nnhkvuhaode85ep20fiowe0nz1lgbo6e",
+      "sector": "Finance"
+    },
+    {
+      "name": "Quick Steps for Uploading Budgets.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/mojgnzgr1go0qufegl0kygsipm9fkjpe",
+      "sector": "Finance"
+    },
+    {
+      "name": "UG_Accounts Payable.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/zjm4c66s8sntty734yn8kooom02r5doy",
+      "sector": "Finance"
+    },
+    {
+      "name": "UG_Accounts Receivable.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/305sod1588fq0nlqfw490gvc5v12ww90",
+      "sector": "Finance"
+    },
+    {
+      "name": "UG_Journal Upload and Journal Entries.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/8e15xxu7nqfidaasemsg5mlc7tnqxlv8",
+      "sector": "Finance"
+    },
+    {
+      "name": "UG_Month-end Close Workbook.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/t2q5prmmd8cfj5fbo5t96w4vkkm1pgyj",
+      "sector": "Finance"
+    },
+    {
+      "name": "UG_Cash_and_Bank_Management.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/8lzhw34zf74qq7kzjqaya4t20f41rocg",
+      "sector": "Finance"
+    },
+    {
+      "name": "UG_Intercompany Accounting.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/gw0wt7nwu9koeb3wyq2ch7esd29rzugs",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) Userguide_Item Forecasting to Purchase Order Creation.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/4twt369oe61j9i1epk07b4ojk34cz75n",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) Programs User Guide - Item Forecast, Quality Inspection, and Picking.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/nenm958rwbcvtcdtwv50aqg2uona66b0",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) UG_Procure to Confirm - GLOBAL.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/44js15eg0wloyt0790ckl59v02acmeka",
+      "sector": "Finance"
+    },
+    {
+      "name": "Userguide_ Purchase Order Cancellation Scenarios and Procedures.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/jzqknz2xzjplg5xdfklgsw0uhcxve5il",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) Userguide_Procurement Reviews and Approvals.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/rxhib9edm5i66gph24q5io0828kdzp5n",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) Userguide_Product Receipt and Dispatch.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/zz6eddu8a92pjlqh2omk7uy8uozwdq6s",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) PO Accounting Treatment Guidance.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/tjiqyg9aqwb0smxbjx8nwr41j3e2yr7u",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) Userguide_Fixed Assets.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/zavccsgm9vu63pcoyhq8k623n9p8xq29",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) Userguide_Inventory Management.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/36bydq6qgof3qjckvpel4texwi4zwwkh",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) UG_Inventory Transfers and Returns - CRRD.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/3rc9ewpnldd6udiwlqhttakk3sazilo2",
+      "sector": "Finance"
+    },
+    {
+      "name": "(EN) Userguide_Expense Management.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/0mfqp8i53tfgm3s0rqt9kjbirfwbjzdj",
+      "sector": "Finance"
+    },
+    {
+      "name": "New Bank Account Form Request Process",
+      "url": "https://rescue.box.com/s/50x7z494k53opacvyst980lzsy17oo7i",
+      "sector": "Finance"
+    },
+    {
+      "name": "2. IRC Policy - Cash and Banking .pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/5w03cf18fhexoqtu2c1d0j9hdrnwtzh1",
+      "sector": "Finance"
+    },
+    {
+      "name": "Centralized Vendor Payment",
+      "url": "https://rescue.app.box.com/s/cwstjnzshybqlaodiv24atsg5l3rkpwa?",
+      "sector": "Finance"
+    },
+    {
+      "name": "Sample Standard Authorization Matrix",
+      "url": "https://rescue.box.com/s/uiszlfrobo2bl5zjttd7s267dqa94bju",
+      "sector": "Finance"
+    },
+    {
+      "name": "Sample Expanded Authorization Matrix",
+      "url": "https://rescue.box.com/s/ytlond4fuhoge17rapjtwxxdmre3rlvy",
+      "sector": "Finance"
+    },
+    {
+      "name": "ERT Deployment Budget Scenarios - Sample",
+      "url": "https://rescue.box.com/s/kk6bachhc9piztonww39dmmkvclkb260",
+      "sector": "Finance"
+    },
+    {
+      "name": "Sample Operating Budget Template",
+      "url": "https://rescue.box.com/s/pqh97dd02g4j334ejbq797sg2yxaa62v",
+      "sector": "Finance"
+    },
+    {
+      "name": "CAM Policy Clarifications",
+      "url": "https://rescue.box.com/s/s8t8r2ny2d2nutxuptk6w3kvz883ob9n",
+      "sector": "Finance"
+    },
+    {
+      "name": "CAM Budget Tool",
+      "url": "https://rescue.box.com/s/kjy0nz0j6grujuh1s2drf9gcdivzo6ct",
+      "sector": "Finance"
+    },
+    {
+      "name": "Deployment Terms and Conditions- 2023",
+      "url": "https://rescue.box.com/s/6vh3hpn35dmktvrviiuctmm5ohuc97db",
+      "sector": "Finance"
+    },
+    {
+      "name": "IRC Finance Policy & Procedures_ Sep24.pdf | Powered by Box",
+      "url": "https://rescue.app.box.com/s/gp0fss2xna4sbgdig7h5fse5z96ogb0p",
+      "sector": "Finance"
+    },
+    {
+      "name": "Start up Project Support Guidance",
+      "url": "https://rescue.app.box.com/s/2i8eav280e0973b6i1irs032e4yqo39z",
+      "sector": "Finance"
+    },
+    {
+      "name": "CRRD Per Diem SOP",
+      "url": "https://rescue.app.box.com/s/jv4tzk0wfnmq4h3gyo5gi3ybewfamudm",
+      "sector": "Finance"
+    },
+    {
+      "name": "New Secruity Role Definitions.xlsx | Powered by Box",
+      "url": "https://rescue.app.box.com/s/1k9e5f7k5scy848bnzd1a9q45sby4tbf",
+      "sector": "Finance"
+    },
+    {
+      "name": "Monthend Checklist",
+      "url": "https://rescue.box.com/s/3gbutzvz7fmrpaaorhuk9u5vkj7beyo1",
+      "sector": "Finance"
+    },
+    {
+      "name": "Shared Cost Budgeting Tool",
+      "url": "https://rescue.box.com/s/obzr7r92xsfjrld96otgdtfarjco5r1r",
+      "sector": "Finance"
+    },
+    {
+      "name": "Finance Staff Sample JD",
+      "url": "https://rescue.box.com/s/6s9hw7yc8decsfs0jg45pvmc2o9043uj",
+      "sector": "Finance"
+    },
+    {
+      "name": "CRRD Projected Funding",
+      "url": "https://rescue.box.com/s/o2n2am3oxcncqs8avzsrnl04a0d7arhs",
+      "sector": "Finance"
+    },
+    {
+      "name": "Finance Handover Checklist",
+      "url": "https://rescue.box.com/s/7k0v6tub499u8ut9omyj2ldc68q0sr5d",
+      "sector": "Finance"
+    },
+    {
+      "name": "Integra: Processing Purchase Requisitions - HQ",
+      "url": "https://kayaconnect.org/course/info.php?id=4450",
+      "sector": "Integra Launch"
+    },
+    {
+      "name": "Integra: Procurement for Approvers",
+      "url": "https://kayaconnect.org/course/info.php?id=4204",
+      "sector": "Integra Launch"
+    },
+    {
+      "name": "Questions to select Legal Counsel",
+      "url": "https://rescue.box.com/s/yxme7iakaln55m66s7mfk2mqwlboniow",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Labor Law Checklist for New Country Program",
+      "url": "https://rescue.box.com/s/10d3br49rqtimpiaq3if3iz9vvznm106",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "CRRD Per Diem SOP",
+      "url": "https://rescue.box.com/s/d126ouq3sagwyj8w34maqlrzo2g71u26",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Strategy 100 - Country Program Structure Guidance",
+      "url": "https://rescue.app.box.com/s/shrtn6av3d2ndadrcgmtbvgc5ccec4ns",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Template Recruitment Tracker",
+      "url": "https://rescue.box.com/s/f38i0sn976j9lijqssjo4tluae6uc7st",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Generic TOR Library",
+      "url": "https://rescue.box.com/s/8sju5hsq02x3w0fmc5u0yo8x0v3wd00r",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Standard Recruitment Guide",
+      "url": "https://rescue.app.box.com/s/1jssaa7mq4inw7p7gcl2mhxtbfj80qdi",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Template R&R Policy",
+      "url": "https://rescue.box.com/s/s5qlqr5dhpovebhkwotkdj48nc0jp45b",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Template - National Employee Handbook",
+      "url": "https://rescue.box.com/s/ofy1w6w85zytgyfup93xsxoft7mw3cij",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "R&R Tracker",
+      "url": "https://rescue.box.com/s/2fu5idcxl6gnn3cbxgzg37h63gy4he4g",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Benefit Decisions Matrix",
+      "url": "https://rescue.box.com/s/6bht3oxokmrv5stiy1drsayf6ee5ypa7",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Incentive Worker Manual Template",
+      "url": "https://rescue.box.com/s/oma19pnjfvz4az4e20iqz01rcpfmtvtz",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "HR Partnership Assessment Guidance",
+      "url": "https://rescue.box.com/s/xtlmspplbtrtsfi474hvn23i0dwkjkq2",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Staff Data Collection Documents",
+      "url": "https://rescue.box.com/s/rv74ykm82jk07p7n86uvhoeopzrtof0c",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "GEDI in Recruitment Quick Guide",
+      "url": "https://rescue.app.box.com/s/b8clxll8iv0aox8w9n2og1xn6jhxt27t",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "Onboarding in Emergencies Essential Guide",
+      "url": "https://rescue.box.com/s/9nntq7w0ek6pzfz8ul0wczwwgpq4tkka",
+      "sector": "People & Culture"
+    },
+    {
+      "name": "T1 - Actor Mapping & Contact Report - SMT T2 - Context Overview - SMT T3 - Rapid Security Assessment -SMT",
+      "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T15 - Pre Arrival Briefing - All Staff",
+      "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T25 - IRC Recruitment Request Form T25b - IRC Job Description Template T25c - TOR HASM",
+      "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T9 - Contact List - SMT",
+      "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T46b - 10 CP - Armed Robbery - All Staff T46 - 10 CP - Armed Robbery - SMT",
+      "url": "https://rescue.box.com/s/2uh77zitbr4u8hwk8fqesli2wwlx414m",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T42 - 21 CP - ArrestDetention - SMT",
+      "url": "https://rescue.box.com/s/t55xcqahzlgbwctwmpck263zni1g9ns9",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T41 - SOP 5 Checkpoints - All staff",
+      "url": "https://rescue.box.com/s/so0j3cn8q0ltpq7baxjm4pg1f43t7iij",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T30 - SOP 21 - Information Security - All Staff T30b - SOP 22 - Phishing Attack - All staff",
+      "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T28 - SRA.xls T28b - SRA Workshop powerpoint - All Staff",
+      "url": "https://rescue.box.com/s/mnsraf2dbzfbbw9l3purx2lcvfgyphp2",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "T31 - Handover template",
+      "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
+      "sector": "Safety & Security"
+    },
+    {
+      "name": "EN_Measurement Box Protocol",
+      "url": "https://rescue.app.box.com/s/obqaild0gggkzbemncbu4x5j81nwnmz1",
+      "sector": "MEAL"
+    },
+    {
+      "name": "CRF Logframe_Template",
+      "url": "https://rescue.app.box.com/s/hyucu64v6jakttw45b240cn2wg3iws4x",
+      "sector": "MEAL"
+    },
+    {
+      "name": "IRC MEAL Plan Template",
+      "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Guidance on country MEAL costs",
+      "url": "https://rescue.app.box.com/s/q3mg6q9fuor70eagr6xvnpzkdeztgkz4",
+      "sector": "MEAL"
+    },
+    {
+      "name": "IRC Beneficiary Counting Guidelines",
+      "url": "https://rescue.app.box.com/s/t0qxx7inh2qnxxm0potmortcn2smbzzo?",
+      "sector": "MEAL"
+    },
+    {
+      "name": "IRC Partnership Excellence for Equality and Results (PEER) System",
+      "url": "https://rescue.app.box.com/s/7sxpitlfcy4dvxcd9z8a4rb76shbla9d",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Partnership Capacity Analysis (PCA) tool",
+      "url": "https://rescue.app.box.com/s/i5i8mkm37806ellp9qmagttcdg3uymuk",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Data Quality Checklist",
+      "url": "https://rescue.app.box.com/s/9ocmmu6ozrdmxewfgit0tat9txqu8mjp",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Data Audit Tool.",
+      "url": "https://rescue.app.box.com/s/40q76mkld2z1d93hhuiyg7lasdmdtoal",
+      "sector": "MEAL"
+    },
+    {
+      "name": "PCM Dashboard",
+      "url": "https://rescue.app.box.com/s/fh4eydc3jnll0dhoy4cr46vo7rm9z6i7",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Standard Operating Procedures (SOPs) template",
+      "url": "https://rescue.app.box.com/s/4pg02ie4qwyletj8n9u65rlp621yyjbq",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Information, Education, and Communication materials for IRC Country Programs to adapt for Communication with Communities on Safeguarding.",
+      "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
+      "sector": "MEAL"
+    },
+    {
+      "name": "PID User Guide for end-users",
+      "url": "https://rescue.app.box.com/s/z41cg5f1yz2xwu960c6iiuaupcg0q9my",
+      "sector": "MEAL"
+    },
+    {
+      "name": "Quality in Emergencies Technical Assistance Model",
+      "url": "https://rescue.box.com/s/l0n41m8kqkhltyeey7kmc033wsr60yuj",
+      "sector": "Emergency Unit"
+    },
+    {
+      "name": "Humanitarian Access Support Menu",
+      "url": "https://rescue.box.com/s/37yp0asj4zaabruolg9vz2ho7qkbnq9o",
+      "sector": "Emergency Unit"
+    },
+    {
+      "name": "Preparedness & Early Action Framework (Francais)",
+      "url": "https://rescue.app.box.com/s/9dicrey9r2m366yj0qlgi1lqbimhzoo6",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "National Level Scenario - Example",
+      "url": "https://rescue.app.box.com/s/zicl0xfwrluzoq5fdzi8e5orzzmffef3",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Scenario Exercise - Facilitators Guide",
+      "url": "https://rescue.app.box.com/s/aiepk2jgwzsrmdf9yfrmb7ok1fvk3mhr",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "Scenario Exercise - Participants Guide",
+      "url": "https://rescue.app.box.com/s/j1kj0aookry4vrlee1fwe4pklare17o4",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "National Level Scenario Planning - Example PPT",
+      "url": "https://rescue.app.box.com/s/fbj6x5rw6aizml0g9uv7gemny6wqq96t",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "National Level SAP Adaptation Process - Two Pager",
+      "url": "https://rescue.app.box.com/s/0njou2xzuwhys421sr1xysstmy2ycavb",
+      "sector": "Preparedness"
+    },
+    {
+      "name": "(changelog)",
+      "url": "https://rescue.box.com/s/8x31zrksiduk0itdy778yicbwhjrt6vx",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "IRC responds to needs caused by conflict",
+      "url": "https://rescue.box.com/s/auqqynfl7zs21n0szgvtjklw27a1wtfp",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "see this expanded overview.",
+      "url": "https://rescue.box.com/s/jl2s89a34ccjuo9c6133onb4607vn5uf",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "See Emergency Unit organizational chart",
+      "url": "https://rescue.box.com/s/1covcspcbzm98f0j5env01y61ktkc233",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "simplified checklist",
+      "url": "https://rescue.box.com/s/6fjk6ujqrq52wyy8pyjok3hk5pwe6iie",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Who We Serve and Where We Work",
+      "url": "https://rescue.box.com/s/z1ksn6orv10nbob1h16fyq2w3w359hri",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Quality in Emergencies Technical Assistance Model",
+      "url": "https://rescue.box.com/s/ebd4t1dp0pneps2q2p3r2x4dpwtcbq8o",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Crisis Response Fund Guidelines",
+      "url": "https://rescue.box.com/s/h36oi6lvk7zfxgdp4m1tag5izamdebyi",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "ERRP",
+      "url": "https://rescue.box.com/s/spa9mmw7tagznpjtlu5esl8ckwc673yy",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "14 priority emergency interventions",
+      "url": "https://rescue.box.com/s/xkg17wltqacdy9wuhtegi5wq67neg2kr",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Establishing New and Closing Operations",
+      "url": "https://rescue.app.box.com/s/mi9szd66zhkp8vc7x02lrnro013s1x90",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Response Imperative",
+      "url": "https://rescue.box.com/s/5p4gywt6o80d2b1v1gt6kggvmg7a3o2e",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Country/Emergency Unit MOU",
+      "url": "https://rescue.box.com/s/xuaxm9e4hbhfk6sxumdfh1vtbx7rs1h6",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "response plan",
+      "url": "https://rescue.box.com/s/vxbopci1mr3up5q308a7xtvyjv36mmhw",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Conduct multi-sector needs assessments",
+      "url": "https://rescue.app.box.com/s/5nmvb8ojwwnar0se0jflxht8ees4lfpr",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Determine Scale Targets for Orange and Red classified emergencies",
+      "url": "https://rescue.box.com/s/kfqohgw6l7aoe89suubg1e14umxbkojg",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "safeguarding",
+      "url": "https://rescue.app.box.com/s/vzsh3kv7fbwm1xlmpjl335bp7mhduqx9",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Conduct Real-Time Evaluations and After-Action Reviews (AAR",
+      "url": "https://rescue.box.com/s/2wpzp6ogl6oqtjae0hpx9g2jkx7itkbc",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "Plan for transition",
+      "url": "https://rescue.box.com/s/tlc3zscrskyvycwe5vccbnximfqh8a3f",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "See here the Terms of Reference for the Emergency Unit Lead function",
+      "url": "https://rescue.box.com/s/udfnw2uxf0ds4o1k0wosx1n1ajvqc0wb",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "See here the Terms of Reference for the Crisis Coordination Calls.",
+      "url": "https://rescue.box.com/s/1rwmtgk6spaxxcvwni31as2qvkpvi0uo",
+      "sector": "Guidelines"
+    },
+    {
+      "name": "See here the Terms of Reference for the Emergency Response Management Team function.",
+      "url": "https://rescue.box.com/s/3dswbg1fh4onkgaslcdjd1wuu6cq7eac",
+      "sector": "Guidelines"
+    }
+  ]
+}
