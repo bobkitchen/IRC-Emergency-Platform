@@ -124,16 +124,16 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
             <div key={sub.id} className="text-sm">
               <p className="text-irc-gray-700 leading-snug">{sub.title}</p>
               {sub.resources.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-1">
+                <div className="flex flex-wrap gap-1.5 mt-1">
                   {sub.resources.map((res, idx) =>
                     res.url && (res.url.startsWith('http') || res.url.startsWith('mailto')) ? (
                       <a key={idx} href={res.url} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-irc-gray-700 hover:text-black underline decoration-irc-gray-300 hover:decoration-black">
-                        <ExternalLink className="w-3 h-3" /> {res.name}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-50 text-xs text-irc-gray-700 hover:text-black hover:bg-yellow-100 rounded-md cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors">
+                        <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
                       </a>
                     ) : (
-                      <span key={idx} className="inline-flex items-center gap-1 text-xs text-irc-gray-500">
-                        <Paperclip className="w-3 h-3" /> {res.name}
+                      <span key={idx} className="inline-flex items-center gap-1 px-2 py-0.5 bg-irc-gray-50 text-xs text-irc-gray-400 rounded-md cursor-default" title="Link not yet available">
+                        <Paperclip className="w-3 h-3 shrink-0" /> {res.name}
                       </span>
                     )
                   )}
@@ -156,16 +156,17 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
                   href={res.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-irc-gray-700 text-xs rounded-md hover:bg-yellow-100 underline decoration-irc-gray-300 hover:decoration-black"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-irc-gray-700 text-xs rounded-md hover:bg-yellow-100 cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors"
                 >
-                  🔗 {res.name}
+                  <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
                 </a>
               ) : (
                 <span
                   key={idx}
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-irc-gray-50 text-irc-gray-500 text-xs rounded-md"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-irc-gray-50 text-irc-gray-400 text-xs rounded-md cursor-default"
+                  title="Link not yet available"
                 >
-                  📎 {res.name}
+                  <Paperclip className="w-3 h-3 shrink-0" /> {res.name}
                 </span>
               )
             )}
