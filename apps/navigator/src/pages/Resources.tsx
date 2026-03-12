@@ -246,9 +246,7 @@ export default function Resources() {
                         {r.name} <span className="text-irc-gray-400">↗</span>
                       </a>
                     ) : (
-                      <p className="text-sm font-medium text-irc-gray-400 leading-snug cursor-default" title="Link not yet available">
-                        {r.name} <span className="text-irc-gray-300 text-xs ml-1">· no link</span>
-                      </p>
+                      <p className="text-sm font-medium text-irc-gray-500 leading-snug">{r.name}</p>
                     )}
                     <p className="text-xs text-irc-gray-400 mt-0.5">{r.context}</p>
                     {r.source === 'task' && (() => {

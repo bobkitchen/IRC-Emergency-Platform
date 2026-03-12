@@ -1,7 +1,44 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { Task } from '@/types';
 import { getPhaseColorLight, getPriorityColor } from '@/lib/data';
-import { Star, ExternalLink, Paperclip, MessageCircle } from 'lucide-react';
+import { Star, ExternalLink, ArrowRight, MessageCircle } from 'lucide-react';
+
+// Cross-reference patterns → internal navigator links
+const CROSS_REF_MAP: Array<{ pattern: RegExp; label: string; to: string }> = [
+  { pattern: /see\s+meal\s+tab/i, label: 'MEAL sector', to: '/navigator/meal' },
+  { pattern: /see\s+partnership[s]?\s+tab/i, label: 'Partnerships sector', to: '/navigator/partnerships' },
+  { pattern: /see\s+preparedness\s+library/i, label: 'Preparedness Library', to: '/resources' },
+  { pattern: /see\s+response\s+management/i, label: 'Response Management', to: '/navigator/rmie' },
+  { pattern: /see\s+finance/i, label: 'Finance sector', to: '/navigator/finance' },
+  { pattern: /see\s+supply\s+chain/i, label: 'Supply Chain sector', to: '/navigator/supply_chain' },
+  { pattern: /see\s+safety/i, label: 'Safety & Security sector', to: '/navigator/safety_security' },
+  { pattern: /see\s+safeguarding/i, label: 'Safeguarding sector', to: '/navigator/safeguarding' },
+  { pattern: /see\s+grants/i, label: 'Grants sector', to: '/navigator/grants' },
+  { pattern: /see\s+integra/i, label: 'Integra Launch', to: '/navigator/integra' },
+  { pattern: /see\s+people|see\s+p&c|see\s+hr/i, label: 'People & Culture sector', to: '/navigator/people_culture' },
+  { pattern: /see\s+technical/i, label: 'Technical Programs sector', to: '/navigator/technical_programs' },
+];
+
+// Items that are clearly not document resources — filter these out
+function isNonResource(name: string): boolean {
+  const n = name.trim();
+  if (n.length < 3) return true;
+  if (/^(n\/?a|link\??|resources?\??|red|tbd)$/i.test(n)) return true;
+  // Long instructional text (> 80 chars) with sentence-like structure
+  if (n.length > 80 && /[.,:;]/.test(n)) return true;
+  // Contact/people references
+  if (/^(MEAL Team|Finance & Supply Chain focal|TAs or QiE|RTC team)/i.test(n)) return true;
+  return false;
+}
+
+// Check if a resource name is a cross-reference to another section
+function getCrossRef(name: string): { label: string; to: string } | null {
+  for (const ref of CROSS_REF_MAP) {
+    if (ref.pattern.test(name)) return { label: ref.label, to: ref.to };
+  }
+  return null;
+}
 
 interface Props {
   task: Task;
@@ -104,7 +141,7 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
           {/* Resource count badge (when collapsed) */}
           {!expanded && task.resources.length > 0 && (
             <span className="inline-flex items-center gap-1 text-xs text-irc-gray-400 bg-irc-gray-50 px-2 py-0.5 rounded-full">
-              <Paperclip className="w-3 h-3" />
+              <ExternalLink className="w-3 h-3" />
               {task.resources.length}
             </span>
           )}
@@ -125,18 +162,34 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
               <p className="text-irc-gray-700 leading-snug">{sub.title}</p>
               {sub.resources.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mt-1">
-                  {sub.resources.map((res, idx) =>
-                    res.url && (res.url.startsWith('http') || res.url.startsWith('mailto')) ? (
-                      <a key={idx} href={res.url} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-50 text-xs text-irc-gray-700 hover:text-black hover:bg-yellow-100 rounded-md cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors">
-                        <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
-                      </a>
-                    ) : (
-                      <span key={idx} className="inline-flex items-center gap-1 px-2 py-0.5 bg-irc-gray-50 text-xs text-irc-gray-400 rounded-md cursor-default" title="Link not yet available">
-                        <Paperclip className="w-3 h-3 shrink-0" /> {res.name}
-                      </span>
-                    )
-                  )}
+                  {sub.resources.map((res, idx) => {
+                    // Skip non-resource items (instructions, contacts, placeholders)
+                    if (isNonResource(res.name)) return null;
+
+                    // External link
+                    if (res.url && (res.url.startsWith('http') || res.url.startsWith('mailto'))) {
+                      return (
+                        <a key={idx} href={res.url} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-50 text-xs text-irc-gray-700 hover:text-black hover:bg-yellow-100 rounded-md cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors">
+                          <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
+                        </a>
+                      );
+                    }
+
+                    // Cross-reference to another section
+                    const crossRef = getCrossRef(res.name);
+                    if (crossRef) {
+                      return (
+                        <Link key={idx} to={crossRef.to}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-irc-gray-50 text-xs text-irc-gray-700 hover:text-black hover:bg-irc-gray-100 rounded-md transition-colors">
+                          <ArrowRight className="w-3 h-3 shrink-0" /> {crossRef.label}
+                        </Link>
+                      );
+                    }
+
+                    // Genuine document name without URL — skip it, don't confuse users
+                    return null;
+                  })}
                 </div>
               )}
             </div>
@@ -149,27 +202,35 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
         <div className="mt-3 ml-7">
           <p className="text-xs font-medium text-irc-gray-500 mb-1">Resources</p>
           <div className="flex flex-wrap gap-1.5">
-            {task.resources.map((res, idx) =>
-              res.url && (res.url.startsWith('http') || res.url.startsWith('mailto')) ? (
-                <a
-                  key={idx}
-                  href={res.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-irc-gray-700 text-xs rounded-md hover:bg-yellow-100 cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors"
-                >
-                  <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
-                </a>
-              ) : (
-                <span
-                  key={idx}
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-irc-gray-50 text-irc-gray-400 text-xs rounded-md cursor-default"
-                  title="Link not yet available"
-                >
-                  <Paperclip className="w-3 h-3 shrink-0" /> {res.name}
-                </span>
-              )
-            )}
+            {task.resources.map((res, idx) => {
+              if (isNonResource(res.name)) return null;
+
+              if (res.url && (res.url.startsWith('http') || res.url.startsWith('mailto'))) {
+                return (
+                  <a
+                    key={idx}
+                    href={res.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-irc-gray-700 text-xs rounded-md hover:bg-yellow-100 cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
+                  </a>
+                );
+              }
+
+              const crossRef = getCrossRef(res.name);
+              if (crossRef) {
+                return (
+                  <Link key={idx} to={crossRef.to}
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-irc-gray-50 text-xs text-irc-gray-700 hover:text-black hover:bg-irc-gray-100 rounded-md transition-colors">
+                    <ArrowRight className="w-3 h-3 shrink-0" /> {crossRef.label}
+                  </Link>
+                );
+              }
+
+              return null;
+            })}
           </div>
         </div>
       )}
