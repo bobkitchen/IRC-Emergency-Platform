@@ -139,12 +139,20 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
             </button>
           )}
           {/* Resource count badge (when collapsed) */}
-          {!expanded && task.resources.length > 0 && (
-            <span className="inline-flex items-center gap-1 text-xs text-irc-gray-400 bg-irc-gray-50 px-2 py-0.5 rounded-full">
-              <ExternalLink className="w-3 h-3" />
-              {task.resources.length}
-            </span>
-          )}
+          {!expanded && (() => {
+            const count = task.resources.filter(r =>
+              !isNonResource(r.name) && (
+                (r.url && (r.url.startsWith('http') || r.url.startsWith('mailto'))) ||
+                getCrossRef(r.name)
+              )
+            ).length;
+            return count > 0 ? (
+              <span className="inline-flex items-center gap-1 text-xs text-irc-gray-400 bg-irc-gray-50 px-2 py-0.5 rounded-full">
+                <ExternalLink className="w-3 h-3" />
+                {count}
+              </span>
+            ) : null;
+          })()}
           {/* Subtask count */}
           {task.subtasks.length > 0 && (
             <span className="text-xs text-irc-gray-500 bg-irc-gray-100 px-2 py-0.5 rounded-full">
@@ -198,42 +206,45 @@ export default function TaskCard({ task, showSector, sectorName, onAskAlbert }: 
       )}
 
       {/* Task resources */}
-      {expanded && task.resources.length > 0 && (
-        <div className="mt-3 ml-7">
-          <p className="text-xs font-medium text-irc-gray-500 mb-1">Resources</p>
-          <div className="flex flex-wrap gap-1.5">
-            {task.resources.map((res, idx) => {
-              if (isNonResource(res.name)) return null;
+      {expanded && (() => {
+        const visibleResources = task.resources.filter(res => {
+          if (isNonResource(res.name)) return false;
+          if (res.url && (res.url.startsWith('http') || res.url.startsWith('mailto'))) return true;
+          if (getCrossRef(res.name)) return true;
+          return false;
+        });
+        if (visibleResources.length === 0) return null;
+        return (
+          <div className="mt-3 ml-7">
+            <p className="text-xs font-medium text-irc-gray-500 mb-1">Resources</p>
+            <div className="flex flex-wrap gap-1.5">
+              {visibleResources.map((res, idx) => {
+                if (res.url && (res.url.startsWith('http') || res.url.startsWith('mailto'))) {
+                  return (
+                    <a
+                      key={idx}
+                      href={res.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-irc-gray-700 text-xs rounded-md hover:bg-yellow-100 cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors"
+                    >
+                      <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
+                    </a>
+                  );
+                }
 
-              if (res.url && (res.url.startsWith('http') || res.url.startsWith('mailto'))) {
-                return (
-                  <a
-                    key={idx}
-                    href={res.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-irc-gray-700 text-xs rounded-md hover:bg-yellow-100 cursor-pointer underline decoration-irc-gray-300 hover:decoration-black transition-colors"
-                  >
-                    <ExternalLink className="w-3 h-3 shrink-0" /> {res.name}
-                  </a>
-                );
-              }
-
-              const crossRef = getCrossRef(res.name);
-              if (crossRef) {
+                const crossRef = getCrossRef(res.name)!;
                 return (
                   <Link key={idx} to={crossRef.to}
                     className="inline-flex items-center gap-1 px-2 py-1 bg-irc-gray-50 text-xs text-irc-gray-700 hover:text-black hover:bg-irc-gray-100 rounded-md transition-colors">
                     <ArrowRight className="w-3 h-3 shrink-0" /> {crossRef.label}
                   </Link>
                 );
-              }
-
-              return null;
-            })}
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
