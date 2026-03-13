@@ -1152,7 +1152,10 @@
 
     var S = window.IRCShared || {};
     var SUPABASE_URL = S.SUPABASE_URL || 'https://qykjjfbdvwqxqmsgiebs.supabase.co';
-    var SUPABASE_HEADERS = S.HEADERS || {};
+    var SUPABASE_HEADERS = S.HEADERS || {
+      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5a2pqZmJkdndxeHFtc2dpZWJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMjg1NzcsImV4cCI6MjA4ODYwNDU3N30.N3XWpfTggpjHu8Kyw0DWnYnZvBqA1aVuWEJixo_ibAw',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5a2pqZmJkdndxeHFtc2dpZWJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMjg1NzcsImV4cCI6MjA4ODYwNDU3N30.N3XWpfTggpjHu8Kyw0DWnYnZvBqA1aVuWEJixo_ibAw'
+    };
 
     // ══════════════════════════════════════════════
     // localStorage Key Migration (from old settings)
