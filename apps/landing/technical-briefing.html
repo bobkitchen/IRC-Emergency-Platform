@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical Briefing — IRC Emergency Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-tokens.css">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--white);
+      color: var(--dark-gray);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: var(--black);
+      padding: 0 24px;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+    }
+
+    .doc-header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-container {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo-container svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .header-text .header-title {
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .header-text .header-subtitle {
+      color: var(--irc-yellow);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .back-link {
+      margin-left: auto;
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover {
+      color: var(--irc-yellow);
+    }
+
+    /* ── Hero ── */
+    .doc-hero {
+      background: var(--black);
+      padding: 48px 24px 56px;
+    }
+
+    .doc-hero-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .doc-hero h1 {
+      color: var(--white);
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .doc-hero h1 span {
+      color: var(--irc-yellow);
+    }
+
+    .doc-hero p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 1rem;
+      max-width: 600px;
+    }
+
+    /* ── Table of Contents ── */
+    .toc {
+      max-width: 800px;
+      margin: -28px auto 0;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .toc-card {
+      background: var(--white);
+      border: 2px solid var(--mid-gray);
+      border-radius: var(--border-radius);
+      padding: 28px 32px;
+    }
+
+    .toc-title {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .toc-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px 32px;
+    }
+
+    .toc-list a {
+      font-size: 0.9375rem;
+      color: var(--dark-gray);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 4px 0;
+      display: block;
+      transition: color 0.12s;
+    }
+
+    .toc-list a:hover {
+      color: var(--black);
+    }
+
+    .toc-list a::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--irc-yellow);
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    /* ── Content ── */
+    .doc-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .doc-content h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 56px 0 20px;
+      padding-top: 24px;
+      border-top: 2px solid var(--gray-e9);
+      color: var(--black);
+    }
+
+    .doc-content h2:first-child {
+      margin-top: 0;
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .doc-content h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin: 32px 0 12px;
+      color: var(--black);
+    }
+
+    .doc-content h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      margin: 24px 0 8px;
+      color: var(--dark-gray);
+    }
+
+    .doc-content p {
+      margin-bottom: 16px;
+      color: var(--dark-gray);
+    }
+
+    .doc-content ul, .doc-content ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    .doc-content li {
+      margin-bottom: 6px;
+    }
+
+    .doc-content strong {
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    /* ── Code blocks ── */
+    code {
+      font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8125rem;
+      background: var(--light-gray);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--dark-gray);
+    }
+
+    pre {
+      background: var(--black);
+      color: #e0e0e0;
+      padding: 20px 24px;
+      border-radius: var(--border-radius-sm);
+      overflow-x: auto;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      font-size: 0.8125rem;
+    }
+
+    .code-comment { color: #6a9955; }
+    .code-keyword { color: #569cd6; }
+    .code-string { color: #ce9178; }
+    .code-num { color: #b5cea8; }
+
+    /* ── Tables ── */
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      font-size: 0.875rem;
+    }
+
+    .doc-table th {
+      background: var(--light-gray);
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--mid-gray);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .doc-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-e9);
+      vertical-align: top;
+    }
+
+    .doc-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── Diagrams / callouts ── */
+    .arch-diagram {
+      background: var(--light-gray);
+      border: 1px solid var(--gray-e9);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      white-space: pre;
+      overflow-x: auto;
+      color: var(--dark-gray);
+    }
+
+    .callout {
+      padding: 16px 20px;
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 20px;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .callout-info {
+      background: #EBF5FF;
+      border: 1px solid #93C5FD;
+      color: #1E40AF;
+    }
+
+    .callout-warn {
+      background: var(--irc-yellow-lightest);
+      border: 1px solid var(--irc-yellow-mid);
+      color: #92400E;
+    }
+
+    .callout strong {
+      color: inherit;
+    }
+
+    /* ── Badge ── */
+    .tech-badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
+
+    .badge-vanilla { background: var(--irc-yellow-lightest); color: #92400E; }
+    .badge-react { background: #EBF5FF; color: #1E40AF; }
+    .badge-supabase { background: #ECFDF5; color: #065F46; }
+    .badge-ai { background: #F3E8FF; color: #6B21A8; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      background: var(--black);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .doc-footer p {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.8125rem;
+    }
+
+    .doc-footer a {
+      color: var(--irc-yellow);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .doc-hero h1 { font-size: 1.5rem; }
+      .toc-list { grid-template-columns: 1fr; }
+      .doc-table { font-size: 0.8125rem; }
+      .doc-table th, .doc-table td { padding: 8px 10px; }
+      pre { padding: 16px; font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="doc-header-inner">
+      <div class="logo-container">
+        <svg viewBox="0 0 217 216.99" xmlns="http://www.w3.org/2000/svg"><rect fill="#FDC62F" width="217" height="216.99"/><path fill="#00040C" d="M26.6,26.6h163.81v63.15h-55.22l55.22,55.22v45.44h-45.44l-55.22-55.21v55.21H26.6V26.6Z"/></svg>
+      </div>
+      <div class="header-text">
+        <div class="header-title">Technical Briefing</div>
+        <div class="header-subtitle">IRC Emergency Platform</div>
+      </div>
+      <a href="./" class="back-link">&larr; Back to Platform</a>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="doc-hero">
+    <div class="doc-hero-inner">
+      <h1>Technical Briefing<br><span>Architecture &amp; Implementation</span></h1>
+      <p>A developer-facing overview of the platform's technology stack, data flows, AI integrations, and system architecture.</p>
+    </div>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <div class="toc-card">
+      <div class="toc-title">Contents</div>
+      <ul class="toc-list">
+        <li><a href="#architecture">Platform Architecture</a></li>
+        <li><a href="#shared-package">Shared Package</a></li>
+        <li><a href="#frontend">Frontend Stack</a></li>
+        <li><a href="#backend">Backend &amp; Database</a></li>
+        <li><a href="#ai">AI Integrations</a></li>
+        <li><a href="#data-flow">Data Flow</a></li>
+        <li><a href="#cicd">CI/CD Pipeline</a></li>
+        <li><a href="#dev-notes">Development Notes</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="doc-content">
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="architecture">Platform Architecture</h2>
+
+    <h3>Monorepo Structure</h3>
+    <p>The platform is an <strong>npm workspaces monorepo</strong> with a single shared package and five independent apps. All source code lives in one repository; each app deploys to a separate GitHub Pages site.</p>
+
+    <div class="arch-diagram">irc-emergency-platform/
+├── packages/
+│   └── shared/              @irc/shared — data, utilities, UI, Supabase client
+│
+└── apps/
+    ├── classification/      @irc/classification — vanilla JS
+    ├── crf-calculator/      @irc/crf-calculator — vanilla JS
+    ├── navigator/           @irc/navigator — React + TypeScript + Vite
+    ├── admin/               @irc/admin — vanilla JS
+    └── landing/             @irc/landing — static HTML</div>
+
+    <p>All app packages declare <code>"@irc/shared": "*"</code> as a dependency, resolved by npm workspaces to the local <code>packages/shared/</code> directory.</p>
+
+    <h3>The IIFE Bundle Pattern</h3>
+    <p>The shared package is distributed to vanilla JS apps as an <strong>Immediately Invoked Function Expression (IIFE)</strong> bundle, available globally as <code>window.IRCShared</code>.</p>
+
+    <ol>
+      <li><code>packages/shared/build.js</code> uses <strong>esbuild</strong> to bundle <code>src/index.js</code> as an IIFE with <code>globalName: 'IRCShared'</code></li>
+      <li>Each vanilla app's <code>build.js</code> copies the built bundle into its own directory</li>
+      <li>HTML files load it via <code>&lt;script src="irc-shared.iife.js"&gt;</code>, attaching everything onto <code>window.IRCShared</code></li>
+      <li>A shim script (<code>irc-platform.js</code>) then maps selected properties onto <code>window.IRC</code> for app-level use</li>
+    </ol>
+
+    <p>The <strong>Navigator</strong> (React/Vite) imports <code>@irc/shared</code> as ES modules directly — it does not use the IIFE bundle. Vite resolves the workspace dependency at build time.</p>
+
+    <div class="callout callout-info">
+      <strong>Two namespaces coexist in vanilla apps:</strong> <code>window.IRCShared</code> (raw IIFE output) and <code>window.IRC</code> (app-level namespace assembled by the shim + supabase.js + shared.js).
+    </div>
+
+    <h3>Deploy Targets</h3>
+    <table class="doc-table">
+      <thead>
+        <tr><th>App</th><th>Source</th><th>Deploys To</th><th>URL</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Classification</td><td><code>apps/classification/</code></td><td><code>bobkitchen/emergency-classification</code></td><td><code>/emergency-classification/</code></td></tr>
+        <tr><td>CRF Calculator</td><td><code>apps/crf-calculator/</code></td><td><code>bobkitchen/crf-calculator</code></td><td><code>/crf-calculator/</code></td></tr>
+        <tr><td>Navigator</td><td><code>apps/navigator/dist/</code></td><td><code>bobkitchen/emergency-response-navigator</code></td><td><code>/emergency-response-navigator/</code></td></tr>
+        <tr><td>Admin</td><td><code>apps/admin/</code></td><td><code>bobkitchen/irc-admin</code></td><td><code>/irc-admin/</code></td></tr>
+        <tr><td>Landing</td><td><code>apps/landing/</code></td><td><code>bobkitchen/irc-emergency-platform-site</code></td><td><code>/irc-emergency-platform-site/</code></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="shared-package">Shared Package (<code>@irc/shared</code>)</h2>
+
+    <p>The shared package is the single source of truth for data, utilities, UI components, and the Supabase client used across all apps.</p>
+
+    <h3>Exports</h3>
+    <table class="doc-table">
+      <thead>
+        <tr><th>Module</th><th>Key Exports</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>data.js</code></td><td><code>STANCE_MATRIX</code>, <code>COUNTRIES</code> (195 entries), <code>THRESHOLDS</code>, <code>METRIC_CONFIGS</code>, <code>COUNTRY_ALIASES</code>, <code>normalizeCountry()</code></td></tr>
+        <tr><td><code>utils.js</code></td><td><code>lookupStance()</code>, <code>calculateSeverity()</code>, <code>calculateOverallStance()</code>, <code>formatNum()</code>, <code>formatDate()</code>, <code>isExpired()</code>, <code>uuid()</code></td></tr>
+        <tr><td><code>supabase.js</code></td><td><code>fetchClassifications()</code>, <code>mapToSnake()</code>, <code>mapToCamel()</code>, field mapping constants</td></tr>
+        <tr><td><code>site-config.js</code></td><td><code>getSiteConfig()</code>, <code>getSettingsUrl()</code>, <code>STORAGE_KEYS</code></td></tr>
+        <tr><td><code>header.js</code></td><td><code>renderHeader()</code>, <code>renderFooter()</code>, <code>initSiteSwitcher()</code>, <code>IRC_LOGO_DATA_URI</code></td></tr>
+        <tr><td><code>design-tokens.css</code></td><td>CSS custom properties for brand colors, typography, spacing</td></tr>
+      </tbody>
+    </table>
+
+    <h3>STANCE_MATRIX</h3>
+    <p>A 3-dimensional lookup table: <code>STANCE_MATRIX[severity][pv][rob]</code> &rarr; <code>'white'|'yellow'|'orange'|'red'</code>.</p>
+    <ul>
+      <li><strong>Severity:</strong> 1&ndash;10 (derived from affected population data)</li>
+      <li><strong>PV (Population Vulnerability):</strong> 1&ndash;4 (country-level)</li>
+      <li><strong>ROB (Response Operational Burden):</strong> 0&ndash;5 (country-level)</li>
+    </ul>
+    <p>Severities 1&ndash;7 generally produce yellow; 6+ with higher PV/ROB escalate to orange; 8&ndash;10 produce red or orange depending on the country profile.</p>
+
+    <h3>COUNTRIES Data</h3>
+    <p>Array of 195 entries: <code>[name, population, pv, rob]</code>. Examples:</p>
+    <pre><code>[<span class="code-string">"Afghanistan"</span>, <span class="code-num">42647492</span>, <span class="code-num">4</span>, <span class="code-num">5</span>]
+[<span class="code-string">"South Sudan"</span>, <span class="code-num">11088796</span>, <span class="code-num">4</span>, <span class="code-num">5</span>]
+[<span class="code-string">"United Kingdom"</span>, <span class="code-num">67736802</span>, <span class="code-num">1</span>, <span class="code-num">0</span>]</code></pre>
+
+    <h3>Design Tokens</h3>
+    <p>CSS custom properties on <code>:root</code>, loaded from Google Fonts (<strong>DM Sans</strong>, weights 300/400/500/700):</p>
+    <ul>
+      <li><strong>Brand:</strong> <code>--irc-yellow: #FFC72C</code>, <code>--black: #000000</code>, plus light/mid/lightest variants</li>
+      <li><strong>Grays:</strong> <code>--light-gray</code> through <code>--dark-gray</code> (5 stops)</li>
+      <li><strong>Stance colors:</strong> <code>--stance-white</code>, <code>--stance-yellow</code>, <code>--stance-orange</code>, <code>--stance-red</code></li>
+      <li><strong>Layout:</strong> <code>--max-width: 1280px</code>, <code>--header-height: 60px</code>, <code>--border-radius: 12px</code></li>
+    </ul>
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="frontend">Frontend Stack</h2>
+
+    <h3>Emergency Classification <span class="tech-badge badge-vanilla">Vanilla JS</span></h3>
+    <p>Multi-page app with no framework. Entry points: <code>index.html</code> (dashboard), <code>classify.html</code> (form), <code>maps.html</code> (Leaflet maps).</p>
+    <ul>
+      <li><strong>CSS:</strong> <code>styles.css</code> + shared <code>design-tokens.css</code>, flat CSS with custom properties</li>
+      <li><strong>JS patterns:</strong> IIFEs, closures for state, all globals via <code>window.IRC.*</code></li>
+      <li><strong>Map:</strong> Leaflet.js v1.9.4 (CDN) with country markers</li>
+      <li><strong>Key UI:</strong> Dashboard with time/stance/status filter pills, searchable country dropdown, severity scoring display</li>
+    </ul>
+
+    <h3>CRF Allocation Calculator <span class="tech-badge badge-vanilla">Vanilla JS</span></h3>
+    <p>Single-page calculator in one HTML file (<code>allocation-calculator.html</code>). ~2,500 lines including ~800 lines of inline CSS.</p>
+    <ul>
+      <li><strong>Calculation engine:</strong> Severity scoring (dual-pass: absolute + proportional), stance matrix lookup, per-client cost model ($47.34 &times; 6 months)</li>
+      <li><strong>Coverage tiers:</strong> 1%, 2%, 3% of affected population with CRF/Gap split visualization</li>
+      <li><strong>Proportional discount:</strong> Toggle that scales CRF allocation when target population is reduced below the 10% baseline</li>
+      <li><strong>Scenario comparison:</strong> Save up to 3 scenarios, tabular comparison with max-highlighting</li>
+      <li><strong>Auto-population:</strong> Fetches classifications from Supabase on load, auto-fills affected population and stance from active classifications</li>
+    </ul>
+
+    <h3>Response Navigator <span class="tech-badge badge-react">React</span></h3>
+    <p>Single-page application built with React 19, TypeScript, Vite 6, and Tailwind CSS 3.</p>
+    <ul>
+      <li><strong>Routing:</strong> React Router DOM 7 with <code>basename: '/emergency-response-navigator'</code></li>
+      <li><strong>Pages:</strong> Home (role selector, country search, phase/sector grid), Navigator (filterable task browser), Resources (resource library)</li>
+      <li><strong>State:</strong> <code>ClassificationProvider</code> context for country/stance/classification data, persisted to localStorage</li>
+      <li><strong>Data source:</strong> <code>process-data.json</code> — large JSON file built from CSV sources at build time, bundled as a separate Vite chunk</li>
+      <li><strong>SPA on GitHub Pages:</strong> Uses the standard <code>404.html</code> redirect hack with <code>sessionStorage.redirect</code></li>
+      <li><strong>Service Worker:</strong> Registered at <code>/emergency-response-navigator/sw.js</code></li>
+      <li><strong>Manual chunks:</strong> <code>process-data</code> (data) and <code>react-vendor</code> (React + Router)</li>
+    </ul>
+
+    <h3>Platform Admin <span class="tech-badge badge-vanilla">Vanilla JS</span></h3>
+    <p>Single-page admin panel. Hash-based tab navigation (<code>#data</code>). Provides CSV/Excel import with drag-and-drop, column mapping UI, and preview. Shares the Supabase data-access layer from the Classification app.</p>
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="backend">Backend &amp; Database</h2>
+
+    <h3>Supabase (PostgreSQL) <span class="tech-badge badge-supabase">Supabase</span></h3>
+    <p>The platform uses <strong>Supabase</strong> as its backend — a hosted PostgreSQL database with a PostgREST API layer. No Supabase JS SDK is used; all calls are direct <code>fetch()</code> against the REST endpoint.</p>
+
+    <h4>Connection</h4>
+    <pre><code>URL:  https://qykjjfbdvwqxqmsgiebs.supabase.co
+API:  /rest/v1/classifications
+Auth: Anon key (public, in client-side code)</code></pre>
+
+    <h4>Classifications Table Schema</h4>
+    <table class="doc-table">
+      <thead>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>UUID</td><td>Primary key, auto-generated</td></tr>
+        <tr><td><code>classification_id</code></td><td>TEXT</td><td>Logical grouping ID for reclassifications</td></tr>
+        <tr><td><code>type</code></td><td>TEXT</td><td><code>conflict</code>, <code>outbreak</code>, <code>food</code>, <code>hazard</code></td></tr>
+        <tr><td><code>country</code></td><td>TEXT</td><td>Country name</td></tr>
+        <tr><td><code>emergency_name</code></td><td>TEXT</td><td>Human-readable emergency label</td></tr>
+        <tr><td><code>severity</code></td><td>INTEGER</td><td>0&ndash;10 severity score</td></tr>
+        <tr><td><code>stance</code></td><td>TEXT</td><td><code>white</code>, <code>yellow</code>, <code>orange</code>, <code>red</code></td></tr>
+        <tr><td><code>total_affected</code></td><td>NUMERIC</td><td>Affected population count</td></tr>
+        <tr><td><code>date</code></td><td>DATE</td><td>Classification date</td></tr>
+        <tr><td><code>expiration_date</code></td><td>DATE</td><td>6-week validity window</td></tr>
+        <tr><td><code>metrics</code></td><td>JSONB</td><td>Type-specific severity metric values</td></tr>
+        <tr><td><code>confidence</code></td><td>JSONB</td><td>Confidence scoring data</td></tr>
+        <tr><td><code>reclassification_number</code></td><td>INTEGER</td><td>Tracks reclassification sequence</td></tr>
+        <tr><td><code>notes</code></td><td>TEXT</td><td>Free-text notes</td></tr>
+        <tr><td><code>created_at</code></td><td>TIMESTAMPTZ</td><td>Auto-set on insert</td></tr>
+        <tr><td><code>updated_at</code></td><td>TIMESTAMPTZ</td><td>Auto-updated via trigger</td></tr>
+      </tbody>
+    </table>
+    <p>The table includes additional workflow columns: <code>date_request_received</code>, <code>date_reviewed</code>, <code>date_approved</code>, <code>entry_by</code>, <code>reviewed_by</code>, <code>approved_by</code>, and more for tracking the classification lifecycle.</p>
+
+    <div class="callout callout-warn">
+      <strong>Security note:</strong> Row Level Security is enabled but with a fully permissive policy (<code>FOR ALL USING (true)</code>). This is by design for an internal proof-of-concept tool.
+    </div>
+
+    <h4>Data Access Patterns</h4>
+    <ul>
+      <li><strong>Read (shared):</strong> <code>fetchClassifications()</code> paginates with <code>limit=1000&amp;offset=N</code> until a page returns fewer than 1000 rows. Maps snake_case &rarr; camelCase via <code>mapToCamel()</code>.</li>
+      <li><strong>Write (classification app):</strong> <code>IRC.db.save(record)</code> maps camelCase &rarr; snake_case via <code>mapToSnake()</code> (with type coercion, date normalization, empty-string &rarr; null), then POSTs with <code>Prefer: return=representation,resolution=merge-duplicates</code>.</li>
+      <li><strong>Bulk import (admin app):</strong> <code>IRC.db.importBatch()</code> inserts in chunks of 200, diffs against existing records, deletes removed entries in batches of 100.</li>
+      <li><strong>Caching:</strong> Write-through cache to <code>localStorage['irc_classifications']</code> for offline fallback.</li>
+    </ul>
+
+    <h3>Field Mapping</h3>
+    <p>27 camelCase &harr; snake_case field pairs defined in <code>TO_SNAKE</code> / <code>TO_CAMEL</code> constants. The <code>mapToSnake()</code> function also performs:</p>
+    <ul>
+      <li>Empty-string &rarr; <code>null</code> coercion for constrained columns</li>
+      <li>String &rarr; boolean for <code>ipc4_used</code></li>
+      <li><code>parseFloat</code> for <code>total_affected</code></li>
+      <li>Date validation/normalization to <code>YYYY-MM-DD</code></li>
+      <li><code>JSON.parse</code> for JSONB fields</li>
+    </ul>
+
+    <h3>localStorage Usage</h3>
+    <table class="doc-table">
+      <thead>
+        <tr><th>Key</th><th>App(s)</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>irc_classifications</code></td><td>Classification, Admin</td><td>Write-through cache of all classifications</td></tr>
+        <tr><td><code>irc_openrouter_model</code></td><td>All</td><td>Selected AI model ID</td></tr>
+        <tr><td><code>irc_albert_chat_*</code></td><td>Per app</td><td>Persisted chat history (per-site key)</td></tr>
+        <tr><td><code>ern-active-classification</code></td><td>Navigator</td><td>Selected country + classification + stance</td></tr>
+        <tr><td><code>ern-classifications-cache</code></td><td>Navigator</td><td>Offline classification data with timestamp</td></tr>
+        <tr><td><code>ern-user-role</code></td><td>Navigator</td><td>Selected user role (9 options)</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="ai">AI Integrations</h2>
+
+    <h3>Ask Albert <span class="tech-badge badge-ai">AI</span></h3>
+    <p><strong>Albert</strong> is the platform's AI assistant, available in all four apps. It provides context-aware help about emergency classifications, CRF funding, and response protocols.</p>
+
+    <h4>Architecture</h4>
+    <p>All Albert implementations connect to a single <strong>Supabase Edge Function</strong>:</p>
+    <pre><code>POST https://qykjjfbdvwqxqmsgiebs.supabase.co/functions/v1/chat</code></pre>
+    <p>No API key is required on the client. The Edge Function holds the OpenRouter key server-side and handles RAG (Retrieval-Augmented Generation), system prompt construction, and classification data fetching.</p>
+
+    <h4>Request Payload</h4>
+    <pre><code>{
+  <span class="code-string">"messages"</span>: [{ <span class="code-string">"role"</span>: <span class="code-string">"user"</span>, <span class="code-string">"content"</span>: <span class="code-string">"..."</span> }],
+  <span class="code-string">"site"</span>: <span class="code-string">"classification"</span> | <span class="code-string">"crf"</span> | <span class="code-string">"navigator"</span>,
+  <span class="code-string">"model"</span>: <span class="code-string">"google/gemini-2.5-flash"</span>
+}</code></pre>
+    <p>The <code>site</code> field tells the Edge Function which tool is being used, allowing it to tailor the system prompt and RAG context accordingly.</p>
+
+    <h4>Streaming Protocol</h4>
+    <p>Responses are delivered as <strong>Server-Sent Events (SSE)</strong>. The client reads the response body as a stream, splits on newlines, processes <code>data: {...}</code> lines, extracts <code>choices[0].delta.content</code>, and accumulates the streamed text. The stream terminates with <code>data: [DONE]</code>.</p>
+
+    <h4>Available Models</h4>
+    <table class="doc-table">
+      <thead>
+        <tr><th>Model ID</th><th>Name</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>google/gemini-2.5-flash</code></td><td>Gemini 2.5 Flash</td><td>Default — fast, low cost</td></tr>
+        <tr><td><code>anthropic/claude-sonnet-4</code></td><td>Claude Sonnet 4</td><td>Better reasoning for complex questions</td></tr>
+        <tr><td><code>openai/gpt-4.1-mini</code></td><td>GPT-4.1 Mini</td><td>Balanced speed and quality</td></tr>
+      </tbody>
+    </table>
+    <p>Model selection is persisted to <code>localStorage['irc_openrouter_model']</code> and sent with each request.</p>
+
+    <h4>Dynamic Example Queries</h4>
+    <p>Both the vanilla and React Albert implementations generate <strong>context-aware example queries</strong> from live classification data:</p>
+    <ol>
+      <li>Filter classifications to non-expired, red or orange stance</li>
+      <li>Sort by severity (desc), then date (desc)</li>
+      <li>Take up to 2 unique countries</li>
+      <li>Generate queries like <em>"Tell me about the Sudan Red classification"</em></li>
+      <li>Pad with static fallback queries specific to each app</li>
+    </ol>
+
+    <h4>Static Fallback Queries by App</h4>
+    <table class="doc-table">
+      <thead>
+        <tr><th>App</th><th>Example Queries</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Classification</td><td>"What triggers a reclassification?", "How does the complex emergency rule work?"</td></tr>
+        <tr><td>CRF</td><td>"How is the CRF allocation calculated?", "What are the Orange vs Red funding ceilings?"</td></tr>
+        <tr><td>Navigator</td><td>"What should we do in Week 1 of a Red emergency?", "What does Supply Chain need to do first?"</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Implementations</h4>
+    <ul>
+      <li><strong>Classification &amp; CRF:</strong> <code>albert-panel.js</code> — self-contained IIFE, slide-over panel UI</li>
+      <li><strong>Navigator:</strong> <code>ChatPanel.tsx</code> — React component, lazy-loaded via <code>React.lazy + Suspense</code></li>
+    </ul>
+    <p>All implementations persist chat history to localStorage per-site (<code>irc_albert_chat_classification</code>, <code>irc_albert_chat_crf</code>, <code>irc_albert_chat_navigator</code>).</p>
+
+    <h4>Feedback System (Navigator)</h4>
+    <p>The Navigator's chat panel includes a thumbs-up/thumbs-down feedback mechanism. Feedback is sent as a fire-and-forget POST to the same Edge Function endpoint with a <code>{ feedback: { messageId, rating, query, timestamp } }</code> payload.</p>
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="data-flow">Data Flow</h2>
+
+    <h3>Classification &rarr; CRF Calculator</h3>
+    <div class="arch-diagram">classify.html                    Supabase                    allocation-calculator.html
+     │                              │                              │
+     │  IRC.db.save(record)         │                              │
+     │  ──── POST /rest/v1/ ──────► │                              │
+     │                              │  ◄── fetchClassifications() ─│
+     │                              │  ──── paginated GET ────────►│
+     │                              │                              │
+     │                              │          Auto-populate:      │
+     │                              │          • affected pop      │
+     │                              │          • stance (orange/red)│
+     │                              │          • target pop (10%)  │</div>
+
+    <h3>Classification &rarr; Navigator</h3>
+    <ol>
+      <li><code>ClassificationProvider</code> mounts, calls <code>fetchClassifications()</code></li>
+      <li>Results stored in React state + cached to <code>ern-classifications-cache</code> localStorage</li>
+      <li>User selects country in <code>CountrySearch</code> &rarr; filters to active classifications for that country</li>
+      <li><code>highestStakes()</code> auto-selects the most severe classification</li>
+      <li>Classification context (country + stance) is available to all components via <code>useClassification()</code> hook</li>
+      <li>Header displays a classification pill; selection persists to <code>ern-active-classification</code></li>
+    </ol>
+
+    <h3>Cross-App Navigation</h3>
+    <p><code>site-config.js</code> is the universal navigation contract. Every app calls <code>getSiteConfig()</code> to get environment-correct URLs for all other apps. The shared header's site-switcher dropdown is built from this config. A single change to <code>site-config.js</code> propagates URL changes everywhere.</p>
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="cicd">CI/CD Pipeline</h2>
+
+    <p>Defined in <code>.github/workflows/deploy.yml</code>. Triggered on push to <code>main</code> or manual dispatch.</p>
+
+    <h3>Build Sequence</h3>
+    <pre><code><span class="code-comment"># 1. Install</span>
+npm ci
+
+<span class="code-comment"># 2. Build shared package (esbuild IIFE)</span>
+npm run build:shared
+
+<span class="code-comment"># 3. Build each app (copies IIFE bundle + assets)</span>
+npm run build:classification
+npm run build:navigator      <span class="code-comment"># Vite build → dist/</span>
+npm run build:crf
+npm run build:admin
+npm run build:landing
+
+<span class="code-comment"># 4. Deploy each app to its standalone repo's gh-pages branch</span>
+peaceiris/actions-gh-pages@v3  <span class="code-comment"># × 5 apps</span></code></pre>
+
+    <p>Each deploy uses a <code>DEPLOY_TOKEN</code> personal access token secret to push to the external repositories. The IIFE bundle is gitignored — CI builds it fresh every time.</p>
+
+    <h3>Navigator Build Pipeline</h3>
+    <p>The Navigator has an additional pre-build step: <code>build-data.mjs</code> parses CSV source files from a <code>csv/</code> directory into <code>process-data.json</code>. The CSVs are not committed; in CI, the script detects no data and preserves the existing committed JSON. This means task data can only be updated by running the build locally with CSV files present.</p>
+
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="dev-notes">Development Notes</h2>
+
+    <h3>After Changing <code>packages/shared/src/</code></h3>
+    <pre><code>npm -w @irc/shared run build          <span class="code-comment"># rebuild IIFE bundle</span>
+npm -w @irc/classification run build  <span class="code-comment"># copy bundle to classification</span>
+npm -w @irc/crf-calculator run build  <span class="code-comment"># copy bundle to CRF calculator</span></code></pre>
+
+    <h3>Key Design Decisions</h3>
+    <ul>
+      <li><strong>No framework for Classification &amp; CRF:</strong> Vanilla JS keeps the apps dependency-free, fast-loading, and simple to deploy as static files. The tradeoff is more manual DOM manipulation.</li>
+      <li><strong>React for Navigator only:</strong> The Navigator's task filtering, role-based views, and context management benefit from React's component model and state management.</li>
+      <li><strong>Direct PostgREST instead of Supabase SDK:</strong> Raw <code>fetch()</code> avoids a ~40KB SDK dependency and keeps the vanilla apps truly dependency-free.</li>
+      <li><strong>Server-side AI key:</strong> The Supabase Edge Function holds the OpenRouter API key, so no AI credentials are exposed in client-side code.</li>
+      <li><strong>IIFE for code sharing:</strong> The IIFE pattern allows vanilla apps to consume the shared package via a simple <code>&lt;script&gt;</code> tag, while the Navigator uses the same source via ES module imports.</li>
+    </ul>
+
+    <h3>Known Patterns</h3>
+    <ul>
+      <li><strong>Duplicated field mappings:</strong> <code>TO_SNAKE</code>/<code>TO_CAMEL</code> exist in both <code>packages/shared/src/supabase.js</code> and <code>apps/classification/supabase.js</code>. The app version extends them with the full <code>IRC.db.*</code> API.</li>
+      <li><strong><code>window.__askAlbert</code> bridge:</strong> The Navigator injects a global function to let child components open the chat panel without prop-drilling.</li>
+      <li><strong>SPA redirect hack:</strong> The Navigator uses a <code>404.html</code> page that stores the path in <code>sessionStorage</code> and redirects to <code>/</code>, where <code>main.tsx</code> reads it and replaces the history state. Standard pattern for SPAs on GitHub Pages.</li>
+    </ul>
+
+    <h3>Built With</h3>
+    <p>This platform was built collaboratively with <strong>AI-assisted development using Claude Code</strong> (Anthropic). The development workflow uses the monorepo as a single source of truth, with CI/CD automating builds and deploys to GitHub Pages.</p>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <p>&copy; International Rescue Committee. For internal use only. <a href="./">Back to Platform Overview</a></p>
+  </div>
+
+</body>
+</html>
