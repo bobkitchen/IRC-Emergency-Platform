@@ -37,6 +37,9 @@ jobs:
       - name: Build Admin app
         run: npm run build:admin
 
+      - name: Build Landing page
+        run: npm run build:landing
+
       # Deploy each app to its respective GitHub Pages repo
       # Classification → emergency-classification repo
       - name: Deploy Classification
@@ -75,4 +78,14 @@ jobs:
           external_repository: bobkitchen/irc-admin
           publish_branch: gh-pages
           publish_dir: ./apps/admin
+          exclude_assets: 'package.json,build.js,node_modules'
+
+      # Landing → irc-emergency-platform-site repo
+      - name: Deploy Landing Page
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          external_repository: bobkitchen/irc-emergency-platform-site
+          publish_branch: gh-pages
+          publish_dir: ./apps/landing
           exclude_assets: 'package.json,build.js,node_modules'

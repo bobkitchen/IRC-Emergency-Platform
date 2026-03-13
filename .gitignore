@@ -9,6 +9,7 @@ apps/classification/irc-shared.iife.js
 apps/classification/design-tokens.css
 apps/crf-calculator/irc-shared.iife.js
 apps/crf-calculator/design-tokens.css
+apps/landing/design-tokens.css
 
 # Navigator build output
 apps/navigator/dist/

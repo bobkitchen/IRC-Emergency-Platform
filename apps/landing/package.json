@@ -1,0 +1,13 @@
+{
+  "name": "@irc/landing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "IRC Emergency Platform — Landing Page",
+  "dependencies": {
+    "@irc/shared": "*"
+  },
+  "scripts": {
+    "build": "node build.js"
+  }
+}

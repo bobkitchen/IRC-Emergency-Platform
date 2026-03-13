@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRC Emergency Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-tokens.css">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--white);
+      color: var(--dark-gray);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .landing-header {
+      background: var(--black);
+      padding: 0 24px;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+    }
+
+    .landing-header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-container {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo-container svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-title {
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .header-subtitle {
+      color: var(--irc-yellow);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--black);
+      padding: 64px 24px 80px;
+      text-align: center;
+    }
+
+    .hero-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      color: var(--white);
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span {
+      color: var(--irc-yellow);
+    }
+
+    .hero p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.125rem;
+      line-height: 1.6;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── App cards ── */
+    .apps-section {
+      max-width: var(--max-width);
+      margin: -40px auto 0;
+      padding: 0 24px 64px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .app-card {
+      background: var(--white);
+      border: 2px solid var(--mid-gray);
+      border-radius: var(--border-radius);
+      padding: 32px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .app-card:hover {
+      border-color: var(--irc-yellow);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .app-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-shrink: 0;
+    }
+
+    .app-card-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .app-card-icon--classify {
+      background: #FFF0EB;
+      color: var(--stance-orange);
+    }
+
+    .app-card-icon--crf {
+      background: var(--irc-yellow-lightest);
+      color: var(--dark-gray);
+    }
+
+    .app-card-icon--navigator {
+      background: #EBF5FF;
+      color: #2563EB;
+    }
+
+    .app-card h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+
+    .app-card-desc {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .app-card-features {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .app-card-features li {
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      line-height: 1.4;
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .app-card-features li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--irc-yellow);
+    }
+
+    .app-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--black);
+      text-decoration: none;
+      padding: 12px 20px;
+      background: var(--irc-yellow);
+      border-radius: var(--border-radius-sm);
+      transition: background 0.12s ease;
+      align-self: flex-start;
+    }
+
+    .app-card-link:hover {
+      background: var(--irc-yellow-light);
+    }
+
+    .app-card-link svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.12s ease;
+    }
+
+    .app-card-link:hover svg {
+      transform: translateX(2px);
+    }
+
+    /* ── Guide section ── */
+    .guide-section {
+      background: var(--light-gray);
+      padding: 64px 24px;
+    }
+
+    .guide-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    .guide-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .guide-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .guide-header p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .guide-step {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 28px;
+      border: 1px solid var(--gray-e9);
+    }
+
+    .guide-step-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .guide-step h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+
+    .guide-step p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Tech section (placeholder) ── */
+    .tech-section {
+      padding: 64px 24px;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    .tech-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .tech-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .tech-header p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .tech-card {
+      padding: 28px;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--gray-e9);
+      background: var(--light-gray);
+    }
+
+    .tech-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+
+    .tech-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tech-card code {
+      font-size: 0.8125rem;
+      background: var(--gray-e9);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--dark-gray);
+    }
+
+    /* ── Footer ── */
+    .landing-footer {
+      background: var(--black);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .landing-footer p {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.8125rem;
+    }
+
+    .landing-footer a {
+      color: var(--irc-yellow);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero { padding: 48px 24px 64px; }
+      .hero h1 { font-size: 1.75rem; }
+      .hero p { font-size: 1rem; }
+      .apps-grid { grid-template-columns: 1fr; }
+      .guide-grid { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.5rem; }
+      .app-card { padding: 24px 20px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="landing-header">
+    <div class="landing-header-inner">
+      <div class="logo-container">
+        <svg viewBox="0 0 217 216.99" xmlns="http://www.w3.org/2000/svg"><rect fill="#FDC62F" width="217" height="216.99"/><path fill="#00040C" d="M26.6,26.6h163.81v63.15h-55.22l55.22,55.22v45.44h-45.44l-55.22-55.21v55.21H26.6V26.6Z"/></svg>
+      </div>
+      <div class="header-text">
+        <div class="header-title">IRC Emergency Platform</div>
+        <div class="header-subtitle">Emergency Unit Digital Tools</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>Three tools. One platform.<br><span>Faster emergency response.</span></h1>
+      <p>The IRC Emergency Platform connects classification, funding, and operational guidance into a single digital workflow for the Emergency Unit.</p>
+    </div>
+  </div>
+
+  <!-- App Cards -->
+  <section class="apps-section">
+    <div class="apps-grid">
+
+      <!-- Classification -->
+      <div class="app-card">
+        <div class="app-card-icon app-card-icon--classify">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        </div>
+        <h2>Emergency Classification</h2>
+        <p class="app-card-desc">Assess and classify new emergencies by severity and response stance. The system scores crises on a 1-10 scale and determines whether IRC should mobilize a White, Yellow, Orange, or Red response.</p>
+        <ul class="app-card-features">
+          <li>Severity scoring from population data</li>
+          <li>Automatic stance determination via matrix</li>
+          <li>Dashboard of all active classifications</li>
+          <li>Interactive maps and Ask Albert AI assistant</li>
+        </ul>
+        <a href="/emergency-classification/" class="app-card-link">
+          Open Classification
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- CRF Calculator -->
+      <div class="app-card">
+        <div class="app-card-icon app-card-icon--crf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h2>CRF Allocation Calculator</h2>
+        <p class="app-card-desc">Calculate Crisis Response Fund allocations based on emergency classification, affected population, and IRC's per-client cost model. Compare scenarios and generate funding summaries.</p>
+        <ul class="app-card-features">
+          <li>Auto-populates from active classifications</li>
+          <li>1%, 2%, 3% coverage tier comparison</li>
+          <li>Proportional discount for reduced targets</li>
+          <li>Scenario saving and clipboard export</li>
+        </ul>
+        <a href="/crf-calculator/allocation-calculator.html" class="app-card-link">
+          Open Calculator
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Navigator -->
+      <div class="app-card">
+        <div class="app-card-icon app-card-icon--navigator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </div>
+        <h2>Response Navigator</h2>
+        <p class="app-card-desc">Step-by-step operational guidance for emergency response teams. Navigate the IRC's response protocols, access key resources, and track task completion through each phase of an emergency.</p>
+        <ul class="app-card-features">
+          <li>Phase-based response workflow</li>
+          <li>Resource library and templates</li>
+          <li>Role-specific task guidance</li>
+          <li>Integration with classification data</li>
+        </ul>
+        <a href="/emergency-response-navigator/" class="app-card-link">
+          Open Navigator
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="guide-section">
+    <div class="guide-inner">
+      <div class="guide-header">
+        <h2>How the Platform Works</h2>
+        <p>The three tools connect into a single workflow from crisis detection to funded response.</p>
+      </div>
+      <div class="guide-grid">
+        <div class="guide-step">
+          <div class="guide-step-num">Step 1</div>
+          <h3>Classify the Emergency</h3>
+          <p>When a new crisis emerges, the Classification tool scores its severity using affected population data and country risk profiles. It determines whether the emergency warrants a White, Yellow, Orange, or Red response stance.</p>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">Step 2</div>
+          <h3>Calculate CRF Allocation</h3>
+          <p>For Orange and Red emergencies, the CRF Calculator auto-populates from the classification and calculates how much the Crisis Response Fund should allocate. Teams can compare coverage tiers and export funding summaries.</p>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">Step 3</div>
+          <h3>Navigate the Response</h3>
+          <p>The Response Navigator provides step-by-step guidance through IRC's emergency response protocols, helping teams track tasks, access resources, and coordinate their operational response.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Notes -->
+  <section class="tech-section">
+    <div class="tech-header">
+      <h2>How It's Built</h2>
+      <p>This is a proof of concept built to demonstrate what's possible with modern web technologies and AI-assisted development.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <h3>Architecture</h3>
+        <p>The platform is a monorepo with a shared package (<code>@irc/shared</code>) that provides common data, utilities, and UI components to all three apps. Each app deploys independently to GitHub Pages.</p>
+      </div>
+      <div class="tech-card">
+        <h3>Frontend</h3>
+        <p>Classification and CRF Calculator are vanilla HTML/CSS/JS with zero framework dependencies. The Navigator uses React with Vite. All apps share design tokens and the IRC brand system.</p>
+      </div>
+      <div class="tech-card">
+        <h3>Backend &amp; Database</h3>
+        <p>Classification data is stored in Supabase (PostgreSQL) with row-level security. The shared package includes a REST client for fetching classifications. AI features use OpenRouter for model routing.</p>
+      </div>
+      <div class="tech-card">
+        <h3>Development</h3>
+        <p>Built collaboratively with AI-assisted development using Claude Code. CI/CD runs through GitHub Actions, building the shared package and deploying each app to its standalone repository's <code>gh-pages</code> branch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="landing-footer">
+    <p>&copy; International Rescue Committee. For internal use only. A proof of concept by the Emergency Unit.</p>
+  </div>
+
+</body>
+</html>
