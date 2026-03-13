@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Guide — IRC Emergency Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--light-gray);
+      color: var(--dark-gray);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .help-header {
+      background: var(--black);
+      padding: 0 24px;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .help-header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-container {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo-container svg { width: 100%; height: 100%; }
+
+    .header-text .header-title {
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .header-text .header-subtitle {
+      color: var(--irc-yellow);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .back-link {
+      margin-left: auto;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--irc-yellow); }
+
+    /* ── Search bar ── */
+    .search-bar {
+      background: var(--black);
+      padding: 24px 24px 48px;
+    }
+
+    .search-bar-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .search-bar h1 {
+      color: var(--white);
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .search-bar h1 span { color: var(--irc-yellow); }
+
+    .search-bar p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.9375rem;
+      margin-bottom: 20px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 16px 14px 46px;
+      font-family: var(--font-family);
+      font-size: 1rem;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--black);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input:focus { border-color: var(--irc-yellow); }
+
+    .search-input::placeholder { color: var(--mid-gray); }
+
+    .search-count {
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 12px;
+      min-height: 1.2em;
+    }
+
+    /* ── Layout ── */
+    .help-layout {
+      max-width: var(--max-width);
+      margin: -24px auto 0;
+      padding: 0 24px 80px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Sidebar nav ── */
+    .sidebar {
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      background: var(--white);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--gray-e9);
+      padding: 20px 0;
+      max-height: calc(100vh - 108px);
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 0 20px 12px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 8px 20px;
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.1s, color 0.1s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar a:hover {
+      background: var(--light-gray);
+      color: var(--black);
+    }
+
+    .sidebar a.active {
+      border-left-color: var(--irc-yellow);
+      background: var(--irc-yellow-lightest);
+      color: var(--black);
+      font-weight: 700;
+    }
+
+    .sidebar .sidebar-divider {
+      height: 1px;
+      background: var(--gray-e9);
+      margin: 10px 20px;
+    }
+
+    /* ── Main content ── */
+    .help-main {
+      min-width: 0;
+    }
+
+    /* ── Category header ── */
+    .category-header {
+      margin-bottom: 16px;
+      padding-top: 8px;
+    }
+
+    .category-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 4px;
+    }
+
+    .category-header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* ── Help cards ── */
+    .help-card {
+      background: var(--white);
+      border: 1px solid var(--gray-e9);
+      border-radius: var(--border-radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+
+    .help-card:hover { border-color: var(--mid-gray); }
+
+    .help-card[data-hidden="true"] { display: none; }
+
+    .help-card-header {
+      padding: 18px 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+
+    .help-card-header:hover { background: rgba(0,0,0,0.015); }
+
+    .help-card-chevron {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--mid-gray);
+      transition: transform 0.2s;
+    }
+
+    .help-card.open .help-card-chevron { transform: rotate(90deg); }
+
+    .help-card-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--black);
+      flex: 1;
+    }
+
+    .help-card-app {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .app-classification { background: #FFF0EB; color: #C4421A; }
+    .app-crf { background: var(--irc-yellow-lightest); color: #92400E; }
+    .app-navigator { background: #EBF5FF; color: #1E40AF; }
+    .app-all { background: var(--light-gray); color: var(--muted); }
+
+    .help-card-body {
+      display: none;
+      padding: 0 24px 20px 56px;
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: var(--dark-gray);
+    }
+
+    .help-card.open .help-card-body { display: block; }
+
+    .help-card-body p { margin-bottom: 12px; }
+
+    .help-card-body ol, .help-card-body ul {
+      margin-bottom: 12px;
+      padding-left: 20px;
+    }
+
+    .help-card-body li { margin-bottom: 6px; }
+
+    .help-card-body strong { color: var(--black); }
+
+    .help-card-body .tip {
+      padding: 10px 14px;
+      background: var(--irc-yellow-lightest);
+      border: 1px solid var(--irc-yellow-mid);
+      border-radius: var(--border-radius-sm);
+      font-size: 0.8125rem;
+      margin-top: 8px;
+    }
+
+    .help-card-body .tip::before {
+      content: 'Tip: ';
+      font-weight: 700;
+    }
+
+    .help-card-body code {
+      font-size: 0.8125rem;
+      background: var(--light-gray);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── No results ── */
+    .no-results {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+      display: none;
+    }
+
+    .no-results.visible { display: block; }
+
+    .no-results p {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .no-results .sub {
+      font-size: 0.875rem;
+    }
+
+    /* ── Footer ── */
+    .help-footer {
+      background: var(--black);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .help-footer p {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.8125rem;
+    }
+
+    .help-footer a {
+      color: var(--irc-yellow);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .help-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 12px;
+        gap: 4px;
+      }
+
+      .sidebar-title { width: 100%; padding: 0 8px 8px; }
+      .sidebar .sidebar-divider { display: none; }
+
+      .sidebar a {
+        padding: 6px 12px;
+        border: 1px solid var(--gray-e9);
+        border-radius: 6px;
+        border-left: 1px solid var(--gray-e9);
+        font-size: 0.8125rem;
+      }
+
+      .sidebar a.active {
+        border-color: var(--irc-yellow);
+        border-left-color: var(--irc-yellow);
+      }
+
+      .search-bar h1 { font-size: 1.375rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="help-header">
+    <div class="help-header-inner">
+      <div class="logo-container">
+        <svg viewBox="0 0 217 216.99" xmlns="http://www.w3.org/2000/svg"><rect fill="#FDC62F" width="217" height="216.99"/><path fill="#00040C" d="M26.6,26.6h163.81v63.15h-55.22l55.22,55.22v45.44h-45.44l-55.22-55.21v55.21H26.6V26.6Z"/></svg>
+      </div>
+      <div class="header-text">
+        <div class="header-title">Help Guide</div>
+        <div class="header-subtitle">IRC Emergency Platform</div>
+      </div>
+      <a href="./" class="back-link">&larr; Back to Platform</a>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <div class="search-bar-inner">
+      <h1>How can we <span>help?</span></h1>
+      <p>Search by task, feature, or keyword across all three tools.</p>
+      <div class="search-input-wrap">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="search-input" id="search-input" placeholder="e.g. calculate funding, classify emergency, find resources..." autocomplete="off">
+      </div>
+      <div class="search-count" id="search-count"></div>
+    </div>
+  </div>
+
+  <!-- Layout -->
+  <div class="help-layout">
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-title">Topics</div>
+      <a href="#getting-started" class="active" data-section="getting-started">Getting Started</a>
+      <div class="sidebar-divider"></div>
+      <a href="#classification" data-section="classification">Classification</a>
+      <a href="#crf" data-section="crf">CRF Calculator</a>
+      <a href="#navigator" data-section="navigator">Response Navigator</a>
+      <div class="sidebar-divider"></div>
+      <a href="#albert" data-section="albert">Ask Albert (AI)</a>
+    </nav>
+
+    <!-- Main -->
+    <div class="help-main" id="help-main">
+
+      <!-- ═══ Getting Started ═══ -->
+      <div class="category-header" id="getting-started">
+        <h2>Getting Started</h2>
+        <p>Overview of the platform and how the three tools connect.</p>
+      </div>
+
+      <div class="help-card" data-section="getting-started" data-keywords="overview platform what is purpose tools three apps workflow">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What is the IRC Emergency Platform?</div>
+          <span class="help-card-app app-all">All Tools</span>
+        </div>
+        <div class="help-card-body">
+          <p>The IRC Emergency Platform is a suite of three connected tools that support the Emergency Unit's workflow from crisis detection to funded response:</p>
+          <ol>
+            <li><strong>Emergency Classification</strong> — assess and score new emergencies by severity, determining whether IRC should mobilize a White, Yellow, Orange, or Red response.</li>
+            <li><strong>CRF Allocation Calculator</strong> — for Orange and Red emergencies, calculate how much the Crisis Response Fund should allocate based on affected population and coverage targets.</li>
+            <li><strong>Response Navigator</strong> — step-by-step operational guidance for response teams, with tasks organized by phase, sector, and role.</li>
+          </ol>
+          <p>Data flows between the tools automatically. When you classify an emergency, that data is available in the CRF Calculator and Navigator without re-entering it.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="getting-started" data-keywords="workflow steps process order sequence how to use">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What's the typical workflow?</div>
+          <span class="help-card-app app-all">All Tools</span>
+        </div>
+        <div class="help-card-body">
+          <ol>
+            <li><strong>Classify the emergency</strong> — use the Classification tool to score severity, determine the response stance, and record the classification.</li>
+            <li><strong>Calculate CRF allocation</strong> — if the stance is Orange or Red, open the CRF Calculator. It auto-populates from the classification. Choose a coverage tier (1&ndash;3%) and review the funding breakdown.</li>
+            <li><strong>Navigate the response</strong> — open the Response Navigator, select the country, and browse tasks filtered by classification level, response phase, and your role.</li>
+          </ol>
+          <div class="tip">You can use any tool independently — they don't require you to follow this order.</div>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="getting-started" data-keywords="stance white yellow orange red meaning what does mean classification level color">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What do the response stances mean?</div>
+          <span class="help-card-app app-all">All Tools</span>
+        </div>
+        <div class="help-card-body">
+          <ul>
+            <li><strong>White</strong> — Outside IRC's mission scope. No response required.</li>
+            <li><strong>Yellow</strong> — Low severity. Monitor the situation but no CRF funding.</li>
+            <li><strong>Orange</strong> — Moderate to high severity. CRF eligible with a ceiling of <strong>$1M</strong>.</li>
+            <li><strong>Red</strong> — Maximum severity. CRF eligible with a ceiling of <strong>$2M</strong>.</li>
+          </ul>
+          <p>Stances are determined by a matrix combining the emergency's severity score (1&ndash;10), the country's pre-crisis vulnerability (1&ndash;4), and the response operational burden (0&ndash;5).</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="getting-started" data-keywords="navigate switch between apps site switcher menu">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I switch between tools?</div>
+          <span class="help-card-app app-all">All Tools</span>
+        </div>
+        <div class="help-card-body">
+          <p>Every tool has a <strong>Site Switcher</strong> dropdown in the top-left corner of the header, next to the IRC logo. Click the current tool name to see a dropdown listing all platform apps with their descriptions. Click any app to navigate there.</p>
+        </div>
+      </div>
+
+      <!-- ═══ Classification ═══ -->
+      <div class="category-header" id="classification">
+        <h2>Emergency Classification</h2>
+        <p>Assess, score, and track emergency classifications.</p>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="create new classify emergency form how to">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I create a new classification?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <ol>
+            <li>Click <strong>Classify</strong> in the navigation bar.</li>
+            <li>Select the <strong>emergency type</strong> (Conflict, Outbreak, Food Insecurity, Natural Hazard, or Complex).</li>
+            <li>Choose the <strong>country</strong> from the dropdown. You'll see the country's vulnerability and robustness scores appear below.</li>
+            <li>Fill in the <strong>emergency details</strong>: title, Classification ID, IRC region, processing speed, and dates.</li>
+            <li>Enter values for the <strong>type-specific metrics</strong> (e.g., deaths, displaced people). As you type, severity badges update in real time.</li>
+            <li>Review the <strong>calculated result</strong> panel showing overall severity and response stance.</li>
+            <li>Optionally add subnational locations and notes, set the confidence level.</li>
+            <li>Click <strong>Save Classification</strong>.</li>
+          </ol>
+          <div class="tip">The expiration date auto-calculates to 6 weeks from the notification date if you leave it blank.</div>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="severity score how calculated determined metrics">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How is the severity score calculated?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>Each emergency type has its own set of metrics (e.g., deaths, displaced people for conflict). As you enter values, each metric is scored against historical thresholds on a 1&ndash;10 scale. The <strong>overall severity</strong> is the highest individual metric score.</p>
+          <p>The severity score then combines with the country's <strong>pre-crisis vulnerability</strong> (PV, 1&ndash;4) and <strong>response operational burden</strong> (ROB, 0&ndash;5) via a matrix to determine the response stance.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="reclassification reclassify update existing edit change">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I reclassify an existing emergency?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>Click on any classification card on the Dashboard to view it, then click <strong>Edit</strong>. Increase the <strong>Reclassification #</strong> field and enter the <strong>Previous Severity</strong> value. Update the metrics with new data.</p>
+          <p>The system validates reclassification rules: after the first reclassification, severity must generally increase. If your values would violate this rule, a warning banner appears — but you can still save if needed.</p>
+          <div class="tip">Click the reclassification count badge on a dashboard card to see the full timeline of all classification versions.</div>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="dashboard filter search find country stance active expired type">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I find specific classifications?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>The Dashboard provides multiple filters that work together:</p>
+          <ul>
+            <li><strong>Time period</strong> — All, FY26, Last 12 months</li>
+            <li><strong>Stance</strong> — All, Red, Orange, Yellow, White</li>
+            <li><strong>Status</strong> — Active, Expired, Expiring Soon</li>
+            <li><strong>Emergency type</strong> — Conflict, Outbreak, Food Insecurity, Natural Hazards</li>
+            <li><strong>Country search</strong> — type a country name to filter</li>
+            <li><strong>Sort by</strong> — Date, Severity, or Country</li>
+          </ul>
+          <p>All filters combine — selecting "Red" + "Active" + "Conflict" shows only active red conflict classifications.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="map maps view countries geography choropleth heatmap export png svg">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I use the Maps view?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>Click <strong>Maps</strong> in the navigation. The map shows countries colored by their highest active stance (red, orange, yellow). You can:</p>
+          <ul>
+            <li><strong>Filter</strong> by time period, emergency type, stance, region, and status using the sidebar</li>
+            <li><strong>Switch display mode</strong> between "Stance color" (categorical) and "Severity heatmap" (gradient)</li>
+            <li><strong>Click a country</strong> to see classification details in a popup</li>
+            <li><strong>Use the AI Map Builder</strong> — type a natural-language query like "red conflicts in East Africa" and Albert will set the filters for you</li>
+            <li><strong>Export</strong> as PNG or SVG, optionally with IRC branding. Edit the title at the top of the page before exporting.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="expiration expired expiring classification validity period 6 weeks">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What happens when a classification expires?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>Classifications are valid for <strong>6 weeks</strong> from the notification date. As they approach expiration:</p>
+          <ul>
+            <li><strong>Within 7 days</strong> — an orange warning appears on the card and detail view</li>
+            <li><strong>After expiration</strong> — the card shows "EXPIRED" in red. The classification still appears in the dashboard (filterable via the "Expired" status pill) but is excluded from auto-population in the CRF Calculator</li>
+          </ul>
+          <p>To extend a classification, create a reclassification with updated data.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="delete remove classification">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">Can I delete a classification?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>Yes. Click a classification card on the Dashboard, then click <strong>Delete</strong> at the bottom of the detail view. A confirmation dialog will ask you to confirm — this action cannot be undone.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="classification" data-keywords="import data csv excel spreadsheet bulk upload admin">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">Can I bulk import classifications from a spreadsheet?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>Yes. Click <strong>Data</strong> in the navigation bar — this takes you to the <strong>Platform Admin</strong> tool. Drag and drop a CSV or Excel file, map the columns to classification fields using the visual column mapper, preview the data, and import. You can import up to hundreds of records at once.</p>
+        </div>
+      </div>
+
+      <!-- ═══ CRF Calculator ═══ -->
+      <div class="category-header" id="crf">
+        <h2>CRF Allocation Calculator</h2>
+        <p>Calculate Crisis Response Fund allocations for emergency responses.</p>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="calculate funding allocation how to use crf steps">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I calculate a CRF allocation?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <ol>
+            <li><strong>Select a country</strong> — type in the search box and choose from the dropdown.</li>
+            <li><strong>Select a classification</strong> (optional) — if active classifications exist for that country, choose one to auto-fill the affected population and stance.</li>
+            <li><strong>Enter/confirm affected population</strong> — the number of people affected by the emergency.</li>
+            <li><strong>Review the IRC Target</strong> — defaults to 10% of affected population. You can edit this.</li>
+            <li><strong>Confirm the stance</strong> — Orange or Red (auto-selected if a classification was chosen).</li>
+            <li><strong>Choose a coverage tier</strong> — 1%, 2%, or 3% of the affected population.</li>
+            <li>Review the <strong>CRF allocation amount</strong> and <strong>funding gap</strong> in the results panel.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="auto populate auto-fill classification data from where does number come from">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">Why are some fields auto-filled?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <p>When you select a country, the calculator checks for <strong>active classifications</strong> in the database. If it finds one, selecting it auto-fills:</p>
+          <ul>
+            <li><strong>Affected population</strong> from the classification's recorded total</li>
+            <li><strong>Response stance</strong> (Orange or Red) from the classification</li>
+            <li><strong>Target population</strong> calculated as 10% of the affected population</li>
+          </ul>
+          <p>You'll see a yellow <strong>"FROM CLASSIFICATION"</strong> badge wherever data was auto-populated. You can still manually change any of these values.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="coverage tier 1% 2% 3% percent difference which choose">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What do the coverage tiers mean?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <p>The coverage tiers represent what percentage of the <strong>total affected population</strong> the CRF will fund directly:</p>
+          <ul>
+            <li><strong>1%</strong> — Standard initial allocation. Appropriate for most Orange emergencies.</li>
+            <li><strong>2%</strong> — Scaled response for high-severity emergencies or those requiring a larger initial commitment.</li>
+            <li><strong>3%</strong> — Maximum tier, reserved for large-scale emergencies.</li>
+          </ul>
+          <p>The remaining people (gap between CRF coverage and your target) represent the external fundraising needed from donors.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="target population 10% change reduce adjust edit custom">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">Can I change the target population?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <p>Yes. The target defaults to <strong>10% of the affected population</strong> (IRC's standard scale target), but you can type any number into the field. The percentage hint updates as you type to show what proportion of affected population you're targeting.</p>
+          <p>Lowering the target adjusts the total funding needed. If you reduce it below 10%, the <strong>Proportional Discount</strong> toggle appears (see below).</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="proportional discount toggle reduce lower below 10% scaling">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What is the Proportional Discount?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <p>When you manually reduce the target population below 10% of the affected population, a <strong>Proportional Discount</strong> toggle appears below the results panel.</p>
+          <p>When enabled, the CRF allocation scales down in proportion to how much you reduced the target. For example:</p>
+          <ul>
+            <li>Target at <strong>5%</strong> (half of the 10% baseline) &rarr; CRF amount is <strong>50%</strong> of the standard allocation</li>
+            <li>Target at <strong>3%</strong> &rarr; CRF amount is <strong>30%</strong> of the standard allocation</li>
+          </ul>
+          <p>This ensures the CRF funding ask reflects the stated level of ambition. The toggle is off by default — you can enable it to see the discounted figures, or leave it off for the standard calculation.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="ceiling warning exceed limit maximum $1M $2M orange red">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What does the ceiling warning mean?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <p>If your calculated CRF allocation exceeds the indicative ceiling for the stance (<strong>$1M for Orange</strong>, <strong>$2M for Red</strong>), an orange warning appears. This is advisory — it reminds you to consider whether the CRF pool can sustain this alongside other active emergencies. The ceiling is not a hard cap.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="scenario compare save comparison side by side multiple">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I compare scenarios?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <ol>
+            <li>Configure your inputs and review the allocation result.</li>
+            <li>Click <strong>Save Scenario</strong> to capture the current state.</li>
+            <li>Change your inputs (different coverage tier, target, or even country) and save another scenario.</li>
+            <li>A <strong>Scenario Comparison</strong> table appears, showing all saved scenarios side by side.</li>
+          </ol>
+          <p>You can save up to <strong>3 scenarios</strong>. Each can be individually removed, or use "Clear All" to start over.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="copy clipboard share summary export text email">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I share or export a CRF calculation?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <p>Click the yellow <strong>Copy Summary to Clipboard</strong> button. This copies a text summary including the country, classification, CRF allocation amount, coverage tier, and per-client cost to your clipboard. You can paste it directly into an email, Slack message, or document.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="crf" data-keywords="$47.34 per client cost what formula how calculated rounding $25000">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How is the allocation amount calculated?</div>
+          <span class="help-card-app app-crf">CRF Calculator</span>
+        </div>
+        <div class="help-card-body">
+          <p>The formula is:</p>
+          <p><strong>CRF Amount = Affected Population &times; Coverage % &times; $47.34 per person</strong></p>
+          <p>$47.34 is the IRC's average direct program cost per person served over 6 months. All amounts are rounded to the nearest <strong>$25,000</strong>.</p>
+          <p>The total program cost (dark card at top) uses the target population instead of coverage percentage: <strong>Target Population &times; $47.34</strong>.</p>
+        </div>
+      </div>
+
+      <!-- ═══ Navigator ═══ -->
+      <div class="category-header" id="navigator">
+        <h2>Response Navigator</h2>
+        <p>Phase-by-phase operational guidance for emergency response teams.</p>
+      </div>
+
+      <div class="help-card" data-section="navigator" data-keywords="role select choose my role finance logistics hr supply chain programs">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I select my role?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <p>On the Home page, under <strong>"What's your role?"</strong>, click the pill that matches your function: Response Management, Finance, Logistics/Supply Chain, People &amp; Culture, Safety &amp; Security, Technical Programs, MEAL, Grants, or Partnerships.</p>
+          <p>Once selected, quick-access links to your key tasks in the immediate response phase (R1) appear below. Your selection is remembered across visits.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="navigator" data-keywords="country search select classification context filter tasks by stance level">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I filter tasks for a specific emergency?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <ol>
+            <li>On the Home page, under <strong>"Where are you responding?"</strong>, search for the country.</li>
+            <li>If active classifications exist, they'll appear — click one to select it.</li>
+            <li>Click <strong>"View Tasks in Navigator"</strong> to jump to the task list filtered for that classification level.</li>
+          </ol>
+          <p>The selected classification appears as a colored pill in the header. Click the &times; on the pill to clear the filter. If no classifications exist for the country, you can select a stance manually (Yellow, Orange, or Red).</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="navigator" data-keywords="task find browse filter search phase sector priority key milestone">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I find tasks in the Navigator?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <p>The Navigator page gives you multiple ways to filter tasks:</p>
+          <ul>
+            <li><strong>Sector tabs</strong> — click a sector pill at the top (Finance, Logistics, etc.) to see only that sector's tasks</li>
+            <li><strong>Phase timeline</strong> — click a response phase (R1 through R6) to filter to that phase</li>
+            <li><strong>Filter bar</strong> — search by keyword, filter by classification level, office type, phase, or priority</li>
+          </ul>
+          <p>All filters combine. A results count (e.g., "Showing 14 of 89 tasks") updates live. Click <strong>"Clear filters"</strong> to reset.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="navigator" data-keywords="phases R1 R2 R3 R4 R5 R6 response timeline immediate planning">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What are the response phases?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <p>IRC's emergency response is organized into phases, each with a different focus and timeline:</p>
+          <ul>
+            <li><strong>R1</strong> — Immediate Response (first days)</li>
+            <li><strong>R2</strong> — Scaled Response (first weeks)</li>
+            <li><strong>R3</strong> — Sustained Response</li>
+            <li><strong>R4</strong> — Planning &amp; Transition</li>
+            <li><strong>R5</strong> — After Action Review</li>
+            <li><strong>R6</strong> — Ongoing / Preparedness</li>
+          </ul>
+          <p>The phase timeline widget shows each phase with its task count. Click a phase to filter; click it again to deselect.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="navigator" data-keywords="task card expand subtasks details resources documents links templates">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I see task details and linked resources?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <p>Click any task card to <strong>expand</strong> it. You'll see:</p>
+          <ul>
+            <li><strong>Subtasks</strong> — specific action items within the task</li>
+            <li><strong>Resource links</strong> — yellow chips linking to templates, SOPs, or guidance documents (opens in new tab)</li>
+            <li><strong>Cross-references</strong> — gray chips linking to related tasks in other sectors</li>
+          </ul>
+          <p>Each task card also shows badges for its phase, priority level, classification applicability, office type, timeline, and owner.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="navigator" data-keywords="resource library find template document SOP policy guidance download">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">Where do I find templates and documents?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <p>Click <strong>Resources</strong> in the navigation. The Resource Library lists all linked documents across the platform with:</p>
+          <ul>
+            <li><strong>Search</strong> — find by name or keyword</li>
+            <li><strong>Sector filter</strong> — show resources for a specific functional area</li>
+            <li><strong>Link filter</strong> — "With Links Only" hides resources without URLs</li>
+          </ul>
+          <p>Each resource shows a file type icon (PDF, DOCX, XLSX, etc.), the context it belongs to, and a "Used by" link that takes you to the relevant task in the Navigator.</p>
+        </div>
+      </div>
+
+      <!-- ═══ Ask Albert ═══ -->
+      <div class="category-header" id="albert">
+        <h2>Ask Albert (AI Assistant)</h2>
+        <p>AI-powered help available across all three tools.</p>
+      </div>
+
+      <div class="help-card" data-section="albert" data-keywords="albert ai assistant chatbot what can ask help question">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What is Ask Albert?</div>
+          <span class="help-card-app app-all">All Tools</span>
+        </div>
+        <div class="help-card-body">
+          <p><strong>Albert</strong> is the platform's AI assistant, available in every tool. Albert knows about IRC's emergency response protocols, classification rules, CRF funding process, and operational guidance. You can ask in natural language — Albert will figure out what you need.</p>
+          <p>Click <strong>"Ask Albert"</strong> in any tool's navigation bar. A chat panel slides in from the right side. Type your question and press Enter.</p>
+          <div class="tip">Albert's answers are context-aware — asking from the CRF Calculator gives CRF-focused responses, while asking from the Navigator gives response-process-focused answers.</div>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="albert" data-keywords="albert example questions what to ask suggestions tips">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">What can I ask Albert?</div>
+          <span class="help-card-app app-all">All Tools</span>
+        </div>
+        <div class="help-card-body">
+          <p>Some examples by tool:</p>
+          <ul>
+            <li><strong>Classification:</strong> "What triggers a reclassification?", "How does the complex emergency rule work?", "Tell me about the Sudan Red classification"</li>
+            <li><strong>CRF Calculator:</strong> "How is the CRF allocation calculated?", "What are the Orange vs Red funding ceilings?", "What sections are in the CRF response plan?"</li>
+            <li><strong>Navigator:</strong> "What should we do in Week 1 of a Red emergency?", "What does Supply Chain need to do first?", "What's the difference between Orange and Red for Finance?"</li>
+          </ul>
+          <p>Albert also suggests questions based on current active emergencies when you open the panel.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="albert" data-keywords="albert model change switch ai gemini claude gpt settings">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">Can I change the AI model?</div>
+          <span class="help-card-app app-all">All Tools</span>
+        </div>
+        <div class="help-card-body">
+          <p>Yes. In the chat panel, a small dropdown above the text input lets you select between available models:</p>
+          <ul>
+            <li><strong>Gemini 2.5 Flash</strong> (default) — fast, great for most questions</li>
+            <li><strong>Claude Sonnet 4</strong> — better reasoning for complex questions</li>
+            <li><strong>GPT-4.1 Mini</strong> — balanced speed and quality</li>
+          </ul>
+          <p>Your model choice is saved and persists across sessions.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="albert" data-keywords="albert task ask specific task card navigator help with">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">Can I ask Albert about a specific task?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <p>Yes. In the Navigator, every task card has a small <strong>chat bubble icon</strong> on the right. Clicking it opens Albert with a pre-filled question about that specific task, including its ID, title, and phase. Albert will give you targeted guidance about completing that task.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="albert" data-keywords="albert map builder filter natural language query maps classification">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How does the AI Map Builder work?</div>
+          <span class="help-card-app app-classification">Classification</span>
+        </div>
+        <div class="help-card-body">
+          <p>On the <strong>Maps</strong> page, a yellow bar below the map says "Build Map." Type a natural-language query like:</p>
+          <ul>
+            <li>"Show me red conflicts in East Africa"</li>
+            <li>"Food insecurity emergencies from the last 12 months"</li>
+            <li>"All orange and red in MENA region"</li>
+          </ul>
+          <p>Albert interprets your request and automatically applies the matching sidebar filters. The applied filters show as removable chips in the sidebar — you can fine-tune from there.</p>
+        </div>
+      </div>
+
+      <div class="help-card" data-section="albert" data-keywords="albert feedback thumbs rate quality response helpful unhelpful">
+        <div class="help-card-header">
+          <svg class="help-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          <div class="help-card-title">How do I give feedback on Albert's answers?</div>
+          <span class="help-card-app app-navigator">Navigator</span>
+        </div>
+        <div class="help-card-body">
+          <p>In the Navigator's chat panel, each of Albert's responses has <strong>thumbs-up</strong> and <strong>thumbs-down</strong> buttons below it. Click one to submit anonymous feedback — this helps improve Albert's responses over time.</p>
+        </div>
+      </div>
+
+      <!-- No results -->
+      <div class="no-results" id="no-results">
+        <p>No help articles match your search.</p>
+        <p class="sub">Try different keywords, or <a href="#" onclick="document.getElementById('search-input').value='';document.getElementById('search-input').dispatchEvent(new Event('input'));return false;">clear the search</a>.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="help-footer">
+    <p>&copy; International Rescue Committee. For internal use only. <a href="./">Back to Platform Overview</a></p>
+  </div>
+
+  <script>
+    (function () {
+      var searchInput = document.getElementById('search-input');
+      var searchCount = document.getElementById('search-count');
+      var noResults = document.getElementById('no-results');
+      var cards = document.querySelectorAll('.help-card');
+      var categoryHeaders = document.querySelectorAll('.category-header');
+      var sidebarLinks = document.querySelectorAll('.sidebar a[data-section]');
+
+      // ── Search ──
+      searchInput.addEventListener('input', function () {
+        var query = this.value.toLowerCase().trim();
+        var visible = 0;
+
+        cards.forEach(function (card) {
+          if (!query) {
+            card.setAttribute('data-hidden', 'false');
+            visible++;
+            return;
+          }
+          var title = card.querySelector('.help-card-title').textContent.toLowerCase();
+          var body = card.querySelector('.help-card-body').textContent.toLowerCase();
+          var keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+          var match = title.indexOf(query) !== -1 || body.indexOf(query) !== -1 || keywords.indexOf(query) !== -1;
+          card.setAttribute('data-hidden', match ? 'false' : 'true');
+          if (match) visible++;
+        });
+
+        // Show/hide category headers based on whether they have visible cards
+        categoryHeaders.forEach(function (header) {
+          var section = header.id;
+          var hasVisible = false;
+          cards.forEach(function (card) {
+            if (card.getAttribute('data-section') === section && card.getAttribute('data-hidden') === 'false') {
+              hasVisible = true;
+            }
+          });
+          header.style.display = hasVisible ? '' : 'none';
+        });
+
+        // Search count
+        if (query) {
+          searchCount.textContent = visible + ' article' + (visible !== 1 ? 's' : '') + ' found';
+        } else {
+          searchCount.textContent = '';
+        }
+
+        // No results
+        noResults.classList.toggle('visible', visible === 0 && query.length > 0);
+      });
+
+      // ── Card expand/collapse ──
+      cards.forEach(function (card) {
+        card.querySelector('.help-card-header').addEventListener('click', function () {
+          card.classList.toggle('open');
+        });
+      });
+
+      // ── Sidebar navigation ──
+      sidebarLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+          this.classList.add('active');
+        });
+      });
+
+      // ── Scroll spy ──
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var id = entry.target.id;
+            sidebarLinks.forEach(function (link) {
+              link.classList.toggle('active', link.getAttribute('data-section') === id);
+            });
+          }
+        });
+      }, { rootMargin: '-80px 0px -60% 0px' });
+
+      categoryHeaders.forEach(function (header) {
+        observer.observe(header);
+      });
+    })();
+  </script>
+
+</body>
+</html>

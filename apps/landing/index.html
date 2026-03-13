@@ -383,6 +383,24 @@
       text-decoration: none;
     }
 
+    .header-nav {
+      margin-left: auto;
+      display: flex;
+      gap: 20px;
+    }
+
+    .header-nav a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: color 0.12s ease;
+    }
+
+    .header-nav a:hover {
+      color: var(--white);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .hero { padding: 48px 24px 64px; }
@@ -411,6 +429,10 @@
         <div class="header-title">IRC Emergency Platform</div>
         <div class="header-subtitle">Emergency Unit Digital Tools</div>
       </div>
+      <nav class="header-nav">
+        <a href="help.html">Help Guide</a>
+        <a href="technical-briefing.html">Technical Briefing</a>
+      </nav>
     </div>
   </div>
 
@@ -537,12 +559,18 @@
         <p>Built collaboratively with AI-assisted development using Claude Code. CI/CD runs through GitHub Actions, building the shared package and deploying each app to its standalone repository's <code>gh-pages</code> branch.</p>
       </div>
     </div>
-    <div style="text-align:center; margin-top:36px;">
-      <a href="technical-briefing.html" style="display:inline-flex; align-items:center; gap:8px; font-size:0.9375rem; font-weight:700; color:var(--black); text-decoration:none; padding:14px 28px; background:var(--irc-yellow); border-radius:var(--border-radius-sm); transition:background 0.12s ease;">
-        Read the Full Technical Briefing
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </a>
-      <p style="font-size:0.8125rem; color:var(--muted); margin-top:10px;">Architecture, database schema, AI integrations, data flows, and CI/CD pipeline — all in one document.</p>
+    <div style="text-align:center; margin-top:36px; display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+        <a href="help.html" style="display:inline-flex; align-items:center; gap:8px; font-size:0.9375rem; font-weight:700; color:var(--black); text-decoration:none; padding:14px 28px; background:var(--irc-yellow); border-radius:var(--border-radius-sm); transition:background 0.12s ease;">
+          Help Guide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </a>
+        <a href="technical-briefing.html" style="display:inline-flex; align-items:center; gap:8px; font-size:0.9375rem; font-weight:700; color:var(--black); text-decoration:none; padding:14px 28px; border:2px solid var(--mid-gray); background:var(--white); border-radius:var(--border-radius-sm); transition:border-color 0.12s ease;">
+          Technical Briefing
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+      <p style="font-size:0.8125rem; color:var(--muted);">User-focused help for all three tools, plus architecture and developer documentation.</p>
     </div>
   </section>
 
