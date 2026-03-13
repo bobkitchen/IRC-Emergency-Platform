@@ -20,6 +20,12 @@ export function getSettingsUrl() {
   return env === 'github' ? '/irc-admin/' : '/irc-admin/index.html';
 }
 
+/** Get the URL for the help guide */
+export function getHelpUrl() {
+  var env = detectEnvironment();
+  return env === 'github' ? '/irc-emergency-platform-site/help.html' : '/landing/help.html';
+}
+
 /** Build site configuration based on environment */
 export function getSiteConfig() {
   var env = detectEnvironment();
