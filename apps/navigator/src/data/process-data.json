@@ -116,13 +116,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "ERMT Lead TOR",
-              "url": "",
-              "type": "tor"
-            }
-          ],
+          "resources": [],
           "section": "ADMINISTRATION & MANAGEMENT"
         },
         {
@@ -191,18 +185,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Link to Template",
-              "url": "",
-              "type": "template"
-            },
-            {
-              "name": "Process document",
-              "url": "",
-              "type": "tool"
-            }
-          ],
+          "resources": [],
           "section": "ADMINISTRATION & MANAGEMENT"
         },
         {
@@ -876,11 +859,6 @@
               "name": "Link to Template",
               "url": "",
               "type": "template"
-            },
-            {
-              "name": "Process document",
-              "url": "",
-              "type": "tool"
             }
           ]
         },
@@ -1473,23 +1451,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Code Request Forms - RescueNet",
-              "url": "https://rescuenet.rescue.org/page/13687",
-              "type": "form"
-            },
-            {
-              "name": "Financial Dimension codes or change Operating Unit (D4) ownership",
-              "url": "https://rescuenet.rescue.org/page/13687?SearchId=9026220",
-              "type": "tool"
-            },
-            {
-              "name": "Integra Incident - Employee Center",
-              "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=c36362c193ba061045623ff08bba10a8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-004",
@@ -1541,13 +1503,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "MDMT Consolidated Request - Integra Self-Service (service-now.com)",
-              "url": "https://nethope.service-now.com/integra?id=sc_cat_item_guide&sys_id=bf0d6d4ddb481090658c7bedae9619ba&sysparm_category=4d9761f41b87091083121173b24bcb7e",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-006",
@@ -1581,18 +1537,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Integra Reporting via Power BI - RescueNet",
-              "url": "https://rescuenet.rescue.org/page/14033",
-              "type": "tool"
-            },
-            {
-              "name": "Integra Access",
-              "url": "https://rescue.service-now.com/esc?id=sc_cat_item&table=sc_cat_item&sys_id=1330137d87d04a100c4184cd0ebb3518&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=1330137d87d04a100c4184cd0ebb3518",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-007",
@@ -1621,13 +1566,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "MDMT Consolidated Request - Integra Self-Service (service-now.com)",
-              "url": "https://nethope.service-now.com/integra?id=sc_cat_item_guide&sys_id=bf0d6d4ddb481090658c7bedae9619ba&sysparm_category=4d9761f41b87091083121173b24bcb7e",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-008",
@@ -1677,28 +1616,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "UG_Developing Project Budget Templates.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/hyaxaugjjjacnglpfpyfdgfjjh7mkl15",
-              "type": "template"
-            },
-            {
-              "name": "Dimension Guide (v11).pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/kdi6a1qgu3hwjwn9b65tyynrtjqvvktf",
-              "type": "guidance"
-            },
-            {
-              "name": "(66) CRRD Budget Tools (blank) | Powered by Box",
-              "url": "https://rescue.app.box.com/folder/149783156120?s=nnhkvuhaode85ep20fiowe0nz1lgbo6e",
-              "type": "tool"
-            },
-            {
-              "name": "Quick Steps for Uploading Budgets.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/mojgnzgr1go0qufegl0kygsipm9fkjpe",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-009",
@@ -1914,98 +1832,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "CRRD Integra Training & Adoption - RescueNet",
-              "url": "https://rescuenet.rescue.org/page/IntegraCRRD",
-              "type": "training"
-            },
-            {
-              "name": "UG_Accounts Payable.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/zjm4c66s8sntty734yn8kooom02r5doy",
-              "type": "tool"
-            },
-            {
-              "name": "UG_Accounts Receivable.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/305sod1588fq0nlqfw490gvc5v12ww90",
-              "type": "tool"
-            },
-            {
-              "name": "UG_Journal Upload and Journal Entries.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/8e15xxu7nqfidaasemsg5mlc7tnqxlv8",
-              "type": "tool"
-            },
-            {
-              "name": "UG_Month-end Close Workbook.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/t2q5prmmd8cfj5fbo5t96w4vkkm1pgyj",
-              "type": "tool"
-            },
-            {
-              "name": "UG_Cash_and_Bank_Management.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/8lzhw34zf74qq7kzjqaya4t20f41rocg",
-              "type": "tool"
-            },
-            {
-              "name": "UG_Intercompany Accounting.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/gw0wt7nwu9koeb3wyq2ch7esd29rzugs",
-              "type": "tool"
-            },
-            {
-              "name": "(EN) Userguide_Item Forecasting to Purchase Order Creation.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/4twt369oe61j9i1epk07b4ojk34cz75n",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) Programs User Guide - Item Forecast, Quality Inspection, and Picking.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/nenm958rwbcvtcdtwv50aqg2uona66b0",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) UG_Procure to Confirm - GLOBAL.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/44js15eg0wloyt0790ckl59v02acmeka",
-              "type": "tool"
-            },
-            {
-              "name": "Userguide_ Purchase Order Cancellation Scenarios and Procedures.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/jzqknz2xzjplg5xdfklgsw0uhcxve5il",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) Userguide_Procurement Reviews and Approvals.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/rxhib9edm5i66gph24q5io0828kdzp5n",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) Userguide_Product Receipt and Dispatch.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/zz6eddu8a92pjlqh2omk7uy8uozwdq6s",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) PO Accounting Treatment Guidance.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/tjiqyg9aqwb0smxbjx8nwr41j3e2yr7u",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) Userguide_Fixed Assets.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/zavccsgm9vu63pcoyhq8k623n9p8xq29",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) Userguide_Inventory Management.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/36bydq6qgof3qjckvpel4texwi4zwwkh",
-              "type": "guidance"
-            },
-            {
-              "name": "(EN) UG_Inventory Transfers and Returns - CRRD.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/3rc9ewpnldd6udiwlqhttakk3sazilo2",
-              "type": "tor"
-            },
-            {
-              "name": "(EN) Userguide_Expense Management.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/0mfqp8i53tfgm3s0rqt9kjbirfwbjzdj",
-              "type": "guidance"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-010",
@@ -2067,23 +1894,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Bank Account Form Request",
-              "url": "https://rescue.service-now.com/esc?id=sc_cat_item&sys_id=7183023e1b882210a853a970604bcbeb",
-              "type": "form"
-            },
-            {
-              "name": "New Bank Account Form Request Process",
-              "url": "https://rescue.box.com/s/50x7z494k53opacvyst980lzsy17oo7i",
-              "type": "form"
-            },
-            {
-              "name": "2. IRC Policy - Cash and Banking .pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/5w03cf18fhexoqtu2c1d0j9hdrnwtzh1",
-              "type": "policy"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-012",
@@ -2139,13 +1950,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Centralized Vendor Payment",
-              "url": "https://rescue.app.box.com/s/cwstjnzshybqlaodiv24atsg5l3rkpwa?",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-014",
@@ -2191,13 +1996,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Signatory Authority and Delegation Policy - RescueNet",
-              "url": "https://rescuenet.rescue.org/page/4120?SearchId=8079033",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-016",
@@ -2235,16 +2034,6 @@
             {
               "name": "Sample Standard Authorization Matrix",
               "url": "https://rescue.box.com/s/uiszlfrobo2bl5zjttd7s267dqa94bju"
-            },
-            {
-              "name": "Sample Standard Authorization Matrix",
-              "url": "https://rescuenet.rescue.org/page/4120?SearchId=8079033",
-              "type": "example"
-            },
-            {
-              "name": "Sample Expanded Authorization Matrix",
-              "url": "https://rescue.box.com/s/ytlond4fuhoge17rapjtwxxdmre3rlvy",
-              "type": "example"
             }
           ]
         },
@@ -2334,33 +2123,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "ERT Deployment Budget Scenarios - Sample",
-              "url": "https://rescue.box.com/s/kk6bachhc9piztonww39dmmkvclkb260",
-              "type": "example"
-            },
-            {
-              "name": "Sample Operating Budget Template",
-              "url": "https://rescue.box.com/s/pqh97dd02g4j334ejbq797sg2yxaa62v",
-              "type": "template"
-            },
-            {
-              "name": "Cost Allocation Policy",
-              "url": "https://rescue.app.box.com/file/1777915763352?s=h90gu2nmms3kvhjrc1cflm2bubhigrq9",
-              "type": "policy"
-            },
-            {
-              "name": "CAM Policy Clarifications",
-              "url": "https://rescue.box.com/s/s8t8r2ny2d2nutxuptk6w3kvz883ob9n",
-              "type": "policy"
-            },
-            {
-              "name": "CAM Budget Tool",
-              "url": "https://rescue.box.com/s/kjy0nz0j6grujuh1s2drf9gcdivzo6ct",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-019",
@@ -2389,13 +2152,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Deployment Terms and Conditions- 2023",
-              "url": "https://rescue.box.com/s/6vh3hpn35dmktvrviiuctmm5ohuc97db",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-020",
@@ -2463,23 +2220,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Finance Policies",
-              "url": "https://rescuenet.rescue.org/page/14266",
-              "type": "tool"
-            },
-            {
-              "name": "IRC Finance Policy & Procedures_ Sep24.pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/gp0fss2xna4sbgdig7h5fse5z96ogb0p",
-              "type": "policy"
-            },
-            {
-              "name": "Start up Project Support Guidance",
-              "url": "https://rescue.app.box.com/s/2i8eav280e0973b6i1irs032e4yqo39z",
-              "type": "guidance"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-022",
@@ -2517,11 +2258,6 @@
             {
               "name": "CRRD Per Diem SOP",
               "url": "https://rescue.app.box.com/s/jv4tzk0wfnmq4h3gyo5gi3ybewfamudm"
-            },
-            {
-              "name": "CRRD Per Diem SOP",
-              "url": "https://rescue.box.com/s/d126ouq3sagwyj8w34maqlrzo2g71u26",
-              "type": "policy"
             }
           ]
         },
@@ -2552,13 +2288,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Centralized Vendor Payment",
-              "url": "https://rescue.app.box.com/s/cwstjnzshybqlaodiv24atsg5l3rkpwa?",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-024",
@@ -2661,13 +2391,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "New Secruity Role Definitions.xlsx | Powered by Box",
-              "url": "https://rescue.app.box.com/s/1k9e5f7k5scy848bnzd1a9q45sby4tbf",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-029",
@@ -2696,13 +2420,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Signatory Authority and Delegation Policy - RescueNet",
-              "url": "https://rescuenet.rescue.org/page/4120?SearchId=8079033",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-030",
@@ -2742,18 +2460,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Sample Standard Authorization Matrix",
-              "url": "https://rescuenet.rescue.org/page/4120?SearchId=8079033",
-              "type": "example"
-            },
-            {
-              "name": "Sample Expanded Authorization Matrix",
-              "url": "https://rescue.box.com/s/ytlond4fuhoge17rapjtwxxdmre3rlvy",
-              "type": "example"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-031",
@@ -2799,13 +2506,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Bank Account Form | ServiceNow NetHope Service Desk (service-now.com)",
-              "url": "https://nethope.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1%26sysparm_id%3Da5e2f0dc1bbba51083121173b24bcb1f%26sysparm_link_parent%3D703d3aa8dbbf4050658c7bedae9619a8%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dcatalog_default",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-033",
@@ -2864,13 +2565,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "2. IRC Policy - Cash and Banking .pdf | Powered by Box",
-              "url": "https://rescue.app.box.com/s/5w03cf18fhexoqtu2c1d0j9hdrnwtzh1",
-              "type": "policy"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-034",
@@ -3044,13 +2739,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Monthend Checklist",
-              "url": "https://rescue.box.com/s/3gbutzvz7fmrpaaorhuk9u5vkj7beyo1",
-              "type": "checklist"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-041",
@@ -3099,13 +2788,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Analytical package - June 2024 KV.xlsx | Powered by Box",
-              "url": "https://rescue.app.box.com/s/93gotklsrqp01aggz9zykg33yhge94lx/file/1598166822071",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-042",
@@ -3184,13 +2867,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Deployment Terms and Conditions- 2023",
-              "url": "https://rescue.box.com/s/6vh3hpn35dmktvrviiuctmm5ohuc97db",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-045",
@@ -3219,13 +2896,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Shared Cost Budgeting Tool",
-              "url": "https://rescue.box.com/s/obzr7r92xsfjrld96otgdtfarjco5r1r",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-046",
@@ -3298,13 +2969,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Finance Staff Sample JD",
-              "url": "https://rescue.box.com/s/6s9hw7yc8decsfs0jg45pvmc2o9043uj",
-              "type": "example"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-049",
@@ -3378,13 +3043,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Analytical package - June 2024 KV.xlsx | Powered by Box",
-              "url": "https://rescue.app.box.com/s/93gotklsrqp01aggz9zykg33yhge94lx/file/1598166822071",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-052",
@@ -3430,13 +3089,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "CRRD Projected Funding",
-              "url": "https://rescue.box.com/s/o2n2am3oxcncqs8avzsrnl04a0d7arhs",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-054",
@@ -3470,13 +3123,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Link to Integra BVA",
-              "url": "https://app.powerbi.com/groups/me/apps/40d074fe-1782-40de-afd0-93ba57c14bdd/reports/5f45480e-7bd1-469c-97dc-2294a444d3ff/ReportSection796a91e71cb8c5ad2b21?experience=power-bi",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-055",
@@ -3516,18 +3163,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Sample Operating Budget Template",
-              "url": "https://rescue.box.com/s/pqh97dd02g4j334ejbq797sg2yxaa62v",
-              "type": "template"
-            },
-            {
-              "name": "Shared Cost Budgeting Tool",
-              "url": "https://rescue.box.com/s/obzr7r92xsfjrld96otgdtfarjco5r1r",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "FINANCE-056",
@@ -3556,13 +3192,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Finance Handover Checklist",
-              "url": "https://rescue.box.com/s/7k0v6tub499u8ut9omyj2ldc68q0sr5d",
-              "type": "checklist"
-            }
-          ]
+          "resources": []
         }
       ]
     },
@@ -3609,13 +3239,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Questions to select Legal Counsel",
-              "url": "https://rescue.box.com/s/yxme7iakaln55m66s7mfk2mqwlboniow",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "PEOPLE_CULTURE-002",
@@ -3667,13 +3291,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "CRRD Per Diem SOP",
-              "url": "https://rescue.box.com/s/d126ouq3sagwyj8w34maqlrzo2g71u26",
-              "type": "policy"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "PEOPLE_CULTURE-004",
@@ -3777,31 +3395,6 @@
             {
               "name": "Generic TOR Library",
               "url": "https://rescue.box.com/s/8sju5hsq02x3w0fmc5u0yo8x0v3wd00r"
-            },
-            {
-              "name": "Strategy 100 - Country Program Structure Guidance",
-              "url": "https://rescue.app.box.com/s/shrtn6av3d2ndadrcgmtbvgc5ccec4ns",
-              "type": "guidance"
-            },
-            {
-              "name": "Template Org. Chart (please use \"Save As\" before editing)",
-              "url": "https://intrescue-my.sharepoint.com/:u:/g/personal/maia_kirch_rescue_org/Ecp7IfGCciBDg2EOGvS2SssB7dwxd86JH3lzM32zzTETjA?e=kuaYRt",
-              "type": "template"
-            },
-            {
-              "name": "Template Recruitment Tracker",
-              "url": "https://rescue.box.com/s/f38i0sn976j9lijqssjo4tluae6uc7st",
-              "type": "template"
-            },
-            {
-              "name": "DMS Request Form",
-              "url": "https://nethope.service-now.com/sp?id=sc_cat_item&sys_id=f2ea0c4b1b257c5083121173b24bcb50",
-              "type": "form"
-            },
-            {
-              "name": "Standard Recruitment Guide",
-              "url": "https://rescue.app.box.com/s/1jssaa7mq4inw7p7gcl2mhxtbfj80qdi",
-              "type": "guidance"
             }
           ]
         },
@@ -3896,11 +3489,6 @@
             {
               "name": "Rest and Relaxation Page Rescuenet",
               "url": "https://rescuenet.rescue.org/page/17271?SearchId=8167871"
-            },
-            {
-              "name": "Template R&R Policy",
-              "url": "https://rescue.box.com/s/s5qlqr5dhpovebhkwotkdj48nc0jp45b",
-              "type": "template"
             }
           ]
         },
@@ -3951,13 +3539,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Template - National Employee Handbook",
-              "url": "https://rescue.box.com/s/ofy1w6w85zytgyfup93xsxoft7mw3cij",
-              "type": "template"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "PEOPLE_CULTURE-010",
@@ -4235,13 +3817,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Benefit Decisions Matrix",
-              "url": "https://rescue.box.com/s/6bht3oxokmrv5stiy1drsayf6ee5ypa7",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "PEOPLE_CULTURE-020",
@@ -4309,13 +3885,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Duty of Care Site",
-              "url": "https://doc.rescue.org/",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "PEOPLE_CULTURE-023",
@@ -4786,21 +4356,6 @@
               "name": "Strategy 100 - Country Program Structure Guidance",
               "url": "https://rescue.app.box.com/s/shrtn6av3d2ndadrcgmtbvgc5ccec4ns",
               "type": "guidance"
-            },
-            {
-              "name": "Template Org. Chart (please use \"Save As\" before editing)",
-              "url": "https://intrescue-my.sharepoint.com/:u:/g/personal/maia_kirch_rescue_org/Ecp7IfGCciBDg2EOGvS2SssB7dwxd86JH3lzM32zzTETjA?e=kuaYRt",
-              "type": "template"
-            },
-            {
-              "name": "Template Recruitment Tracker",
-              "url": "https://rescue.box.com/s/f38i0sn976j9lijqssjo4tluae6uc7st",
-              "type": "template"
-            },
-            {
-              "name": "Standard Recruitment Guide",
-              "url": "https://rescue.app.box.com/s/1jssaa7mq4inw7p7gcl2mhxtbfj80qdi",
-              "type": "guidance"
             }
           ],
           "section": "STAFFING STRUCTURE & JOB DESCRIPTIONS"
@@ -4837,13 +4392,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "DMS Request Form",
-              "url": "https://nethope.service-now.com/sp?id=sc_cat_item&sys_id=f2ea0c4b1b257c5083121173b24bcb50",
-              "type": "form"
-            }
-          ],
+          "resources": [],
           "section": "STAFFING STRUCTURE & JOB DESCRIPTIONS"
         },
         {
@@ -4979,18 +4528,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Procurement Policies & Procedures",
-              "url": "https://rescuenet.rescue.org/page/7334",
-              "type": "tool"
-            },
-            {
-              "name": "https://lca.logcluster.org/",
-              "url": "https://lca.logcluster.org/",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-004",
@@ -5042,13 +4580,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Contact Gareth Bailey and/or RSCD if applicable",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-006",
@@ -5077,13 +4609,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Procurement Policies & Procedures",
-              "url": "https://rescuenet.rescue.org/page/7334",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-007",
@@ -5112,13 +4638,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Procurement Policies & Procedures",
-              "url": "https://rescuenet.rescue.org/page/7334",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-008",
@@ -5192,13 +4712,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Resource coming soon. \r\nPlease contact Gareth Bailey for more information.",
-              "url": "",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-011",
@@ -5273,13 +4787,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Link to template SC TOR?",
-              "url": "",
-              "type": "template"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-014",
@@ -5308,13 +4816,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Fleet & Logistics Policies & Procedures",
-              "url": "https://rescuenet.rescue.org/page/7510",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-015",
@@ -5366,13 +4868,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Asset & Inventory Policies & Procedures",
-              "url": "https://rescuenet.rescue.org/page/7356?SearchId=0",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-017",
@@ -5418,13 +4914,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Resource/contact for freight forwarders?",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-019",
@@ -5545,13 +5035,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Pharmaceutical Policies & Procedures",
-              "url": "https://rescuenet.rescue.org/page/7527",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-024",
@@ -5580,13 +5064,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "https://rescuenet.rescue.org/page/7356?SearchId=0",
-              "url": "https://rescuenet.rescue.org/page/7356?SearchId=0",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-025",
@@ -5615,13 +5093,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "https://rescuenet.rescue.org/page/7356?SearchId=0",
-              "url": "https://rescuenet.rescue.org/page/7356?SearchId=0",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SUPPLY_CHAIN-026",
@@ -5731,13 +5203,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Upon confirmation of a deployment/intervention. Response Management or/and Emergency S&S Snr. Co, need to notify the relevant RSSD about upcoming deployment, and request any possible relevant support.",
-              "url": "",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-002",
@@ -5766,13 +5232,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Identify and communicate to RSSD the Country SFP who will be deployed/identified (either double-hat SFP or dedicated).\r\nAfter creation of the S&S folder, ensure access on need to know basis (e.g. good practise might be to have two country main folders - Safety & Security - All staff, Safety & Security - SMT)",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-003",
@@ -5801,13 +5261,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Proceed on initial SRA steps, so to facilitate a more comprehensive Rapid SRA. This need to take place pre-deployment in a desk exercise. Also, check which are the legal requirements for both safety & security in coordination with HR.",
-              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-004",
@@ -5836,13 +5290,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "With the support (when applicable) of other departments, identify operational and logistic requirements. This will ensure that during the first days of the deployment, there will not be surprises.",
-              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-005",
@@ -5871,13 +5319,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Pre-departure briefing including the identified risks, possible access constraints, as well as any gender-sensitive component. Upon finalising this step, staff should sign informed consent forms, including their responsibilities on S&S.",
-              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-006",
@@ -5906,13 +5348,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "A small paragraph (half page maximum), which is a common message of what IRC is, what it is doing in this country/area and what it plans to do in the future. ALL STAFF MUST KNOW AND BE ABLE TO COMMUNICATE.",
-              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-007",
@@ -5941,13 +5377,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "- All staffs need to submit PoL form to designated focal point\r\n- All national and local staffs need to submit a PoL upon onboarding and before commencing any professional relationship with IRC",
-              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-008",
@@ -5976,13 +5406,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "This form need to be kept at all time during a mission, for liability reasons, as we as for after-mission analysis",
-              "url": "https://rescue.box.com/s/kt8zyy45i8j80zmg7ydto9krvle59bci",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-009",
@@ -6011,13 +5435,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Adjust and contextualize the Pre Arrival Briefing Template, taking as consideration the SRA and the observations of the operational environments, including all necessary information for a traveler.",
-              "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
-              "type": "template"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-010",
@@ -6046,13 +5464,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation of On Arrival Briefing based on the SRA and the overall context",
-              "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-011",
@@ -6081,13 +5493,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Discuss with technical focal point (RSSD or Emergency S&S Snr. Co) for guidance on presentation",
-              "url": "",
-              "type": "guidance"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-012",
@@ -6116,13 +5522,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "N/A",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-013",
@@ -6151,13 +5551,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Taking as consideration the findings of the SRA, budget the security needs and present them to CD for revision. This need to be backed by the SRA as well as the non-security value (recommended add program's value).",
-              "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-014",
@@ -6186,13 +5580,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Mandatory for any Security Level 3 and above, regardless of secured funding",
-              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-015",
@@ -6221,13 +5609,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Establish communication mechanism both in-country and with regional/HQ level",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-016",
@@ -6256,13 +5638,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Fill in all contact details with all known actors who might affect the IRC operations/programs",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-017",
@@ -6291,13 +5667,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Reminder should be given to all staff about the mandate to report any incident(s) affecting IRC assets, programs, staff, reputation",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-018",
@@ -6326,13 +5696,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "The document have itself guidance and smooth sequence approach. At this stage, paradigm shift of assessment is not mandatory but recommended so to be more flexible and fast, while in the first change, more comprehensive assessments needs to be conducted. Ensure that during the process, you reflect the local legal requirements, both for safety and security.",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "guidance"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-019",
@@ -6361,13 +5725,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation of Temporary Safety & Security Memo including all basic Rules and Regulations, based on the SRA.",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-020",
@@ -6396,13 +5754,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Proceed on infrastructure assessment of the identified/proposed IRC office/compound.",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-021",
@@ -6431,13 +5783,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Keep contacts appearing on the constant companion limited so the following: CD, CSFP, HR, Supply Chain, RSSD and/or Emergency S&S Snr. Co, EHAU VP, Snr. P&Ops Dir and DO NOT INCLUDE PERSONAL NAMES.",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-022",
@@ -6466,13 +5812,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "With the support and coordination of Supply Chain and HR, implement Movement Authorization timelines.",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-023",
@@ -6501,13 +5841,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Establish frequent and regular vehicle safety checks, identifying possible actions points and improvements.",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-024",
@@ -6536,13 +5870,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation of communication cascade system / warden tree for IRC operational area, including all IRC staff.",
-              "url": "https://rescue.box.com/s/yiiv7awe14ad535rqylowivz0545bev8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-025",
@@ -6571,13 +5899,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation of SOP, based on the identified risks and challenges.",
-              "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
-              "type": "policy"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-026",
@@ -6606,13 +5928,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation SOP taking as consideration the identified risks, as well as the legal framework of the targetd country.",
-              "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
-              "type": "policy"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-027",
@@ -6641,13 +5957,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Prepare a contingency plan based on local realities and legal and perception concerns",
-              "url": "https://rescue.box.com/s/byg1k5njigv3tfk03haq5gsr1p1rd55v",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-028",
@@ -6676,13 +5986,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "In conjuction with Medical Facilities and Medical Emergency (shall threat is in high risk level), approach this threat. This should be attemted to mitigated both from likelihood and impact, in both proactive and reactive approach. Although IRC has no general SOPs/CPs, specific SOPs/CPs per disease might be available. Contact your RSSD for more information.",
-              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-029",
@@ -6711,13 +6015,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "HEAT training is preferred but an in-person delivery of a relevant training is acceptable.",
-              "url": "https://rescue.box.com/s/2uh77zitbr4u8hwk8fqesli2wwlx414m",
-              "type": "training"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-030",
@@ -6746,13 +6044,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "If risk is very high and threat is probable, reach out to security and humanitarian access professional.",
-              "url": "https://rescue.box.com/s/t55xcqahzlgbwctwmpck263zni1g9ns9",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-031",
@@ -6781,13 +6073,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "All staff should have an idea, prior to movement, of actors in country and what they should and could expect at a checkpoint; an active movement monitoring system must be in place.",
-              "url": "https://rescue.box.com/s/so0j3cn8q0ltpq7baxjm4pg1f43t7iij",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-032",
@@ -6816,13 +6102,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Draft a FSMP -even if not complete- with the available information at the time",
-              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-033",
@@ -6851,13 +6131,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation of MedEvac CP, including information about existing hospitals/clinics/emergency response mechanism, as well as the relevant ISOS office.\r\n\r\nIdentify all options and modalities and prepare MedEvac plan;",
-              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-034",
@@ -6886,13 +6160,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation SOP and CP for Sexual Violence, including legal framework; interface with Health, Gender Unit, Legal and/or Duty of Care if/where appropriate. As a core responsibility of the organization and all its staffs, this subject must be coordinated with safeguarding leads, security focal points (local and HQ or Region), under the leadership of the CD.",
-              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
-              "type": "policy"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-035",
@@ -6921,13 +6189,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "HR to identify legal (local laws) needs on Occupational Health and Safety; Security to advise; Supply Chain to procure",
-              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-036",
@@ -6956,13 +6218,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Contextualise as appropriate and, if necessary, develop separate risk analysis",
-              "url": "https://rescue.box.com/s/kx8eeqvsls2zsy0yex9z9jr9e0gt16h8",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-037",
@@ -6991,13 +6247,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "DSR need to be send to at least: CD/FD, Department Leads, RSSD and/or Emergency S&S Snr. Co by 11:00 local time. SHIELD updates to be done by quarter with support by RSSD and/or Emergency S&S Snr. Co",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-038",
@@ -7026,13 +6276,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Establish information security protocols, including procurement of IT equipment, shrenders, etc.",
-              "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
-              "type": "form"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-039",
@@ -7061,13 +6305,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Creation of SFG for each field office, as well as IMT. When and if it is applicable, CIMT should also be created.",
-              "url": "https://rescue.box.com/s/tm1u2bu135li5aex6tma2h0n0xucdx1k",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-040",
@@ -7096,13 +6334,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Proceed on a comprehensive SRA, based/challenging the existing Rapid SRA findings. Gain CD support to retain time of cross-cutting section of staffs for collaborative and comprehensive process (1-2days workshop)",
-              "url": "https://rescue.box.com/s/mnsraf2dbzfbbw9l3purx2lcvfgyphp2",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-041",
@@ -7131,13 +6363,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Proceed on drills based on the SOP/CPS and identified main threats. This can include, but not limited: Critical incident Management, Fire Safety, READI etc.",
-              "url": "",
-              "type": "policy"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-042",
@@ -7166,13 +6392,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Review with Technical Focal Point (RSSD or Emergency Safety & Security Senior Coordinator)",
-              "url": "https://rescue.box.com/s/cgauopknvw03r93e9ph7nespdz2lj4q7",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-043",
@@ -7201,13 +6421,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "N/A",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-044",
@@ -7236,13 +6450,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Debriefing to the RSSD and/or Emergency Safety & Security Senior Coordinator, sharing at the same time, the deliverables.",
-              "url": "",
-              "type": "tor"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "SAFETY_SECURITY-045",
@@ -7271,13 +6479,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Ensure that all files are on the relevant box folder (country and regional specific) with hyperlinks on the handover notes for easier reading.",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         }
       ]
     },
@@ -7551,13 +6753,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "MEAL Team, TAs",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-002",
@@ -7586,13 +6782,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Cash TA",
-              "url": "https://rescue.app.box.com/folder/287401417955",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-003",
@@ -7643,18 +6833,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Finance & Supply Chain focal points",
-              "url": "",
-              "type": "tool"
-            },
-            {
-              "name": "Supply Chain",
-              "url": "https://rescue.app.box.com/s/8xkbjlua9zcs37pir105wplfjz57ekk0/file/1189853642972",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-004",
@@ -7683,13 +6862,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "RED",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-005",
@@ -7740,13 +6913,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "See MEAL tab",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-007",
@@ -7775,13 +6942,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "See Partnership tab",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-008",
@@ -7810,13 +6971,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Cash TA",
-              "url": "https://rescue.app.box.com/file/278179201337?s=kbowdyem6p38slcerlfuwvszi9aff2rd",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-009",
@@ -7845,13 +7000,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "See Response Management Plan",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-010",
@@ -7879,13 +7028,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "See Response Management Plan",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-011",
@@ -8000,13 +7143,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "TAs or QiE STAs (depending on QiE model)",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "TECHNICAL_PROGRAMS-016",
@@ -8145,13 +7282,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "MEAL System Assessment Template",
-              "url": "",
-              "type": "template"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-002",
@@ -8202,13 +7333,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "MU Box Protocol Guidance",
-              "url": "https://rescue.app.box.com/s/obqaild0gggkzbemncbu4x5j81nwnmz1",
-              "type": "guidance"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-004",
@@ -8346,36 +7471,6 @@
             {
               "name": "MSNA Dashboard",
               "url": "https://app.powerbi.com/links/4bCWIJ0PrU?ctid=05f1318c-6783-4326-b729-bf537a761db8&pbi_source=linkShare"
-            },
-            {
-              "name": "Desk Review Template",
-              "url": "https://rescue.app.box.com/file/1149922570459",
-              "type": "template"
-            },
-            {
-              "name": "Assesment Plan Tempalte",
-              "url": "",
-              "type": "tool"
-            },
-            {
-              "name": "MSNA tools",
-              "url": "https://rescuenet.rescue.org/page/18569",
-              "type": "tool"
-            },
-            {
-              "name": "RTC team:  Asia: Yu Yadanar Myint (YuYadanar.Myint@rescue.org) , East Africa: Lameck Onyango (Lameck.Onyango@rescue.org) , Central Africa: Blaise Senga (Blaise.Senga@rescue.org), Latin America: Taraneh Missaghian (taraneh.missaghian@rescue.org), Middle East and North Africa: Ahmad Al-Abbadi (Ahmad.Abbadi@rescue.org), West Africa: Bongo Goumbo (Bongo.Goumbo@rescue.org)\r\n \r\nEHAU MEAL Systems Advisor -Tom  : Tom.Joseph@rescue.org",
-              "url": "",
-              "type": "tool"
-            },
-            {
-              "name": "Enumerator training",
-              "url": "",
-              "type": "tor"
-            },
-            {
-              "name": "Assessment Report Template",
-              "url": "https://rescue.app.box.com/file/1208605512937?s=5qc8z0hgzrddte9hfhojib62qj0ogi4o",
-              "type": "template"
             }
           ]
         },
@@ -8411,13 +7506,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "CRF Logframe Template",
-              "url": "https://rescue.app.box.com/s/hyucu64v6jakttw45b240cn2wg3iws4x",
-              "type": "template"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-006",
@@ -8462,18 +7551,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "IRC MEAL Plan Template",
-              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
-              "type": "template"
-            },
-            {
-              "name": "IRC MEAL Handbook",
-              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
-              "type": "guidance"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-007",
@@ -8533,16 +7611,6 @@
             {
               "name": "MEAL Budget",
               "url": "https://rescuenet.rescue.org/page/13776"
-            },
-            {
-              "name": "IRC MEAL Handbook",
-              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
-              "type": "guidance"
-            },
-            {
-              "name": "Guidance on country MEAL costs",
-              "url": "https://rescue.app.box.com/s/q3mg6q9fuor70eagr6xvnpzkdeztgkz4",
-              "type": "guidance"
             }
           ]
         },
@@ -8577,11 +7645,6 @@
             {
               "name": "IRC Beneficiary Counting Guidelines",
               "url": "https://rescue.app.box.com/s/t0qxx7inh2qnxxm0potmortcn2smbzzo?"
-            },
-            {
-              "name": "IRC ITT Template",
-              "url": "https://rescue.app.box.com/s/wtmoin1s609pugvahh7jbj5wg4cqe2rg",
-              "type": "template"
             }
           ]
         },
@@ -8643,16 +7706,6 @@
             {
               "name": "Partnership Capacity Analysis (PCA) tool",
               "url": "https://rescue.app.box.com/s/i5i8mkm37806ellp9qmagttcdg3uymuk"
-            },
-            {
-              "name": "IRC Partnership Excellence for Equality and Results (PEER) System",
-              "url": "https://rescue.app.box.com/s/7sxpitlfcy4dvxcd9z8a4rb76shbla9d",
-              "type": "tool"
-            },
-            {
-              "name": "link?",
-              "url": "",
-              "type": "tool"
             }
           ]
         },
@@ -8745,21 +7798,6 @@
             {
               "name": "Data Audit Tool.",
               "url": "https://rescue.app.box.com/s/40q76mkld2z1d93hhuiyg7lasdmdtoal"
-            },
-            {
-              "name": "IRC MEAL Handbook",
-              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=13859",
-              "type": "guidance"
-            },
-            {
-              "name": "Emergency Monitoring Handbook",
-              "url": "https://rescue.app.box.com/file/775682615620",
-              "type": "guidance"
-            },
-            {
-              "name": "PID or PCM Dashboard",
-              "url": "https://rescue.app.box.com/s/fh4eydc3jnll0dhoy4cr46vo7rm9z6i7",
-              "type": "tool"
             }
           ]
         },
@@ -8790,13 +7828,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "1.\tClient Responsiveness Toolkit For Emergencies_EN.pdf | Powered by Box\r\n\r\n2.\t6. CR Tools for Partners | Powered by Box",
-              "url": "https://rescue.app.box.com/file/1808728220953",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-012",
@@ -8885,38 +7917,7 @@
               ]
             }
           ],
-          "resources": [
-            {
-              "name": "Standard Operating Procedures (SOPs) template",
-              "url": "https://rescue.app.box.com/s/4pg02ie4qwyletj8n9u65rlp621yyjbq",
-              "type": "template"
-            },
-            {
-              "name": "IRC Client Responsiveness and Accountability to Affected Populations",
-              "url": "https://kayaconnect.org/course/view.php?id=2162",
-              "type": "tool"
-            },
-            {
-              "name": "Client Feedback Registry Toolkit v2- Configuration Matrix",
-              "url": "https://rescue.app.box.com/s/kgv08tuofjdgyknhrdpbafvmu8t9o43s/folder/184578603237",
-              "type": "tool"
-            },
-            {
-              "name": "Client-Centered Programming",
-              "url": "https://rescuenet.rescue.org/page/17277",
-              "type": "tool"
-            },
-            {
-              "name": "Guidance to Communicate with Communities for Safeguarding Prevention and Reporting",
-              "url": "https://rescue.app.box.com/s/tjg36kvoweiiupoagd4ic3s0t4ufispb",
-              "type": "guidance"
-            },
-            {
-              "name": "Client Feedback Registry",
-              "url": "https://rescuenet.rescue.org/page/18426",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-013",
@@ -8965,13 +7966,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "Client Satisfaction Survey Toolkit",
-              "url": "https://rescuenet.rescue.org/page/18335?SearchId=7364267",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-014",
@@ -9046,21 +8041,6 @@
             {
               "name": "Program Indicator Dashboard Version 3.0",
               "url": "https://rescuenet.rescue.org/page/18515"
-            },
-            {
-              "name": "Program Indicator Dashboard (PID)",
-              "url": "https://rescuenet.rescue.org/page/18506?SearchId=8928631",
-              "type": "tor"
-            },
-            {
-              "name": "PID V2.0",
-              "url": "",
-              "type": "tool"
-            },
-            {
-              "name": "PID User Guide\u00a0for end-users",
-              "url": "https://rescue.app.box.com/s/z41cg5f1yz2xwu960c6iiuaupcg0q9my",
-              "type": "guidance"
             }
           ]
         },
@@ -9144,28 +8124,7 @@
               "resources": []
             }
           ],
-          "resources": [
-            {
-              "name": "MEAL Budget",
-              "url": "https://rescuenet.rescue.org/page/13776",
-              "type": "tool"
-            },
-            {
-              "name": "MEAL and CCRA job descriptions",
-              "url": "https://rescue.app.box.com/s/49ytlqeoobwk9ze9q11c1xegiclm1gbm/folder/133651937133",
-              "type": "tool"
-            },
-            {
-              "name": "MEAL Onboarding",
-              "url": "https://rescuenet.rescue.org/Interact/Pages/Section/Default.aspx?section=15294",
-              "type": "tool"
-            },
-            {
-              "name": "Resources?",
-              "url": "",
-              "type": "tool"
-            }
-          ]
+          "resources": []
         },
         {
           "id": "MEAL-016",
@@ -9235,11 +8194,6 @@
             {
               "name": "After Action Review guidance",
               "url": "https://rescue.app.box.com/file/996081393005?s=3mjz7r2mqzdgq23t4ba4q1ings5mlr77"
-            },
-            {
-              "name": "After Action Review  Facilitation Guide",
-              "url": "https://rescue.app.box.com/file/775682703220?s=8bdtnd0me1cdo8glvwctxlxfp4lxsjxo",
-              "type": "guidance"
             }
           ]
         },
