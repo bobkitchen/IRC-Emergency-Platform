@@ -665,6 +665,10 @@
         <span class="tab-label-full">About</span>
         <span class="tab-label-short">About</span>
       </button>
+      <button class="settings-tab" data-tab="navigator">
+        <span class="tab-label-full">Navigator Data</span>
+        <span class="tab-label-short">Nav</span>
+      </button>
     </div>
 
     <!-- ════════════════════════════════════════════ -->
@@ -1042,6 +1046,36 @@
         </div>
       </div>
     </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- Tab: Navigator Data -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-navigator">
+      <div class="settings-card">
+        <h3>Navigator Data Upload</h3>
+        <p style="color:var(--muted); margin-bottom:24px;">Upload the Roadmap XLSM spreadsheet to update the Emergency Response Navigator's task data. The file will be parsed in your browser — nothing is sent to a server until you confirm.</p>
+
+        <!-- Upload Zone -->
+        <div id="nav-upload-zone" class="drop-zone" style="margin-bottom:24px;">
+          <div class="drop-zone-text">
+            <strong>Drop Roadmap XLSM here</strong><br>
+            <span style="font-size:0.8125rem; color:var(--muted);">or click to browse</span>
+          </div>
+          <input type="file" id="nav-file-input" accept=".xlsm,.xlsx" style="display:none;">
+        </div>
+
+        <!-- Status area -->
+        <div id="nav-parsing-status" style="display:none;">
+          <div class="status-row" style="margin-bottom:12px;">
+            <span class="status-dot yellow" id="nav-parse-dot"></span>
+            <span id="nav-parse-label">Parsing spreadsheet...</span>
+          </div>
+        </div>
+
+        <!-- Preview container -->
+        <div id="nav-preview" style="display:none;"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Toast -->
@@ -1065,6 +1099,8 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="crypto-utils.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="navigator-upload.js"></script>
   <script>
   // ══════════════════════════════════════════════
   // Password Gate
@@ -1179,6 +1215,26 @@
     if (hash && document.getElementById('panel-' + hash)) {
       activateTab(hash);
     }
+
+    // Navigator upload drop zone wiring
+    (function() {
+      var zone = document.getElementById('nav-upload-zone');
+      var input = document.getElementById('nav-file-input');
+      if (!zone || !input) return;
+
+      zone.addEventListener('click', function() { input.click(); });
+      zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+      zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+      zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        var file = e.dataTransfer.files[0];
+        if (file) window.NavigatorUpload && window.NavigatorUpload.handleFile(file);
+      });
+      input.addEventListener('change', function() {
+        if (this.files[0]) window.NavigatorUpload && window.NavigatorUpload.handleFile(this.files[0]);
+      });
+    })();
 
     // ══════════════════════════════════════════════
     // Toast helper
