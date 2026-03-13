@@ -621,6 +621,20 @@
 </head>
 <body>
 
+  <!-- Password Gate -->
+  <div id="password-gate" style="position:fixed; inset:0; z-index:9999; background:var(--light-gray); display:flex; align-items:center; justify-content:center;">
+    <div style="background:var(--white); border:1px solid var(--gray-e9); border-radius:12px; padding:40px; max-width:400px; width:90%; text-align:center;">
+      <div style="width:48px; height:48px; margin:0 auto 16px;">
+        <svg viewBox="0 0 217 216.99" xmlns="http://www.w3.org/2000/svg"><rect fill="#FDC62F" width="217" height="216.99"/><path fill="#00040C" d="M26.6,26.6h163.81v63.15h-55.22l55.22,55.22v45.44h-45.44l-55.22-55.21v55.21H26.6V26.6Z"/></svg>
+      </div>
+      <h2 style="font-size:1.25rem; margin-bottom:4px;">Administration</h2>
+      <p style="font-size:0.8125rem; color:var(--muted); margin-bottom:24px;">Enter the admin password to continue</p>
+      <input type="password" id="gate-password" placeholder="Password" style="width:100%; padding:10px 14px; border:1px solid var(--gray-e9); border-radius:8px; font-size:0.9375rem; font-family:var(--font-family); margin-bottom:12px;" autofocus>
+      <div id="gate-error" style="color:var(--stance-red); font-size:0.8125rem; margin-bottom:12px; display:none;">Incorrect password</div>
+      <button id="gate-submit" style="width:100%; padding:10px; background:var(--irc-yellow); border:none; border-radius:8px; font-weight:700; font-size:0.9375rem; cursor:pointer; font-family:var(--font-family);">Unlock</button>
+    </div>
+  </div>
+
   <!-- Header (rendered by JS) -->
   <div id="header-mount"></div>
 
@@ -1050,7 +1064,53 @@
   <script src="shared.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="crypto-utils.js"></script>
   <script>
+  // ══════════════════════════════════════════════
+  // Password Gate
+  // ══════════════════════════════════════════════
+  var ADMIN_PASSWORD_HASH = '<<PLACEHOLDER_HASH>>';
+  var ENCRYPTED_PAT = '<<PLACEHOLDER_PAT>>';
+  var adminPassword = null;
+
+  (function initGate() {
+    var gate = document.getElementById('password-gate');
+    var mainContent = document.querySelector('.settings-section');
+    var headerMount = document.getElementById('header-mount');
+
+    if (sessionStorage.getItem('irc-admin-auth') === 'true') {
+      gate.style.display = 'none';
+      adminPassword = sessionStorage.getItem('irc-admin-pw');
+      return;
+    }
+
+    // Show gate, hide content
+    mainContent.style.display = 'none';
+    headerMount.style.display = 'none';
+
+    async function attemptUnlock() {
+      var pw = document.getElementById('gate-password').value;
+      var hash = await CryptoUtils.hashPassword(pw);
+      if (hash === ADMIN_PASSWORD_HASH) {
+        sessionStorage.setItem('irc-admin-auth', 'true');
+        sessionStorage.setItem('irc-admin-pw', pw);
+        adminPassword = pw;
+        gate.style.display = 'none';
+        mainContent.style.display = '';
+        headerMount.style.display = '';
+      } else {
+        document.getElementById('gate-error').style.display = '';
+        document.getElementById('gate-password').value = '';
+        document.getElementById('gate-password').focus();
+      }
+    }
+
+    document.getElementById('gate-submit').addEventListener('click', attemptUnlock);
+    document.getElementById('gate-password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') attemptUnlock();
+    });
+  })();
+
   (function() {
     'use strict';
 
