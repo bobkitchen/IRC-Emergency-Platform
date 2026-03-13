@@ -868,6 +868,80 @@
       color: var(--muted);
     }
 
+    /* ── Proportional discount toggle ── */
+    .discount-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: -12px 0 20px;
+    }
+
+    .discount-toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .discount-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .discount-toggle .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--mid-gray);
+      border-radius: 22px;
+      transition: background 0.2s;
+    }
+
+    .discount-toggle .slider::before {
+      content: '';
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: var(--white);
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .discount-toggle input:checked + .slider {
+      background: var(--black);
+    }
+
+    .discount-toggle input:checked + .slider::before {
+      transform: translateX(18px);
+    }
+
+    .discount-toggle-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--dark-gray);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .discount-notice {
+      margin: -8px 0 16px;
+      padding: 10px 14px;
+      background: #FFF8E5;
+      border: 1px solid #FFD960;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+      display: none;
+    }
+
+    .discount-notice strong {
+      font-weight: 700;
+    }
+
     /* ── Ceiling warning ── */
     .ceiling-warning {
       margin-top: 16px;
@@ -1359,6 +1433,18 @@
           <strong>1%</strong> — standard initial allocation &nbsp;|&nbsp; <strong>2%</strong> — scaled response for high-severity &nbsp;|&nbsp; <strong>3%</strong> — maximum for large-scale emergencies
         </p>
 
+        <!-- Proportional discount toggle -->
+        <div class="discount-toggle-row">
+          <label class="discount-toggle">
+            <input type="checkbox" id="discount-toggle-input">
+            <span class="slider"></span>
+          </label>
+          <label class="discount-toggle-label" for="discount-toggle-input">
+            Proportional discount
+          </label>
+        </div>
+        <div class="discount-notice" id="discount-notice"></div>
+
         <!-- Split bar -->
         <div class="split-bar">
           <div class="split-bar-crf" id="split-bar-crf" style="width: 10%;"></div>
@@ -1441,6 +1527,12 @@
           from <strong>1%</strong> up to <strong>3%</strong> of affected people. The remaining gap represents
           the external fundraising required to reach the IRC's 10% response goal.
           All figures are rounded to the nearest $25,000.
+        </p>
+        <p>
+          <strong>Proportional discount:</strong> When enabled, reducing the target population below 10% of the
+          affected population proportionally reduces the CRF allocation. For example, setting a target of 5%
+          (half the 10% baseline) scales the CRF amount to 50% of the standard allocation. This ensures the
+          funding ask reflects the stated level of ambition.
         </p>
       </div>
       <div class="footer-legal">
@@ -1538,6 +1630,8 @@
       var scenarioComparisonEl = document.getElementById('scenario-comparison');
       var scenarioTableWrap = document.getElementById('scenario-table-wrap');
       var clearScenariosBtn = document.getElementById('clear-scenarios-btn');
+      var discountToggleInput = document.getElementById('discount-toggle-input');
+      var discountNotice = document.getElementById('discount-notice');
 
       // ── State ──
       var selectedCountry = null; // {name, pop, pv, rob}
@@ -1551,6 +1645,7 @@
       var classificationsCache = null; // null = not yet fetched
       var classificationsFetchFailed = false;
       var selectedClassification = null;
+      var proportionalDiscountEnabled = false;
       var savedScenarios = []; // max 3
 
       // ── Populate country list ──
@@ -1846,14 +1941,48 @@
         });
       });
 
+      // ── Proportional discount toggle ──
+      discountToggleInput.addEventListener('change', function () {
+        proportionalDiscountEnabled = this.checked;
+        if (!proportionalDiscountEnabled) {
+          discountNotice.style.display = 'none';
+        }
+        if (totalCost > 0) updateAllocation();
+      });
+
       // ── Update allocation display ──
       function updateAllocation() {
         if (totalCost <= 0) return;
         // selectedCoverage is 1, 2, or 3 (percent of affected pop)
-        // which equals 10%, 20%, or 30% of the target pop (10% of affected)
         var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
-        var gapPeople = Math.max(0, targetPop - crfPeople);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
+
+        // Proportional discount: scale CRF down when target < 10% of affected
+        var discountApplied = false;
+        var discountFactor = 1;
+        if (proportionalDiscountEnabled && affectedPop > 0) {
+          var defaultTarget = Math.round(affectedPop * 0.1);
+          if (defaultTarget > 0 && targetPop < defaultTarget) {
+            discountFactor = targetPop / defaultTarget;
+            crfAmount = roundToNearest25K(crfAmount * discountFactor);
+            crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
+            discountApplied = true;
+          }
+        }
+
+        // Show/hide discount notice
+        if (discountApplied) {
+          var pctOfBaseline = (discountFactor * 100);
+          var pctStr = pctOfBaseline % 1 === 0 ? pctOfBaseline.toFixed(0) : pctOfBaseline.toFixed(1);
+          var targetPct = ((targetPop / affectedPop) * 100);
+          var targetPctStr = targetPct % 1 === 0 ? targetPct.toFixed(0) : targetPct.toFixed(1);
+          discountNotice.innerHTML = 'Proportional discount active — target is <strong>' + targetPctStr + '%</strong> of affected (vs. 10% baseline), so CRF allocation is scaled to <strong>' + pctStr + '%</strong> of the standard amount.';
+          discountNotice.style.display = 'block';
+        } else {
+          discountNotice.style.display = 'none';
+        }
+
+        var gapPeople = Math.max(0, targetPop - crfPeople);
         var gapAmount = Math.max(0, totalCost - crfAmount);
 
         var barPercent = targetPop > 0 ? (crfPeople / targetPop) * 100 : 0;
@@ -2236,9 +2365,19 @@
         var crfAmount = crfAmountEl.textContent || '—';
         var coveragePct = selectedCoverage + '%';
 
+        var discountLine = '';
+        if (proportionalDiscountEnabled && affectedPop > 0) {
+          var defaultTarget = Math.round(affectedPop * 0.1);
+          if (defaultTarget > 0 && targetPop < defaultTarget) {
+            var df = ((targetPop / defaultTarget) * 100);
+            var dfStr = df % 1 === 0 ? df.toFixed(0) : df.toFixed(1);
+            discountLine = '\nProportional discount: ' + dfStr + '% of standard (target below 10% baseline)';
+          }
+        }
+
         var summary = 'CRF REQUEST SUMMARY \u2014 ' + countryName + ' (' + dateStr + ')\n' +
           'Classification: ' + stanceLabel + ' | Severity: ' + severity + '\n' +
-          'CRF Allocation: ' + crfAmount + '\n' +
+          'CRF Allocation: ' + crfAmount + discountLine + '\n' +
           'Coverage: ' + coveragePct + ' | Per-client cost: $' + PER_CLIENT_COST.toFixed(2);
 
         navigator.clipboard.writeText(summary).then(function () {
@@ -2294,6 +2433,19 @@
       function captureCurrentScenario() {
         var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
+
+        // Apply proportional discount if active
+        var discountLabel = '';
+        if (proportionalDiscountEnabled && affectedPop > 0) {
+          var defaultTarget = Math.round(affectedPop * 0.1);
+          if (defaultTarget > 0 && targetPop < defaultTarget) {
+            var df = targetPop / defaultTarget;
+            crfAmount = roundToNearest25K(crfAmount * df);
+            crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
+            discountLabel = Math.round(df * 100) + '%';
+          }
+        }
+
         var gapPeople = Math.max(0, targetPop - crfPeople);
         var gapAmount = Math.max(0, totalCost - crfAmount);
         var countryName = selectedCountry ? selectedCountry.name : 'Unknown';
@@ -2309,6 +2461,7 @@
           gapPeople: gapPeople,
           gapAmount: gapAmount,
           totalCost: totalCost,
+          discount: discountLabel,
           timestamp: new Date()
         };
       }
@@ -2348,6 +2501,7 @@
           { label: 'Target Pop.', key: 'targetPop', format: 'num' },
           { label: 'Stance', key: 'stance', format: 'stance' },
           { label: 'Coverage', key: 'coverage', format: 'pct' },
+          { label: 'Discount', key: 'discount', format: 'text' },
           { label: 'CRF People', key: 'crfPeople', format: 'num' },
           { label: 'CRF Amount', key: 'crfAmount', format: 'currency', highlight: true },
           { label: 'Gap People', key: 'gapPeople', format: 'num' },
