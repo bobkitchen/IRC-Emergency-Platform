@@ -542,7 +542,11 @@
     </ul>
 
     <h3>Platform Admin <span class="tech-badge badge-vanilla">Vanilla JS</span></h3>
-    <p>Single-page admin panel. Hash-based tab navigation (<code>#data</code>). Provides CSV/Excel import with drag-and-drop, column mapping UI, and preview. Shares the Supabase data-access layer from the Classification app.</p>
+    <p>Single-page admin panel with password gate (SHA-256 + AES-GCM encrypted PAT). Hash-based tab navigation. Two primary data management functions:</p>
+    <ul>
+      <li><strong>Navigator Data Upload:</strong> Drag-and-drop XLSM upload that parses the Roadmap spreadsheet client-side using <a href="https://sheetjs.com/" style="color:var(--irc-yellow);">SheetJS</a>. Supports 5 parser formats (Standard, RMiE, PCiE, Response Mgmt, Integra) plus EmU Services and Preparedness Library. Shows a preview with diff against live data, then commits updated JSON directly to GitHub via the Git Data API.</li>
+      <li><strong>Classification Data Import:</strong> CSV/Excel import with drag-and-drop, heuristic column mapping, preview, and Supabase batch sync.</li>
+    </ul>
 
     <!-- ════════════════════════════════════════════ -->
     <h2 id="backend">Backend &amp; Database</h2>
@@ -739,7 +743,24 @@ peaceiris/actions-gh-pages@v3  <span class="code-comment"># × 5 apps</span></co
     <p>Each deploy uses a <code>DEPLOY_TOKEN</code> personal access token secret to push to the external repositories. The IIFE bundle is gitignored — CI builds it fresh every time.</p>
 
     <h3>Navigator Build Pipeline</h3>
-    <p>The Navigator has an additional pre-build step: <code>build-data.mjs</code> parses CSV source files from a <code>csv/</code> directory into <code>process-data.json</code>. The CSVs are not committed; in CI, the script detects no data and preserves the existing committed JSON. This means task data can only be updated by running the build locally with CSV files present.</p>
+    <p>The Navigator has an additional pre-build step: <code>build-data.mjs</code> parses CSV source files from a <code>csv/</code> directory into <code>process-data.json</code>. The CSVs are not committed; in CI, the script detects no data and preserves the existing committed JSON.</p>
+
+    <h4>Navigator Data Ingestion (Admin Upload)</h4>
+    <p>Task data can be updated via the <strong>Navigator Data</strong> tab on the admin page, without running any local scripts:</p>
+    <ol>
+      <li>User uploads the Roadmap XLSM via drag-and-drop</li>
+      <li>Browser parses all sheets client-side using SheetJS (<code>navigator-upload.js</code>, ~1300 lines)</li>
+      <li>Preview shows per-sector stats, diff against live data, and any unrecognized/missing sheets</li>
+      <li>On confirmation, three JSON files are committed to GitHub via the Git Data API:
+        <ul>
+          <li><code>apps/navigator/src/data/process-data.json</code> — sectors, tasks, subtasks, resources, phases</li>
+          <li><code>apps/navigator/src/data/resource-index.json</code> — flat resource catalog with hyperlinks</li>
+          <li><code>apps/navigator/src/data/search-chunks.json</code> — RAG search chunks for Ask Albert</li>
+        </ul>
+      </li>
+      <li>CI triggers, preserves the committed JSON (no CSVs to regenerate from), and deploys</li>
+    </ol>
+    <p>The GitHub PAT used for commits is stored encrypted (AES-GCM via Web Crypto API) and decrypted at runtime using the admin password.</p>
 
     <!-- ════════════════════════════════════════════ -->
     <h2 id="dev-notes">Development Notes</h2>
