@@ -869,11 +869,19 @@
     }
 
     /* ── Proportional discount toggle ── */
+    .discount-row {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #F6F6F6;
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
     .discount-toggle-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: -12px 0 20px;
     }
 
     .discount-toggle {
@@ -920,18 +928,24 @@
 
     .discount-toggle-label {
       font-size: 0.8125rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--dark-gray);
       cursor: pointer;
       user-select: none;
     }
 
+    .discount-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
     .discount-notice {
-      margin: -8px 0 16px;
+      margin-top: 10px;
       padding: 10px 14px;
       background: #FFF8E5;
       border: 1px solid #FFD960;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 0.8125rem;
       color: var(--dark-gray);
       line-height: 1.5;
@@ -1433,18 +1447,6 @@
           <strong>1%</strong> — standard initial allocation &nbsp;|&nbsp; <strong>2%</strong> — scaled response for high-severity &nbsp;|&nbsp; <strong>3%</strong> — maximum for large-scale emergencies
         </p>
 
-        <!-- Proportional discount toggle -->
-        <div class="discount-toggle-row">
-          <label class="discount-toggle">
-            <input type="checkbox" id="discount-toggle-input">
-            <span class="slider"></span>
-          </label>
-          <label class="discount-toggle-label" for="discount-toggle-input">
-            Proportional discount
-          </label>
-        </div>
-        <div class="discount-notice" id="discount-notice"></div>
-
         <!-- Split bar -->
         <div class="split-bar">
           <div class="split-bar-crf" id="split-bar-crf" style="width: 10%;"></div>
@@ -1472,6 +1474,21 @@
         <!-- Ceiling warning -->
         <div class="ceiling-warning" id="ceiling-warning">
           This allocation exceeds $2M. Consider whether the CRF pool can sustain this alongside other active emergencies.
+        </div>
+
+        <!-- Proportional discount (shown only when target manually edited) -->
+        <div class="discount-row" id="discount-row" style="display:none;">
+          <div class="discount-toggle-row">
+            <label class="discount-toggle">
+              <input type="checkbox" id="discount-toggle-input">
+              <span class="slider"></span>
+            </label>
+            <label class="discount-toggle-label" for="discount-toggle-input">
+              Proportional discount
+            </label>
+            <span class="discount-hint">Scales CRF allocation to match your reduced target</span>
+          </div>
+          <div class="discount-notice" id="discount-notice"></div>
         </div>
 
         <!-- Copy Summary + Save Scenario buttons -->
@@ -1630,6 +1647,7 @@
       var scenarioComparisonEl = document.getElementById('scenario-comparison');
       var scenarioTableWrap = document.getElementById('scenario-table-wrap');
       var clearScenariosBtn = document.getElementById('clear-scenarios-btn');
+      var discountRow = document.getElementById('discount-row');
       var discountToggleInput = document.getElementById('discount-toggle-input');
       var discountNotice = document.getElementById('discount-notice');
 
@@ -1841,6 +1859,7 @@
         }
         if (!stanceManuallyOverridden) updateAutoStance();
         updateTargetHint();
+        updateDiscountVisibility();
         calculate();
       });
 
@@ -1849,8 +1868,26 @@
         targetManuallyEdited = true;
         targetPop = formatTargetInput(this);
         updateTargetHint();
+        updateDiscountVisibility();
         calculate();
       });
+
+      function updateDiscountVisibility() {
+        if (targetManuallyEdited && affectedPop > 0 && targetPop > 0) {
+          var defaultTarget = Math.round(affectedPop * 0.1);
+          if (targetPop < defaultTarget) {
+            discountRow.style.display = 'block';
+            return;
+          }
+        }
+        // Hide and reset when not applicable
+        discountRow.style.display = 'none';
+        if (proportionalDiscountEnabled) {
+          proportionalDiscountEnabled = false;
+          discountToggleInput.checked = false;
+          discountNotice.style.display = 'none';
+        }
+      }
 
       function updateTargetHint() {
         if (affectedPop > 0 && targetPop > 0) {
@@ -2182,6 +2219,7 @@
             targetInput.value = formatNum(targetPop);
           }
           updateTargetHint();
+          updateDiscountVisibility();
         }
 
         // Auto-populate stance from classification
