@@ -31,14 +31,14 @@ const NAV_ITEMS = [
 const SITE_CONFIG = getSiteConfig();
 
 // Structured switcher order: platform at top, tools indented, admin/help at bottom
-const SWITCHER_ORDER = [
+const SWITCHER_ORDER: readonly { key: string; indent: boolean; divider?: boolean }[] = [
   { key: 'landing', indent: false },
   { key: 'classification', indent: true },
   { key: 'crf', indent: true },
   { key: 'navigator', indent: true },
   { key: 'admin', indent: false, divider: true },
   { key: 'help', indent: false },
-] as const;
+];
 
 // IRC logo from shared package
 const IRC_LOGO = IRC_LOGO_DATA_URI;
