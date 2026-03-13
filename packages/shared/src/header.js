@@ -35,12 +35,22 @@ export function renderHeader(activePage, currentSite) {
   var config = getSiteConfig();
   var site = config[currentSite];
 
-  // Build site switcher with all sites
-  var allSiteKeys = Object.keys(config);
-  var switcherOptionsHtml = allSiteKeys.map(function(key) {
-    var s = config[key];
-    var isActive = key === currentSite;
-    return '<a href="' + s.url + '" class="site-switcher-option' + (isActive ? ' active' : '') + '">' +
+  // Build site switcher with structured ordering
+  var switcherOrder = [
+    { key: 'landing', indent: false },
+    { key: 'classification', indent: true },
+    { key: 'crf', indent: true },
+    { key: 'navigator', indent: true },
+    { key: 'admin', indent: false, divider: true },
+    { key: 'help', indent: false }
+  ];
+  var switcherOptionsHtml = switcherOrder.map(function(entry) {
+    var s = config[entry.key];
+    if (!s) return '';
+    var isActive = entry.key === currentSite;
+    var classes = 'site-switcher-option' + (isActive ? ' active' : '') + (entry.indent ? ' indented' : '');
+    var dividerHtml = entry.divider ? '<div class="site-switcher-divider"></div>' : '';
+    return dividerHtml + '<a href="' + s.url + '" class="' + classes + '">' +
       '<span class="site-switcher-option-name">' + s.label + '</span>' +
       '<span class="site-switcher-option-desc">' + s.description + '</span>' +
     '</a>';

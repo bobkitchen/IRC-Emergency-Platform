@@ -77,6 +77,13 @@ export function getSiteConfig() {
       description: 'Platform overview and getting started',
       url: env === 'github' ? '/irc-emergency-platform-site/' : '/landing/index.html',
       pages: []
+    },
+    help: {
+      label: 'Help Guide',
+      shortLabel: 'Help',
+      description: 'User guide for all platform tools',
+      url: env === 'github' ? '/irc-emergency-platform-site/help.html' : '/landing/help.html',
+      pages: []
     }
   };
 }

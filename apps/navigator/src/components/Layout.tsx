@@ -27,14 +27,18 @@ const NAV_ITEMS = [
   { path: '/resources', label: 'Resources' },
 ];
 
-// Site config from shared package (includes classification, navigator, crf)
+// Site config from shared package
 const SITE_CONFIG = getSiteConfig();
-const SITES = {
-  classification: SITE_CONFIG.classification,
-  navigator: SITE_CONFIG.navigator,
-  crf: SITE_CONFIG.crf,
-  admin: SITE_CONFIG.admin,
-};
+
+// Structured switcher order: platform at top, tools indented, admin/help at bottom
+const SWITCHER_ORDER = [
+  { key: 'landing', indent: false },
+  { key: 'classification', indent: true },
+  { key: 'crf', indent: true },
+  { key: 'navigator', indent: true },
+  { key: 'admin', indent: false, divider: true },
+  { key: 'help', indent: false },
+] as const;
 
 // IRC logo from shared package
 const IRC_LOGO = IRC_LOGO_DATA_URI;
@@ -102,25 +106,30 @@ function SiteSwitcher({ isMobile, isNarrow }: { isMobile: boolean; isNarrow: boo
           zIndex: 200,
           overflow: 'hidden',
         }}>
-          {Object.entries(SITES).map(([key, site]) => {
-            const isCurrentSite = key === 'navigator';
+          {SWITCHER_ORDER.map((entry) => {
+            const site = SITE_CONFIG[entry.key];
+            if (!site) return null;
+            const isCurrentSite = entry.key === 'navigator';
             return (
-              <a
-                key={key}
-                href={site.url}
-                style={{
-                  display: 'block',
-                  padding: '12px 16px',
-                  textDecoration: 'none',
-                  transition: 'background 0.12s ease',
-                  ...(isCurrentSite ? { background: '#FFF8E5', borderLeft: '3px solid #FFC72C' } : {}),
-                }}
-                onMouseEnter={e => { if (!isCurrentSite) e.currentTarget.style.background = '#F6F6F6'; }}
-                onMouseLeave={e => { if (!isCurrentSite) e.currentTarget.style.background = 'transparent'; }}
-              >
-                <span style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: '#000', lineHeight: 1.3 }}>{site.label}</span>
-                <span style={{ display: 'block', fontSize: '0.75rem', color: '#666', marginTop: '2px', lineHeight: 1.3 }}>{site.description}</span>
-              </a>
+              <div key={entry.key}>
+                {entry.divider && <div style={{ height: '1px', background: '#E9E9E9', margin: '4px 12px' }} />}
+                <a
+                  href={site.url}
+                  style={{
+                    display: 'block',
+                    padding: '12px 16px',
+                    paddingLeft: entry.indent ? '28px' : '16px',
+                    textDecoration: 'none',
+                    transition: 'background 0.12s ease',
+                    ...(isCurrentSite ? { background: '#FFF8E5', borderLeft: '3px solid #FFC72C' } : {}),
+                  }}
+                  onMouseEnter={e => { if (!isCurrentSite) e.currentTarget.style.background = '#F6F6F6'; }}
+                  onMouseLeave={e => { if (!isCurrentSite) e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <span style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: '#000', lineHeight: 1.3 }}>{site.label}</span>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: '#666', marginTop: '2px', lineHeight: 1.3 }}>{site.description}</span>
+                </a>
+              </div>
             );
           })}
         </div>

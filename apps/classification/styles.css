@@ -292,6 +292,16 @@ header {
   border-left: 3px solid var(--irc-yellow);
 }
 
+.site-switcher-option.indented {
+  padding-left: 28px;
+}
+
+.site-switcher-divider {
+  height: 1px;
+  background: var(--gray-e9);
+  margin: 4px 12px;
+}
+
 .site-switcher-option-name {
   display: block;
   font-size: 0.875rem;
