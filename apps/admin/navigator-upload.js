@@ -926,5 +926,396 @@ function parseWorkbook(workbook) {
   };
 }
 
-// Expose to global scope (handleFile will be added in the next task)
-window.NavigatorUpload = { parseWorkbook: parseWorkbook };
+// ──────────────────────────────────────────────
+// DIFF: Compare parsed data with live data
+// ──────────────────────────────────────────────
+async function fetchLiveData() {
+  try {
+    var resp = await fetch('https://raw.githubusercontent.com/bobkitchen/IRC-Emergency-Platform/main/apps/navigator/src/data/process-data.json');
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) {
+    console.warn('Could not fetch live data for diff:', e);
+    return null;
+  }
+}
+
+function computeDiff(newData, liveData) {
+  if (!liveData || !liveData.sectors) return null;
+
+  var diff = { sectors: [] };
+  var liveMap = {};
+  for (var i = 0; i < liveData.sectors.length; i++) {
+    liveMap[liveData.sectors[i].id] = liveData.sectors[i];
+  }
+
+  var newMap = {};
+  for (var j = 0; j < newData.sectors.length; j++) {
+    var ns = newData.sectors[j];
+    newMap[ns.id] = ns;
+    var ls = liveMap[ns.id];
+    if (ls) {
+      var liveResCount = 0;
+      for (var lt = 0; lt < ls.tasks.length; lt++) {
+        liveResCount += ls.tasks[lt].resources.length;
+        for (var ls2 = 0; ls2 < ls.tasks[lt].subtasks.length; ls2++) {
+          liveResCount += ls.tasks[lt].subtasks[ls2].resources.length;
+        }
+      }
+      var newResCount = 0;
+      for (var nt = 0; nt < ns.tasks.length; nt++) {
+        newResCount += ns.tasks[nt].resources.length;
+        for (var ns2 = 0; ns2 < ns.tasks[nt].subtasks.length; ns2++) {
+          newResCount += ns.tasks[nt].subtasks[ns2].resources.length;
+        }
+      }
+      diff.sectors.push({
+        name: ns.name,
+        status: 'changed',
+        tasksBefore: ls.tasks.length,
+        tasksAfter: ns.tasks.length,
+        resourcesBefore: liveResCount,
+        resourcesAfter: newResCount
+      });
+    } else {
+      diff.sectors.push({ name: ns.name, status: 'added' });
+    }
+  }
+
+  for (var lid in liveMap) {
+    if (!newMap[lid]) {
+      diff.sectors.push({ name: liveMap[lid].name, status: 'removed' });
+    }
+  }
+
+  return diff;
+}
+
+// ──────────────────────────────────────────────
+// PREVIEW RENDERING
+// ──────────────────────────────────────────────
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function statCard(label, value) {
+  return '<div style="background:var(--white); border:1px solid var(--gray-e9); border-radius:8px; padding:16px; text-align:center;">' +
+    '<div style="font-size:1.5rem; font-weight:700;">' + value + '</div>' +
+    '<div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">' + label + '</div></div>';
+}
+
+function renderPreview(parseResult, diff) {
+  var stats = parseResult.stats;
+  var html = '';
+
+  // Header stats
+  html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:24px;">';
+  html += statCard('Sectors', stats.totalSectors);
+  html += statCard('Tasks', stats.totalTasks);
+  html += statCard('Resources (URL)', stats.resourcesWithUrl);
+  html += statCard('Resources (no URL)', stats.resourcesWithoutUrl);
+  html += '</div>';
+
+  // Unrecognized sheets
+  if (parseResult.unrecognized.length > 0) {
+    html += '<div class="settings-card" style="border-left:4px solid var(--irc-yellow); margin-bottom:16px;">';
+    html += '<h4 style="margin-bottom:8px;">Unrecognized Sheets</h4>';
+    html += '<p style="font-size:0.8125rem; color:var(--muted); margin-bottom:12px;">These sheets were found but don\'t match any known sector format:</p>';
+    for (var u = 0; u < parseResult.unrecognized.length; u++) {
+      html += '<div style="padding:8px 12px; background:var(--light-gray); border-radius:6px; margin-bottom:6px; font-size:0.875rem;">' +
+        '<strong>' + escapeHtml(parseResult.unrecognized[u]) + '</strong>' +
+        ' — <em>skipped (not a recognized sector)</em></div>';
+    }
+    html += '</div>';
+  }
+
+  // Missing expected sheets
+  if (parseResult.missingExpected.length > 0) {
+    html += '<div class="settings-card" style="border-left:4px solid var(--stance-orange); margin-bottom:16px;">';
+    html += '<h4 style="margin-bottom:8px;">Missing Expected Sheets</h4>';
+    html += '<p style="font-size:0.8125rem; color:var(--muted); margin-bottom:12px;">These known sectors were not found in the uploaded XLSM:</p>';
+    for (var m = 0; m < parseResult.missingExpected.length; m++) {
+      html += '<div style="padding:8px 12px; background:#FFF5E5; border-radius:6px; margin-bottom:6px; font-size:0.875rem;">' +
+        escapeHtml(parseResult.missingExpected[m]) + '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Diff summary
+  if (diff) {
+    html += '<div class="settings-card" style="margin-bottom:16px;">';
+    html += '<h4 style="margin-bottom:12px;">Changes vs Live Data</h4>';
+    for (var d = 0; d < diff.sectors.length; d++) {
+      var ds = diff.sectors[d];
+      if (ds.status === 'added') {
+        html += '<div style="padding:6px 0; font-size:0.875rem;"><span style="color:green; font-weight:600;">+ Added:</span> ' + escapeHtml(ds.name) + '</div>';
+      } else if (ds.status === 'removed') {
+        html += '<div style="padding:6px 0; font-size:0.875rem;"><span style="color:var(--stance-red); font-weight:600;">− Removed:</span> ' + escapeHtml(ds.name) + '</div>';
+      } else {
+        var taskDelta = ds.tasksAfter - ds.tasksBefore;
+        var resDelta = ds.resourcesAfter - ds.resourcesBefore;
+        var taskStr = ds.tasksBefore + ' → ' + ds.tasksAfter + ' tasks' + (taskDelta !== 0 ? ' (' + (taskDelta > 0 ? '+' : '') + taskDelta + ')' : '');
+        var resStr = ds.resourcesBefore + ' → ' + ds.resourcesAfter + ' resources' + (resDelta !== 0 ? ' (' + (resDelta > 0 ? '+' : '') + resDelta + ')' : '');
+        html += '<div style="padding:6px 0; font-size:0.875rem;"><strong>' + escapeHtml(ds.name) + ':</strong> ' + taskStr + ', ' + resStr + '</div>';
+      }
+    }
+    html += '</div>';
+  }
+
+  // Per-sector cards
+  html += '<h4 style="margin-bottom:12px;">Sector Breakdown</h4>';
+  for (var s = 0; s < parseResult.sectorDetails.length; s++) {
+    var sec = parseResult.sectorDetails[s];
+    html += '<details class="settings-card" style="margin-bottom:8px; cursor:pointer;">';
+    html += '<summary style="font-weight:600;">' + escapeHtml(sec.name) +
+      ' <span style="font-weight:400; color:var(--muted);">— ' + sec.taskCount + ' tasks, ' + sec.resourceCount + ' resources (' + sec.urlCount + ' with URL)</span></summary>';
+    var sectorObj = null;
+    for (var si = 0; si < parseResult.processData.sectors.length; si++) {
+      if (parseResult.processData.sectors[si].id === sec.id) { sectorObj = parseResult.processData.sectors[si]; break; }
+    }
+    if (sectorObj) {
+      html += '<div style="padding:12px 0 0;">';
+      var limit = Math.min(5, sectorObj.tasks.length);
+      for (var ti = 0; ti < limit; ti++) {
+        html += '<div style="padding:4px 0; font-size:0.8125rem;">' + escapeHtml(sectorObj.tasks[ti].id) + ' — ' + escapeHtml(sectorObj.tasks[ti].title) + '</div>';
+      }
+      if (sectorObj.tasks.length > 5) {
+        html += '<div style="padding:4px 0; font-size:0.8125rem; color:var(--muted);">...and ' + (sectorObj.tasks.length - 5) + ' more</div>';
+      }
+      html += '</div>';
+    }
+    html += '</details>';
+  }
+
+  // Action buttons
+  html += '<div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">';
+  html += '<button id="nav-confirm-btn" class="btn-primary" style="padding:10px 24px; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-family:var(--font-family);">Confirm & Deploy</button>';
+  html += '<button id="nav-download-btn" class="btn-secondary" style="padding:10px 24px; border:1px solid var(--gray-e9); border-radius:8px; cursor:pointer; font-family:var(--font-family);">Download JSON</button>';
+  html += '<button id="nav-cancel-btn" class="btn-secondary" style="padding:10px 24px; border:1px solid var(--gray-e9); border-radius:8px; cursor:pointer; font-family:var(--font-family);">Cancel</button>';
+  html += '</div>';
+
+  return html;
+}
+
+// ──────────────────────────────────────────────
+// GITHUB COMMIT via Git Data API
+// ──────────────────────────────────────────────
+var GITHUB_OWNER = 'bobkitchen';
+var GITHUB_REPO = 'IRC-Emergency-Platform';
+var GITHUB_BRANCH = 'main';
+var DATA_PATH_PREFIX = 'apps/navigator/src/data/';
+
+async function commitToGitHub(processData, resourceIndex, searchChunks) {
+  // ENCRYPTED_PAT and adminPassword are globals from index.html
+  var pat = await CryptoUtils.decryptWithPassword(ENCRYPTED_PAT, adminPassword);
+  if (!pat) throw new Error('Failed to decrypt GitHub token. Was the correct password entered?');
+
+  var headers = {
+    'Authorization': 'token ' + pat,
+    'Accept': 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+  var apiBase = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO;
+
+  // Step 1: Get current branch SHA
+  var refResp = await fetch(apiBase + '/git/ref/heads/' + GITHUB_BRANCH, { headers: headers });
+  if (!refResp.ok) throw new Error('Failed to get branch ref: ' + refResp.status);
+  var refData = await refResp.json();
+  var latestSha = refData.object.sha;
+
+  // Step 2: Get the tree SHA
+  var commitResp = await fetch(apiBase + '/git/commits/' + latestSha, { headers: headers });
+  if (!commitResp.ok) throw new Error('Failed to get commit: ' + commitResp.status);
+  var commitData = await commitResp.json();
+  var treeSha = commitData.tree.sha;
+
+  // Step 3: Create blobs for all three files
+  var files = [
+    { path: DATA_PATH_PREFIX + 'process-data.json', content: JSON.stringify(processData, null, 2) },
+    { path: DATA_PATH_PREFIX + 'resource-index.json', content: JSON.stringify(resourceIndex, null, 2) },
+    { path: DATA_PATH_PREFIX + 'search-chunks.json', content: JSON.stringify(searchChunks, null, 2) }
+  ];
+
+  var treeEntries = [];
+  for (var i = 0; i < files.length; i++) {
+    var blobResp = await fetch(apiBase + '/git/blobs', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ content: files[i].content, encoding: 'utf-8' })
+    });
+    if (!blobResp.ok) throw new Error('Failed to create blob for ' + files[i].path + ': ' + blobResp.status);
+    var blobData = await blobResp.json();
+    treeEntries.push({ path: files[i].path, mode: '100644', type: 'blob', sha: blobData.sha });
+  }
+
+  // Step 4: Create new tree
+  var treeResp = await fetch(apiBase + '/git/trees', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({ base_tree: treeSha, tree: treeEntries })
+  });
+  if (!treeResp.ok) throw new Error('Failed to create tree: ' + treeResp.status);
+  var treeData = await treeResp.json();
+
+  // Step 5: Create commit
+  var today = new Date().toISOString().slice(0, 10);
+  var newCommitResp = await fetch(apiBase + '/git/commits', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
+      message: 'data: update Navigator tasks from Roadmap XLSM (' + today + ')',
+      tree: treeData.sha,
+      parents: [latestSha]
+    })
+  });
+  if (!newCommitResp.ok) throw new Error('Failed to create commit: ' + newCommitResp.status);
+  var newCommitData = await newCommitResp.json();
+
+  // Step 6: Update branch ref
+  var updateResp = await fetch(apiBase + '/git/refs/heads/' + GITHUB_BRANCH, {
+    method: 'PATCH',
+    headers: headers,
+    body: JSON.stringify({ sha: newCommitData.sha })
+  });
+  if (!updateResp.ok) throw new Error('Failed to update branch: ' + updateResp.status);
+
+  return {
+    sha: newCommitData.sha,
+    url: 'https://github.com/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/commit/' + newCommitData.sha
+  };
+}
+
+// ──────────────────────────────────────────────
+// DOWNLOAD JSON FILES
+// ──────────────────────────────────────────────
+function downloadJSON(data, filename) {
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ──────────────────────────────────────────────
+// MAIN ENTRY POINT
+// ──────────────────────────────────────────────
+var currentParseResult = null;
+
+async function handleFile(file) {
+  var statusEl = document.getElementById('nav-parsing-status');
+  var parseLabel = document.getElementById('nav-parse-label');
+  var parseDot = document.getElementById('nav-parse-dot');
+  var previewEl = document.getElementById('nav-preview');
+  var uploadZone = document.getElementById('nav-upload-zone');
+
+  statusEl.style.display = '';
+  previewEl.style.display = 'none';
+  parseLabel.textContent = 'Reading spreadsheet...';
+
+  try {
+    var arrayBuffer = await file.arrayBuffer();
+    parseLabel.textContent = 'Parsing sheets...';
+
+    var workbook = XLSX.read(arrayBuffer, { type: 'array', cellStyles: true });
+    var result = parseWorkbook(workbook);
+    currentParseResult = result;
+
+    parseLabel.textContent = 'Fetching live data for comparison...';
+    var liveData = await fetchLiveData();
+
+    // Carry forward non-sector data from live if absent in XLSM
+    if (liveData) {
+      if (result.processData.guidelines.length === 0 && liveData.guidelines) {
+        result.processData.guidelines = liveData.guidelines;
+      }
+      if (result.processData.annexes.length === 0 && liveData.annexes) {
+        result.processData.annexes = liveData.annexes;
+      }
+      if (result.processData.emuServices.length === 0 && liveData.emuServices) {
+        result.processData.emuServices = liveData.emuServices;
+      }
+      if (result.processData.preparednessLibrary.length === 0 && liveData.preparednessLibrary) {
+        result.processData.preparednessLibrary = liveData.preparednessLibrary;
+      }
+    }
+
+    var diff = liveData ? computeDiff(result.processData, liveData) : null;
+
+    parseDot.className = 'status-dot green';
+    parseLabel.textContent = 'Parsed ' + result.stats.totalTasks + ' tasks across ' + result.stats.totalSectors + ' sectors';
+    previewEl.innerHTML = renderPreview(result, diff);
+    previewEl.style.display = '';
+    uploadZone.style.display = 'none';
+
+    document.getElementById('nav-confirm-btn').addEventListener('click', handleConfirm);
+    document.getElementById('nav-download-btn').addEventListener('click', handleDownload);
+    document.getElementById('nav-cancel-btn').addEventListener('click', handleCancel);
+
+  } catch (err) {
+    parseDot.className = 'status-dot red';
+    parseLabel.textContent = 'Error: ' + err.message;
+    console.error('Parse error:', err);
+  }
+}
+
+async function handleConfirm() {
+  if (!currentParseResult) return;
+  var btn = document.getElementById('nav-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = 'Deploying...';
+
+  try {
+    var result = await commitToGitHub(
+      currentParseResult.processData,
+      currentParseResult.resourceIndex,
+      currentParseResult.searchChunks
+    );
+
+    btn.textContent = 'Deployed!';
+    btn.style.background = '#4CAF50';
+    btn.style.color = 'white';
+
+    var successHtml = '<div class="settings-card" style="border-left:4px solid #4CAF50; margin-top:16px;">' +
+      '<h4 style="color:#4CAF50;">Successfully Deployed</h4>' +
+      '<p style="font-size:0.875rem; margin-top:8px;">Commit: <a href="' + result.url + '" target="_blank" style="color:var(--irc-yellow);">' + result.sha.substring(0, 7) + '</a></p>' +
+      '<p style="font-size:0.8125rem; color:var(--muted); margin-top:4px;">CI will now rebuild and redeploy the Navigator. This usually takes 1-2 minutes.</p>' +
+      '<p style="font-size:0.8125rem; margin-top:8px;"><a href="https://github.com/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/actions" target="_blank" style="color:var(--irc-yellow);">View GitHub Actions</a></p>' +
+      '</div>';
+    document.getElementById('nav-preview').insertAdjacentHTML('beforeend', successHtml);
+
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Retry Deploy';
+    btn.style.background = 'var(--stance-red)';
+    btn.style.color = 'white';
+
+    var errorHtml = '<div class="settings-card" style="border-left:4px solid var(--stance-red); margin-top:16px;">' +
+      '<h4 style="color:var(--stance-red);">Deploy Failed</h4>' +
+      '<p style="font-size:0.875rem; margin-top:8px;">' + escapeHtml(err.message) + '</p>' +
+      '<p style="font-size:0.8125rem; color:var(--muted); margin-top:4px;">You can download the JSON files and commit them manually.</p>' +
+      '</div>';
+    document.getElementById('nav-preview').insertAdjacentHTML('beforeend', errorHtml);
+  }
+}
+
+function handleDownload() {
+  if (!currentParseResult) return;
+  downloadJSON(currentParseResult.processData, 'process-data.json');
+  downloadJSON(currentParseResult.resourceIndex, 'resource-index.json');
+  downloadJSON(currentParseResult.searchChunks, 'search-chunks.json');
+}
+
+function handleCancel() {
+  currentParseResult = null;
+  document.getElementById('nav-preview').style.display = 'none';
+  document.getElementById('nav-preview').innerHTML = '';
+  document.getElementById('nav-parsing-status').style.display = 'none';
+  document.getElementById('nav-upload-zone').style.display = '';
+}
+
+// Expose to global scope
+window.NavigatorUpload = { handleFile: handleFile, parseWorkbook: parseWorkbook };
