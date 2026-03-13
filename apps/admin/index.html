@@ -852,13 +852,13 @@
           <div class="about-stat">
             <div>
               <div class="stat-label">Total Chunks</div>
-              <div class="stat-value" id="kbChunkCount">--</div>
+              <div class="stat-value" id="kbTabChunkCount">--</div>
             </div>
           </div>
           <div class="about-stat">
             <div>
               <div class="stat-label">Resources</div>
-              <div class="stat-value" id="kbResourceCount">--</div>
+              <div class="stat-value" id="kbTabResourceCount">--</div>
             </div>
           </div>
         </div>
@@ -1350,7 +1350,11 @@
         headers: Object.assign({}, SUPABASE_HEADERS, { 'Prefer': 'count=exact' })
       }).then(function(res) {
         var range = res.headers.get('content-range');
-        if (range) document.getElementById('kbResourceCount').textContent = range.split('/')[1] || '--';
+        if (range) {
+          var t = range.split('/')[1] || '--';
+          document.getElementById('kbResourceCount').textContent = t;
+          document.getElementById('kbTabResourceCount').textContent = t;
+        }
       }).catch(function() {});
 
       // 5C: Chunk count detail
@@ -1359,7 +1363,9 @@
       }).then(function(res) {
         var range = res.headers.get('content-range');
         if (range) {
-          document.getElementById('kbChunkCount').textContent = range.split('/')[1] || '--';
+          var t = range.split('/')[1] || '--';
+          document.getElementById('kbChunkCount').textContent = t;
+          document.getElementById('kbTabChunkCount').textContent = t;
           document.getElementById('kbChunkSub').textContent = 'Embedded text chunks';
         }
       }).catch(function() {});
@@ -2223,11 +2229,13 @@
       }).then(function(res) {
         var range = res.headers.get('content-range');
         if (range) {
-          var total = range.split('/')[1];
-          document.getElementById('kbChunkCount').textContent = total || '0';
+          var total = range.split('/')[1] || '0';
+          document.getElementById('kbChunkCount').textContent = total;
+          document.getElementById('kbTabChunkCount').textContent = total;
         }
       }).catch(function() {
         document.getElementById('kbChunkCount').textContent = '—';
+        document.getElementById('kbTabChunkCount').textContent = '—';
       });
 
       // Resource count (table: ern_resources)
@@ -2236,11 +2244,13 @@
       }).then(function(res) {
         var range = res.headers.get('content-range');
         if (range) {
-          var total = range.split('/')[1];
-          document.getElementById('kbResourceCount').textContent = total || '0';
+          var total = range.split('/')[1] || '0';
+          document.getElementById('kbResourceCount').textContent = total;
+          document.getElementById('kbTabResourceCount').textContent = total;
         }
       }).catch(function() {
         document.getElementById('kbResourceCount').textContent = '—';
+        document.getElementById('kbTabResourceCount').textContent = '—';
       });
     }
 
